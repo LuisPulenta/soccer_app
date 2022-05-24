@@ -275,6 +275,22 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _login() async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _showLoader = false;
+      });
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: 'Verifica que estés conectado a Internet',
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+
     setState(() {
       _passwordShow = false;
     });
@@ -308,6 +324,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (response.statusCode >= 400) {
       setState(() {
+        _showLoader = false;
         _passwordShowError = true;
         _passwordError = 'Email o contraseña incorrectos';
       });
@@ -347,7 +364,8 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => HomeScreen(token: token, user: user)));
+            builder: (context) =>
+                HomeScreen(token: token, user: user, rememberme: _rememberme)));
   }
 
   bool validateFields() {
@@ -394,5 +412,33 @@ class _LoginScreenState extends State<LoginScreen> {
     await prefs.setString('userBody', body);
   }
 
-  _register() {}
+  void _register() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => RegisterUserScreen(
+                  token: Token(expiration: '', token: ''),
+                  user: User(
+                      userId: '',
+                      firstName: '',
+                      lastName: '',
+                      picturePath: '',
+                      nickName: '',
+                      team: Team(
+                          id: 0,
+                          name: '',
+                          initials: '',
+                          logoPath: '',
+                          leagueId: 0,
+                          leagueName: '',
+                          logoFullPath: ''),
+                      userType: 1,
+                      points: 0,
+                      fullName: '',
+                      email: '',
+                      emailConfirmed: 0,
+                      pictureFullPath: ''),
+                  myProfile: false,
+                )));
+  }
 }

@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:soccer_app/helpers/constants.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:soccer_app/models/models.dart';
+import 'package:soccer_app/screens/screens.dart';
 import 'package:soccer_app/screens/take_picture_screen.dart';
 import 'package:camera/camera.dart';
 import 'package:connectivity/connectivity.dart';
@@ -10,16 +12,23 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:soccer_app/components/loader_component.dart';
 import 'package:soccer_app/helpers/api_helper.dart';
-import 'package:soccer_app/models/response.dart';
 
 class RegisterUserScreen extends StatefulWidget {
-  const RegisterUserScreen({Key? key}) : super(key: key);
+  final Token token;
+  final User user;
+  final bool myProfile;
+
+  RegisterUserScreen(
+      {required this.token, required this.user, required this.myProfile});
 
   @override
   _RegisterUserScreenState createState() => _RegisterUserScreenState();
 }
 
 class _RegisterUserScreenState extends State<RegisterUserScreen> {
+//***********************************************************************
+//******************** Declaración de Variables *************************
+//***********************************************************************
   bool _showLoader = false;
   bool _photoChanged = false;
   late XFile _image;
@@ -34,35 +43,15 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
   bool _lastNameShowError = false;
   TextEditingController _lastNameController = TextEditingController();
 
-  String _document = '';
-  String _documentError = '';
-  bool _documentShowError = false;
-  TextEditingController _documentController = TextEditingController();
-
-  String _address1 = '';
-  String _address1Error = '';
-  bool _address1ShowError = false;
-  TextEditingController _address1Controller = TextEditingController();
-
-  String _address2 = '';
-  String _address2Error = '';
-  bool _address2ShowError = false;
-  TextEditingController _address2Controller = TextEditingController();
-
-  String _address3 = '';
-  String _address3Error = '';
-  bool _address3ShowError = false;
-  TextEditingController _address3Controller = TextEditingController();
+  String _nickName = '';
+  String _nickNameError = '';
+  bool _nickNameShowError = false;
+  TextEditingController _nickNameController = TextEditingController();
 
   String _email = '';
   String _emailError = '';
   bool _emailShowError = false;
   TextEditingController _emailController = TextEditingController();
-
-  String _phoneNumber = '';
-  String _phoneNumberError = '';
-  bool _phoneNumberShowError = false;
-  TextEditingController _phoneNumberController = TextEditingController();
 
   bool _passwordShow = false;
 
@@ -76,16 +65,38 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
   bool _confirmShowError = false;
   TextEditingController _confirmController = TextEditingController();
 
+  int _leagueSelected = 0;
+  String _leagueSelectedError = '';
+  bool _leagueSelectedShowError = false;
+  List<League> _leagues = [];
+
+  int _teamSelected = 0;
+  String _teamSelectedError = '';
+  bool _teamSelectedShowError = false;
+  List<Team> _teams = [];
+
+//***********************************************************************
+//******************** Init State ***************************************
+//***********************************************************************
   @override
   void initState() {
     super.initState();
+    _getLeagues();
   }
 
+//***********************************************************************
+//******************** Pantalla *****************************************
+//***********************************************************************
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Color(0xFF00D99D),
         appBar: AppBar(
-          title: Text('Nuevo Usuario'),
+          title: widget.myProfile == false
+              ? Text('Nuevo Usuario')
+              : Text(widget.user.firstName + ' ' + widget.user.lastName),
+          centerTitle: true,
+          backgroundColor: Color.fromARGB(255, 8, 69, 48),
         ),
         body: Stack(
           children: [
@@ -95,12 +106,10 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                   _showPhoto(),
                   _showFirstName(),
                   _showLastName(),
-                  _showDocument(),
-                  // _showAddress1(),
-                  // _showAddress2(),
-                  // _showAddress3(),
+                  _showNickName(),
+                  _showLeagues(),
+                  _showTeams(),
                   _showEmail(),
-                  _showPhoneNumber(),
                   _showPassword(),
                   _showConfirm(),
                   _showButtons(),
@@ -119,12 +128,15 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         ));
   }
 
+//-----------------------------------------------------------------------
+//-------------------------- showPhoto ----------------------------------
+//-----------------------------------------------------------------------
   Widget _showPhoto() {
     return InkWell(
       child: Stack(children: <Widget>[
         Container(
           margin: EdgeInsets.only(top: 10),
-          child: !_photoChanged
+          child: widget.user.userId.isEmpty && !_photoChanged
               ? Image(
                   image: AssetImage('assets/noimage.png'),
                   width: 160,
@@ -132,12 +144,28 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                   fit: BoxFit.cover)
               : ClipRRect(
                   borderRadius: BorderRadius.circular(80),
-                  child: Image.file(
-                    File(_image.path),
-                    width: 160,
-                    height: 160,
-                    fit: BoxFit.cover,
-                  )),
+                  child: _photoChanged
+                      ? Image.file(
+                          File(_image.path),
+                          width: 160,
+                          height: 160,
+                          fit: BoxFit.cover,
+                        )
+                      : CachedNetworkImage(
+                          imageUrl: widget.user.pictureFullPath,
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                          fit: BoxFit.cover,
+                          height: 160,
+                          width: 160,
+                          placeholder: (context, url) => Image(
+                            image: AssetImage('assets/nouser.png'),
+                            fit: BoxFit.cover,
+                            height: 160,
+                            width: 160,
+                          ),
+                        ),
+                ),
         ),
         Positioned(
             bottom: 0,
@@ -153,7 +181,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                   child: Icon(
                     Icons.photo_camera,
                     size: 40,
-                    color: Colors.blue,
+                    color: Color.fromARGB(255, 8, 69, 48),
                   ),
                 ),
               ),
@@ -172,7 +200,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                   child: Icon(
                     Icons.image,
                     size: 40,
-                    color: Colors.blue,
+                    color: Color.fromARGB(255, 8, 69, 48),
                   ),
                 ),
               ),
@@ -181,6 +209,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     );
   }
 
+//-----------------------------------------------------------------------
+//-------------------------- showFirstName ----------------------------------
+//-----------------------------------------------------------------------
   Widget _showFirstName() {
     return Container(
       padding: EdgeInsets.all(10),
@@ -191,6 +222,8 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
             labelText: 'Nombres',
             errorText: _firstNameShowError ? _firstNameError : null,
             suffixIcon: Icon(Icons.person),
+            fillColor: Colors.white,
+            filled: true,
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
         onChanged: (value) {
@@ -200,6 +233,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     );
   }
 
+//-----------------------------------------------------------------------
+//-------------------------- showLastName -------------------------------
+//-----------------------------------------------------------------------
   Widget _showLastName() {
     return Container(
       padding: EdgeInsets.all(10),
@@ -210,6 +246,8 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
             labelText: 'Apellido',
             errorText: _lastNameShowError ? _lastNameError : null,
             suffixIcon: Icon(Icons.person),
+            fillColor: Colors.white,
+            filled: true,
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
         onChanged: (value) {
@@ -219,184 +257,208 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     );
   }
 
-  Widget _showDocument() {
+//-----------------------------------------------------------------------
+//-------------------------- showNickName -------------------------------
+//-----------------------------------------------------------------------
+  Widget _showNickName() {
     return Container(
       padding: EdgeInsets.all(10),
       child: TextField(
-        controller: _documentController,
-        keyboardType: TextInputType.number,
+        controller: _nickNameController,
         decoration: InputDecoration(
-            hintText: 'Ingresa documento...',
-            labelText: 'Documento',
-            errorText: _documentShowError ? _documentError : null,
-            suffixIcon: Icon(Icons.assignment_ind),
+            hintText: 'Ingresa apodo...',
+            labelText: 'Apodo',
+            errorText: _nickNameShowError ? _nickNameError : null,
+            suffixIcon: Icon(Icons.sentiment_satisfied),
+            fillColor: Colors.white,
+            filled: true,
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
         onChanged: (value) {
-          _document = value;
+          _nickName = value;
         },
       ),
     );
   }
 
-  Widget _showAddress1() {
+//-----------------------------------------------------------------------
+//-------------------------- showLeagues --------------------------------
+//-----------------------------------------------------------------------
+  Widget _showLeagues() {
     return Container(
       padding: EdgeInsets.all(10),
-      child: TextField(
-        controller: _address1Controller,
-        keyboardType: TextInputType.streetAddress,
-        decoration: InputDecoration(
-            hintText: 'Ingresa dirección...',
-            labelText: 'Dirección',
-            errorText: _address1ShowError ? _address1Error : null,
-            suffixIcon: Icon(Icons.home),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
-        onChanged: (value) {
-          _address1 = value;
-        },
-      ),
+      child: _leagues.length == 0
+          ? Text('')
+          : DropdownButtonFormField(
+              items: _getComboLeagues(),
+              value: _leagueSelected,
+              onChanged: (option) {
+                _leagueSelected = option as int;
+                _teams = [];
+                _teamSelected = 0;
+
+                _leagues.forEach((league) {
+                  if (league.id == _leagueSelected) {
+                    _teams = league.teams;
+                  }
+                });
+
+                _teams.sort((a, b) {
+                  return a.name
+                      .toString()
+                      .toLowerCase()
+                      .compareTo(b.name.toString().toLowerCase());
+                });
+
+                _getComboTeams();
+
+                _teamSelected = 0;
+                setState(() {});
+              },
+              decoration: InputDecoration(
+                hintText: 'Seleccione una Liga...',
+                labelText: 'Liga',
+                fillColor: Colors.white,
+                filled: true,
+                errorText:
+                    _leagueSelectedShowError ? _leagueSelectedError : null,
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              )),
     );
   }
 
-  Widget _showAddress2() {
-    return Container(
-      padding: EdgeInsets.all(10),
-      child: TextField(
-        controller: _address2Controller,
-        keyboardType: TextInputType.streetAddress,
-        decoration: InputDecoration(
-            hintText: 'Ingresa dirección...',
-            labelText: 'Dirección',
-            errorText: _address2ShowError ? _address2Error : null,
-            suffixIcon: Icon(Icons.home),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
-        onChanged: (value) {
-          _address2 = value;
-        },
-      ),
-    );
+//-----------------------------------------------------------------------
+//-------------------------- showTeams --------------------------------
+//-----------------------------------------------------------------------
+  Widget _showTeams() {
+    return _teams.length == 0
+        ? Container()
+        : Container(
+            padding: EdgeInsets.all(10),
+            child: DropdownButtonFormField(
+                items: _getComboTeams(),
+                value: _teamSelected,
+                onChanged: (option) {
+                  _teamSelected = option as int;
+                  setState(() {});
+                },
+                decoration: InputDecoration(
+                  hintText: 'Seleccione un Equipo...',
+                  labelText: 'Equipo',
+                  fillColor: Colors.white,
+                  filled: true,
+                  errorText: _teamSelectedShowError ? _teamSelectedError : null,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                )),
+          );
   }
 
-  Widget _showAddress3() {
-    return Container(
-      padding: EdgeInsets.all(10),
-      child: TextField(
-        controller: _address3Controller,
-        keyboardType: TextInputType.streetAddress,
-        decoration: InputDecoration(
-            hintText: 'Ingresa dirección...',
-            labelText: 'Dirección',
-            errorText: _address3ShowError ? _address3Error : null,
-            suffixIcon: Icon(Icons.home),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
-        onChanged: (value) {
-          _address3 = value;
-        },
-      ),
-    );
-  }
-
+//-----------------------------------------------------------------------
+//-------------------------- showEMail ----------------------------------
+//-----------------------------------------------------------------------
   Widget _showEmail() {
-    return Container(
-      padding: EdgeInsets.all(10),
-      child: TextField(
-        controller: _emailController,
-        keyboardType: TextInputType.emailAddress,
-        decoration: InputDecoration(
-            hintText: 'Ingresa Email...',
-            labelText: 'Email',
-            errorText: _emailShowError ? _emailError : null,
-            suffixIcon: Icon(Icons.email),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
-        onChanged: (value) {
-          _email = value;
-        },
-      ),
-    );
+    return widget.myProfile == false
+        ? Container(
+            padding: EdgeInsets.all(10),
+            child: TextField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                  hintText: 'Ingresa Email...',
+                  labelText: 'Email',
+                  errorText: _emailShowError ? _emailError : null,
+                  suffixIcon: Icon(Icons.email),
+                  fillColor: Colors.white,
+                  filled: true,
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10))),
+              onChanged: (value) {
+                _email = value;
+              },
+            ),
+          )
+        : Container();
   }
 
-  Widget _showPhoneNumber() {
-    return Container(
-      padding: EdgeInsets.all(10),
-      child: TextField(
-        controller: _phoneNumberController,
-        keyboardType: TextInputType.phone,
-        decoration: InputDecoration(
-            hintText: 'Ingresa Teléfono...',
-            labelText: 'Teléfono',
-            errorText: _phoneNumberShowError ? _phoneNumberError : null,
-            suffixIcon: Icon(Icons.phone),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
-        onChanged: (value) {
-          _phoneNumber = value;
-        },
-      ),
-    );
-  }
-
+//-----------------------------------------------------------------------
+//-------------------------- showPassword -------------------------------
+//-----------------------------------------------------------------------
   Widget _showPassword() {
-    return Container(
-      padding: EdgeInsets.all(10),
-      child: TextField(
-        obscureText: !_passwordShow,
-        decoration: InputDecoration(
-          hintText: 'Ingresa una contraseña...',
-          labelText: 'Contraseña',
-          errorText: _passwordShowError ? _passwordError : null,
-          prefixIcon: Icon(Icons.lock),
-          suffixIcon: IconButton(
-            icon: _passwordShow
-                ? Icon(Icons.visibility)
-                : Icon(Icons.visibility_off),
-            onPressed: () {
-              setState(() {
-                _passwordShow = !_passwordShow;
-              });
-            },
-          ),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        ),
-        onChanged: (value) {
-          _password = value;
-        },
-      ),
-    );
+    return widget.myProfile == false
+        ? Container(
+            padding: EdgeInsets.all(10),
+            child: TextField(
+              obscureText: !_passwordShow,
+              decoration: InputDecoration(
+                hintText: 'Ingresa una contraseña...',
+                labelText: 'Contraseña',
+                errorText: _passwordShowError ? _passwordError : null,
+                prefixIcon: Icon(Icons.lock),
+                fillColor: Colors.white,
+                filled: true,
+                suffixIcon: IconButton(
+                  icon: _passwordShow
+                      ? Icon(Icons.visibility)
+                      : Icon(Icons.visibility_off),
+                  onPressed: () {
+                    setState(() {
+                      _passwordShow = !_passwordShow;
+                    });
+                  },
+                ),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+              onChanged: (value) {
+                _password = value;
+              },
+            ),
+          )
+        : Container();
   }
 
+//-----------------------------------------------------------------------
+//-------------------------- showConfirm --------------------------------
+//-----------------------------------------------------------------------
   Widget _showConfirm() {
-    return Container(
-      padding: EdgeInsets.all(10),
-      child: TextField(
-        obscureText: !_passwordShow,
-        decoration: InputDecoration(
-          hintText: 'Ingresa la confirmación de contraseña...',
-          labelText: 'Confirmación de contraseña',
-          errorText: _confirmShowError ? _confirmError : null,
-          prefixIcon: Icon(Icons.lock),
-          suffixIcon: IconButton(
-            icon: _passwordShow
-                ? Icon(Icons.visibility)
-                : Icon(Icons.visibility_off),
-            onPressed: () {
-              setState(() {
-                _passwordShow = !_passwordShow;
-              });
-            },
-          ),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        ),
-        onChanged: (value) {
-          _confirm = value;
-        },
-      ),
-    );
+    return widget.myProfile == false
+        ? Container(
+            padding: EdgeInsets.all(10),
+            child: TextField(
+              obscureText: !_passwordShow,
+              decoration: InputDecoration(
+                hintText: 'Ingresa la confirmación de contraseña...',
+                labelText: 'Confirmación de contraseña',
+                errorText: _confirmShowError ? _confirmError : null,
+                prefixIcon: Icon(Icons.lock),
+                fillColor: Colors.white,
+                filled: true,
+                suffixIcon: IconButton(
+                  icon: _passwordShow
+                      ? Icon(Icons.visibility)
+                      : Icon(Icons.visibility_off),
+                  onPressed: () {
+                    setState(() {
+                      _passwordShow = !_passwordShow;
+                    });
+                  },
+                ),
+                border:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              ),
+              onChanged: (value) {
+                _confirm = value;
+              },
+            ),
+          )
+        : Container();
   }
 
+//-----------------------------------------------------------------------
+//-------------------------- showButtons -------------------------------
+//-----------------------------------------------------------------------
   Widget _showButtons() {
     return Container(
       margin: EdgeInsets.only(left: 10, right: 10),
@@ -404,11 +466,75 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           _showRegisterButton(),
+          widget.user.userId.isEmpty
+              ? Container()
+              : SizedBox(
+                  width: 20,
+                ),
+          widget.user.userId.isEmpty
+              ? Container()
+              : widget.myProfile
+                  ? Expanded(
+                      child: ElevatedButton(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.lock),
+                            SizedBox(
+                              width: 15,
+                            ),
+                            Text('Contraseña'),
+                          ],
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          primary: Color(0xFFB4161B),
+                          minimumSize: Size(100, 50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                        onPressed: () => _changePassword(),
+                      ),
+                    )
+                  : Container()
         ],
       ),
     );
   }
 
+//-----------------------------------------------------------------------
+//-------------------------- showRegisterButton -------------------------
+//-----------------------------------------------------------------------
+  Widget _showRegisterButton() {
+    return Expanded(
+      child: ElevatedButton(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.person_add),
+            SizedBox(
+              width: 15,
+            ),
+            widget.myProfile == false
+                ? Text('Registrar usuario')
+                : Text('Guardar usuario'),
+          ],
+        ),
+        style: ElevatedButton.styleFrom(
+          primary: Color.fromARGB(255, 8, 69, 48),
+          minimumSize: Size(double.infinity, 50),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+        ),
+        onPressed: () => _save(),
+      ),
+    );
+  }
+
+//***********************************************************************
+//******************** Método TakePicture *******************************
+//***********************************************************************
   void _takePicture() async {
     WidgetsFlutterBinding.ensureInitialized();
     final cameras = await availableCameras();
@@ -445,6 +571,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     }
   }
 
+//***********************************************************************
+//******************** Método SelectPicture *****************************
+//***********************************************************************
   void _selectPicture() async {
     final ImagePicker _picker = ImagePicker();
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -456,31 +585,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     }
   }
 
-  Widget _showRegisterButton() {
-    return Expanded(
-      child: ElevatedButton(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.person_add),
-            SizedBox(
-              width: 15,
-            ),
-            Text('Registrar usuario'),
-          ],
-        ),
-        style: ElevatedButton.styleFrom(
-          primary: Color(0xFF120E43),
-          minimumSize: Size(double.infinity, 50),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ),
-        onPressed: () => _register(),
-      ),
-    );
-  }
-
+//***********************************************************************
+//******************** Método register **********************************
+//***********************************************************************
   void _register() async {
     if (!validateFields()) {
       return;
@@ -488,6 +595,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     _addRecord();
   }
 
+//***********************************************************************
+//******************** Método validateFields ****************************
+//***********************************************************************
   bool validateFields() {
     bool isValid = true;
 
@@ -507,24 +617,28 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
       _lastNameShowError = false;
     }
 
-    if (_document.isEmpty) {
+    if (_nickName.isEmpty) {
       isValid = false;
-      _documentShowError = true;
-      _documentError = 'Debes ingresar un documento';
+      _nickNameShowError = true;
+      _nickNameError = 'Debes ingresar un apodo';
     } else {
-      _documentShowError = false;
+      _lastNameShowError = false;
     }
 
-    if (_document.length < 6) {
+    if (_leagueSelected == 0) {
       isValid = false;
-      _documentShowError = true;
-      _documentError = 'El documento debe tener al menos 6 dìgitos';
+      _leagueSelectedShowError = true;
+      _leagueSelectedError = 'Debes ingresar una Liga';
+    } else {
+      _leagueSelectedShowError = false;
     }
 
-    if (_document.length > 9) {
+    if (_teamSelected == 0) {
       isValid = false;
-      _documentShowError = true;
-      _documentError = 'El documento no puede tener más de 9 dìgitos';
+      _teamSelectedShowError = true;
+      _teamSelectedError = 'Debes ingresar un Equipo';
+    } else {
+      _teamSelectedShowError = false;
     }
 
     if (_email.isEmpty) {
@@ -537,14 +651,6 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
       _emailError = 'Debes ingresar un Email válido';
     } else {
       _emailShowError = false;
-    }
-
-    if (_phoneNumber.isEmpty) {
-      isValid = false;
-      _phoneNumberShowError = true;
-      _phoneNumberError = 'Debes ingresar un teléfono';
-    } else {
-      _phoneNumberShowError = false;
     }
 
     if (_password.isEmpty) {
@@ -592,6 +698,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     return isValid;
   }
 
+//***********************************************************************
+//******************** Método addRecord *********************************
+//***********************************************************************
   void _addRecord() async {
     setState(() {
       _showLoader = true;
@@ -622,15 +731,14 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     Map<String, dynamic> request = {
       'firstName': PLMayusc(_firstName),
       'lastName': PLMayusc(_lastName),
-      'document': _document,
-      'address1': _address1,
-      'address2': _address2,
-      'address3': _address3,
+      'nickName': PLMayusc(_nickName),
       'email': _email,
       'userName': _email,
-      'phoneNumber': _phoneNumber,
       'password': _password,
-      'image': base64image,
+      'passwordConfirm': _confirm,
+      'leagueId': _leagueSelected,
+      'teamId': _teamSelected,
+      'pictureArray': base64image,
     };
 
     Response response = await ApiHelper.postNoToken('/api/Account/', request);
@@ -654,7 +762,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         context: context,
         title: 'Confirmación',
         message:
-            'Se ha enviado un correo con las instrucciones para activar el usuario. Por favor actívelo para poder ingresar a la Aplicación. Luego ingrese a la Aplicación e ingrese al menos una Dirección para completar el Proceso de Registro.',
+            'Se ha enviado un correo con las instrucciones para activar el usuario. Por favor actívelo para poder ingresar a la Aplicación.',
         actions: <AlertDialogAction>[
           AlertDialogAction(key: null, label: 'Aceptar'),
         ]);
@@ -662,6 +770,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     Navigator.pop(context, 'yes');
   }
 
+//***********************************************************************
+//******************** Método PLMayusc **********************************
+//***********************************************************************
   String PLMayusc(String string) {
     String name = '';
     bool isSpace = false;
@@ -684,5 +795,223 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
       name = name + letter;
     }
     return name;
+  }
+
+//***********************************************************************
+//******************** Método getComboLeagues ***************************
+//***********************************************************************
+  List<DropdownMenuItem<int>> _getComboLeagues() {
+    List<DropdownMenuItem<int>> list = [];
+    list.add(DropdownMenuItem(
+      child: Text('Seleccione una Liga...'),
+      value: 0,
+    ));
+
+    _leagues.forEach((league) {
+      list.add(DropdownMenuItem(
+        child: Text(league.name),
+        value: league.id,
+      ));
+    });
+
+    return list;
+  }
+
+//***********************************************************************
+//******************** Método getLeagues ********************************
+//***********************************************************************
+  Future<Null> _getLeagues() async {
+    setState(() {
+      _showLoader = true;
+    });
+
+    var connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _showLoader = false;
+      });
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: 'Verifica que estés conectado a Internet',
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+
+    Response response = await ApiHelper.getLeagues();
+
+    setState(() {
+      _showLoader = false;
+    });
+
+    if (!response.isSuccess) {
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: response.message,
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+
+    setState(() {
+      _leagues = response.result;
+      _leagues.sort((a, b) {
+        return a.name
+            .toString()
+            .toLowerCase()
+            .compareTo(b.name.toString().toLowerCase());
+      });
+    });
+
+    widget.myProfile ? _loadFieldValues() : () {};
+  }
+
+//***********************************************************************
+//******************** Método getComboTeams *****************************
+//***********************************************************************
+  List<DropdownMenuItem<int>> _getComboTeams() {
+    List<DropdownMenuItem<int>> list = [];
+    list.add(DropdownMenuItem(
+      child: Text('Seleccione un Equipo...'),
+      value: 0,
+    ));
+
+    _teams.forEach((team) {
+      list.add(DropdownMenuItem(
+        child: Text(team.name),
+        value: team.id,
+      ));
+    });
+
+    _teams.sort((a, b) {
+      return a.name
+          .toString()
+          .toLowerCase()
+          .compareTo(b.name.toString().toLowerCase());
+    });
+
+    return list;
+  }
+
+//***********************************************************************
+//******************** Método loadFieldValues ***************************
+//***********************************************************************
+  void _loadFieldValues() {
+    _firstName = widget.user.firstName;
+    _firstNameController.text = _firstName;
+
+    _lastName = widget.user.lastName;
+    _lastNameController.text = _lastName;
+
+    _nickName = widget.user.nickName;
+    _nickNameController.text = _nickName;
+
+    _email = widget.user.email;
+    _emailController.text = _email;
+
+    _password = 'xxxxxx';
+    _confirm = 'xxxxxx';
+
+    _leagueSelected = widget.user.team.leagueId;
+
+    _teamSelected = widget.user.team.id;
+
+    _leagues.forEach((league) {
+      if (league.id == _leagueSelected) {
+        _teams = league.teams;
+      }
+    });
+  }
+
+//***********************************************************************
+//******************** save *********************************************
+//***********************************************************************
+  void _save() {
+    if (!validateFields()) {
+      return;
+    }
+    widget.user.userId.isEmpty ? _register() : _saveRecord();
+  }
+
+//***********************************************************************
+//******************** saveRecord ***************************************
+//***********************************************************************
+  _saveRecord() async {
+    setState(() {
+      _showLoader = true;
+    });
+
+    String base64image = '';
+    if (_photoChanged) {
+      List<int> imageBytes = await _image.readAsBytes();
+      base64image = base64Encode(imageBytes);
+    }
+
+    Map<String, dynamic> request = {
+      'id': widget.user.userId,
+      'firstName': _firstName,
+      'lastName': _lastName,
+      'nickName': _nickName,
+      'email': _email,
+      'userName': _email,
+      'leagueId': _leagueSelected,
+      'teamId': _teamSelected,
+      'pictureArray': base64image,
+      'password': "xxxxxx",
+      'passwordConfirm': "xxxxxx",
+    };
+
+    var connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _showLoader = false;
+      });
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: 'Verifica que estés conectado a Internet',
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+
+    Response response =
+        await ApiHelper.put('/api/Account/', request, widget.token);
+
+    setState(() {
+      _showLoader = false;
+    });
+
+    if (!response.isSuccess) {
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: response.message,
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+    Navigator.pop(context, 'yes');
+  }
+
+//***********************************************************************
+//******************** Método changePassword ****************************
+//***********************************************************************
+  void _changePassword() {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ChangePasswordScreen(
+                  user: widget.user,
+                  token: widget.token,
+                )));
   }
 }

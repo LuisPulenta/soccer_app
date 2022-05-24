@@ -23,7 +23,7 @@ class Matches {
   int? goalsLocal = 0;
   int? goalsVisitor = 0;
   bool isClosed = false;
-  String dateName2 = '';
+  String? dateName2 = '';
 
   Matches(
       {required this.id,

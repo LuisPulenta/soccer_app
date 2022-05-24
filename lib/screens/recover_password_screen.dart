@@ -24,8 +24,11 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF00D99D),
       appBar: AppBar(
         title: Text('Recuperar contraseña'),
+        centerTitle: true,
+        backgroundColor: Color.fromARGB(255, 8, 69, 48),
       ),
       body: Stack(
         children: <Widget>[
@@ -53,6 +56,8 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
         decoration: InputDecoration(
           hintText: 'Ingresa tu email...',
           labelText: 'Email',
+          fillColor: Colors.white,
+          filled: true,
           errorText: _emailShowError ? _emailError : null,
           prefixIcon: Icon(Icons.alternate_email),
           suffixIcon: Icon(Icons.email),
@@ -82,7 +87,7 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
       child: ElevatedButton(
         child: Text('Recuperar Contraseña'),
         style: ElevatedButton.styleFrom(
-          primary: Color(0xFF120E43),
+          primary: Color.fromARGB(255, 8, 69, 48),
           minimumSize: Size(double.infinity, 50),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
@@ -156,7 +161,7 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
       await showAlertDialog(
           context: context,
           title: 'Error',
-          message: response.message,
+          message: "Este mail no pertenece a ningún usuario.",
           actions: <AlertDialogAction>[
             AlertDialogAction(key: null, label: 'Aceptar'),
           ]);

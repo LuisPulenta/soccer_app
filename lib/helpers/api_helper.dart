@@ -1,9 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:soccer_app/models/response.dart';
-import 'package:soccer_app/models/token.dart';
-import 'package:soccer_app/models/tournament.dart';
-
+import 'package:soccer_app/models/models.dart';
 import 'constants.dart';
 
 class ApiHelper {
@@ -40,15 +37,16 @@ class ApiHelper {
     return Response(isSuccess: true, result: list);
   }
 
-  static Future<Response> put(String controller, String id,
-      Map<String, dynamic> request, Token token) async {
+  static Future<Response> put(
+      String controller, Map<String, dynamic> request, Token token) async {
     if (!_validateToken(token)) {
       return Response(
           isSuccess: false,
           message:
               'Sus credenciales se han vencido, por favor cierre sesión y vuelva a ingresar al sistema.');
     }
-    var url = Uri.parse('${Constants.apiUrl}$controller$id');
+    var url = Uri.parse('${Constants.apiUrl}$controller');
+
     var response = await http.put(
       url,
       headers: {
@@ -141,5 +139,30 @@ class ApiHelper {
       return true;
     }
     return false;
+  }
+
+  static Future<Response> getLeagues() async {
+    var url = Uri.parse('${Constants.apiUrl}/api/Leagues');
+    var response = await http.get(
+      url,
+      headers: {
+        'content-type': 'application/json',
+        'accept': 'application/json',
+      },
+    );
+    var body = response.body;
+
+    if (response.statusCode >= 400) {
+      return Response(isSuccess: false, message: body);
+    }
+
+    List<League> list = [];
+    var decodedJson = jsonDecode(body);
+    if (decodedJson != null) {
+      for (var item in decodedJson) {
+        list.add(League.fromJson(item));
+      }
+    }
+    return Response(isSuccess: true, result: list);
   }
 }

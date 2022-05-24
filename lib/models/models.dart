@@ -7,3 +7,4 @@ export 'package:soccer_app/models/team.dart';
 export 'package:soccer_app/models/token.dart';
 export 'package:soccer_app/models/tournament.dart';
 export 'package:soccer_app/models/user.dart';
+export 'package:soccer_app/models/league.dart';

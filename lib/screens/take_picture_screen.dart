@@ -38,6 +38,8 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Tomar Foto'),
+        centerTitle: true,
+        backgroundColor: Color.fromARGB(255, 8, 69, 48),
       ),
       body: FutureBuilder<void>(
         future: _initializeControllerFuture,
@@ -52,7 +54,10 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.camera_alt),
+        backgroundColor: Color.fromARGB(255, 8, 69, 48),
+        child: Icon(
+          Icons.camera_alt,
+        ),
         onPressed: () async {
           try {
             await _initializeControllerFuture;

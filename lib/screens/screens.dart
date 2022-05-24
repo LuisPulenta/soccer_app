@@ -7,3 +7,4 @@ export 'package:soccer_app/screens/tournaments_screen.dart';
 export 'package:soccer_app/screens/display_picture_screen.dart';
 export 'package:soccer_app/screens/take_picture_screen.dart';
 export 'package:soccer_app/screens/register_user_screen.dart';
+export 'package:soccer_app/screens/change_password_screen.dart';

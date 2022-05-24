@@ -44,10 +44,12 @@ class Tournament {
       });
     }
 
-    dateNames = [];
-    json['dateNames'].forEach((v) {
-      dateNames.add(new DateNames.fromJson(v));
-    });
+    if (json['dateNames'] != null) {
+      groups = [];
+      json['dateNames'].forEach((v) {
+        dateNames.add(new DateNames.fromJson(v));
+      });
+    }
 
     logoFullPath = json['logoFullPath'];
   }

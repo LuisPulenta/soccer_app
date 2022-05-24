@@ -20,6 +20,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool _isLoading = true;
   bool _showLoginPage = true;
+  bool isRemembered = true;
   late Token _token;
   late User _user;
 
@@ -38,13 +39,17 @@ class _MyAppState extends State<MyApp> {
           ? WaitScreen()
           : _showLoginPage
               ? LoginScreen()
-              : HomeScreen(token: _token, user: _user),
+              : HomeScreen(
+                  token: _token,
+                  user: _user,
+                  rememberme: isRemembered,
+                ),
     );
   }
 
   void _getHome() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isRemembered = prefs.getBool('isRemembered') ?? false;
+    isRemembered = prefs.getBool('isRemembered') ?? false;
     if (isRemembered) {
       String? tokenBody = prefs.getString('tokenBody');
 

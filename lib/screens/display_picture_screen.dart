@@ -18,6 +18,8 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Vista previa de la foto'),
+        centerTitle: true,
+        backgroundColor: Color.fromARGB(255, 8, 69, 48),
       ),
       body: Column(
         children: [
@@ -34,7 +36,7 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
                     child: ElevatedButton(
                       child: Text('Usar Foto'),
                       style: ElevatedButton.styleFrom(
-                        primary: Color(0xFF120E43),
+                        primary: Color.fromARGB(255, 8, 69, 48),
                         minimumSize: Size(100, 50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
@@ -54,7 +56,7 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
                     child: ElevatedButton(
                       child: Text('Volver a tomar'),
                       style: ElevatedButton.styleFrom(
-                        primary: Color(0xFFE03B8B),
+                        primary: Color.fromARGB(255, 7, 222, 11),
                         minimumSize: Size(100, 50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
