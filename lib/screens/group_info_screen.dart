@@ -8,23 +8,33 @@ import 'package:soccer_app/models/token.dart';
 class GroupInfoScreen extends StatefulWidget {
   final Token token;
   final Groups group;
+  final List<GroupDetails> groupDetails;
 
-  GroupInfoScreen({required this.token, required this.group});
+  GroupInfoScreen(
+      {required this.token, required this.group, required this.groupDetails});
 
   @override
   _GroupInfoScreenState createState() => _GroupInfoScreenState();
 }
 
 class _GroupInfoScreenState extends State<GroupInfoScreen> {
+//***********************************************************************
+//******************** Declaración de Variables *************************
+//***********************************************************************
   bool _showLoader = false;
-  List<GroupDetails> _groupDetails = [];
 
+//***********************************************************************
+//******************** Init State ***************************************
+//***********************************************************************
   @override
   void initState() {
     super.initState();
     List<GroupDetails> _groupDetails = widget.group.groupDetails;
   }
 
+//***********************************************************************
+//******************** Pantalla *****************************************
+//***********************************************************************
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,19 +53,24 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
     ;
   }
 
+//-----------------------------------------------------------------------
+//-------------------------- getContent ---------------------------------
+//-----------------------------------------------------------------------
   Widget _getContent() {
     return Column(
       children: <Widget>[
         _showFilaTitulo(),
         Expanded(
-          child: widget.group.groupDetails.length == 0
-              ? _noContent()
-              : _getListView(),
+          child:
+              widget.groupDetails.length == 0 ? _noContent() : _getListView(),
         )
       ],
     );
   }
 
+//-----------------------------------------------------------------------
+//-------------------------- noContent ----------------------------------
+//-----------------------------------------------------------------------
   Widget _noContent() {
     return Container(
       margin: EdgeInsets.all(20),
@@ -68,9 +83,12 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
     );
   }
 
+//-----------------------------------------------------------------------
+//-------------------------- getListView --------------------------------
+//-----------------------------------------------------------------------
   _getListView() {
     return ListView(
-      children: widget.group.groupDetails.map((e) {
+      children: widget.groupDetails.map((e) {
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Card(
@@ -219,11 +237,14 @@ class _GroupInfoScreenState extends State<GroupInfoScreen> {
     );
   }
 
+//-----------------------------------------------------------------------
+//-------------------------- _showFilaTitulo ----------------------------
+//-----------------------------------------------------------------------
   Widget _showFilaTitulo() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10),
       child: Card(
-          color: Color(0xFFFFFFCC),
+          color: Colors.greenAccent,
           margin: EdgeInsets.all(1),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),

@@ -19,10 +19,16 @@ class TournamentInfoScreen extends StatefulWidget {
 }
 
 class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
+//***********************************************************************
+//******************** Declaración de Variables *************************
+//***********************************************************************
   bool _showLoader = false;
   List<Groups> _groups = [];
   List<GroupDetails> _groupDetails = [];
 
+//***********************************************************************
+//******************** Init State ***************************************
+//***********************************************************************
   @override
   void initState() {
     super.initState();
@@ -30,6 +36,9 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
     List<Groups> _groups = widget.tournament.groups;
   }
 
+//***********************************************************************
+//******************** Pantalla *****************************************
+//***********************************************************************
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,6 +57,9 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
     ;
   }
 
+//-----------------------------------------------------------------------
+//-------------------------- getContent ---------------------------------
+//-----------------------------------------------------------------------
   Widget _getContent() {
     return Column(
       children: <Widget>[
@@ -60,6 +72,9 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
     );
   }
 
+//-----------------------------------------------------------------------
+//-------------------------- noContent ----------------------------------
+//-----------------------------------------------------------------------
   Widget _noContent() {
     return Container(
       margin: EdgeInsets.all(20),
@@ -72,6 +87,9 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
     );
   }
 
+//-----------------------------------------------------------------------
+//-------------------------- getListView --------------------------------
+//-----------------------------------------------------------------------
   _getListView() {
     return ListView(
       children: widget.tournament.groups.map((e) {
@@ -114,13 +132,29 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
     );
   }
 
+//***********************************************************************
+//******************** Método goGroup ***********************************
+//***********************************************************************
   void _goGroup(Groups group) async {
+    _groupDetails = group.groupDetails;
+    _groupDetails.sort((b, a) {
+      int pointsComp = a.points.compareTo(b.points);
+      if (pointsComp != 0) return pointsComp;
+      int goalDifferenceComp = a.goalDifference.compareTo(b.goalDifference);
+      if (goalDifferenceComp != 0) return goalDifferenceComp;
+      int goalsForComp = a.goalsFor.compareTo(b.goalsFor);
+      if (goalsForComp != 0) return goalsForComp;
+      int goalsName = b.team.initials.compareTo(a.team.initials);
+      return goalsName;
+    });
+
     String? result = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => GroupInfoScreen(
                   token: widget.token,
                   group: group,
+                  groupDetails: _groupDetails,
                 )));
   }
 }
