@@ -4,6 +4,7 @@ import 'package:soccer_app/models/models.dart';
 import 'constants.dart';
 
 class ApiHelper {
+  //---------------------------------------------------------------------------
   static Future<Response> getTournaments(Token token) async {
     if (!_validateToken(token)) {
       return Response(
@@ -37,6 +38,7 @@ class ApiHelper {
     return Response(isSuccess: true, result: list);
   }
 
+//---------------------------------------------------------------------------
   static Future<Response> put(
       String controller, Map<String, dynamic> request, Token token) async {
     if (!_validateToken(token)) {
@@ -64,6 +66,7 @@ class ApiHelper {
     return Response(isSuccess: true);
   }
 
+//---------------------------------------------------------------------------
   static Future<Response> postNoToken(
       String controller, Map<String, dynamic> request) async {
     var url = Uri.parse('${Constants.apiUrl}$controller');
@@ -83,6 +86,7 @@ class ApiHelper {
     return Response(isSuccess: true);
   }
 
+//---------------------------------------------------------------------------
   static Future<Response> post(
       String controller, Map<String, dynamic> request, Token token) async {
     if (!_validateToken(token)) {
@@ -109,6 +113,7 @@ class ApiHelper {
     return Response(isSuccess: true);
   }
 
+//---------------------------------------------------------------------------
   static Future<Response> delete(
       String controller, String id, Token token) async {
     if (!_validateToken(token)) {
@@ -134,6 +139,7 @@ class ApiHelper {
     return Response(isSuccess: true);
   }
 
+//---------------------------------------------------------------------------
   static bool _validateToken(Token token) {
     if (DateTime.parse(token.expiration).isAfter(DateTime.now())) {
       return true;
@@ -141,6 +147,7 @@ class ApiHelper {
     return false;
   }
 
+//---------------------------------------------------------------------------
   static Future<Response> getLeagues() async {
     var url = Uri.parse('${Constants.apiUrl}/api/Leagues');
     var response = await http.get(
@@ -161,6 +168,87 @@ class ApiHelper {
     if (decodedJson != null) {
       for (var item in decodedJson) {
         list.add(League.fromJson(item));
+      }
+    }
+    return Response(isSuccess: true, result: list);
+  }
+
+//---------------------------------------------------------------------------
+  static Future<Response> getGroups(int codigo) async {
+    var url =
+        Uri.parse('${Constants.apiUrl}/api/Tournaments/GetGroups/$codigo');
+    var response = await http.post(
+      url,
+      headers: {
+        'content-type': 'application/json',
+        'accept': 'application/json',
+      },
+    );
+    var body = response.body;
+
+    if (response.statusCode >= 400) {
+      return Response(isSuccess: false, message: body);
+    }
+
+    List<Groups> list = [];
+    var decodedJson = jsonDecode(body);
+    if (decodedJson != null) {
+      for (var item in decodedJson) {
+        list.add(Groups.fromJson(item));
+      }
+    }
+    return Response(isSuccess: true, result: list);
+  }
+
+  //---------------------------------------------------------------------------
+  static Future<Response> getGroupDetails(int codigo) async {
+    var url = Uri.parse(
+        '${Constants.apiUrl}/api/Tournaments/GetGroupDetails/$codigo');
+    var response = await http.post(
+      url,
+      headers: {
+        'content-type': 'application/json',
+        'accept': 'application/json',
+      },
+    );
+    var body = response.body;
+
+    if (response.statusCode >= 400) {
+      return Response(isSuccess: false, message: body);
+    }
+
+    List<GroupDetails> list = [];
+    var decodedJson = jsonDecode(body);
+    if (decodedJson != null) {
+      for (var item in decodedJson) {
+        list.add(GroupDetails.fromJson(item));
+      }
+    }
+    return Response(isSuccess: true, result: list);
+  }
+
+  //---------------------------------------------------------------------------
+  static Future<Response> getMatches(int codigo) async {
+    var url =
+        Uri.parse('${Constants.apiUrl}/api/Tournaments/GetMatches/$codigo');
+    var response = await http.post(
+      url,
+      headers: {
+        'content-type': 'application/json',
+        'accept': 'application/json',
+      },
+    );
+    var body = response.body;
+
+    if (response.statusCode >= 400) {
+      return Response(isSuccess: false, message: body);
+    }
+
+    List<Matches> list = [];
+    var decodedJson = jsonDecode(body);
+    if (decodedJson != null) {
+      for (var item in decodedJson) {
+        list.add(Matches.fromJson(item));
       }
     }
     return Response(isSuccess: true, result: list);

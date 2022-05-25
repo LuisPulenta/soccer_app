@@ -20,17 +20,26 @@ class TournamentsScreen extends StatefulWidget {
 }
 
 class _TournamentsScreenState extends State<TournamentsScreen> {
+//***********************************************************************
+//******************** Declaración de Variables *************************
+//***********************************************************************
   List<Tournament> _tournaments = [];
   bool _showLoader = false;
   bool _isFiltered = false;
   String _search = '';
 
+//***********************************************************************
+//******************** Init State ***************************************
+//***********************************************************************
   @override
   void initState() {
     super.initState();
     _getTournaments();
   }
 
+//***********************************************************************
+//******************** Pantalla *****************************************
+//***********************************************************************
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,53 +63,16 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
     );
   }
 
-  Future<Null> _getTournaments() async {
-    setState(() {
-      _showLoader = true;
-    });
-
-    var connectivityResult = await Connectivity().checkConnectivity();
-
-    if (connectivityResult == ConnectivityResult.none) {
-      setState(() {
-        _showLoader = false;
-      });
-      await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
-      return;
-    }
-
-    Response response = await ApiHelper.getTournaments(widget.token);
-
-    setState(() {
-      _showLoader = false;
-    });
-
-    if (!response.isSuccess) {
-      await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
-      return;
-    }
-
-    setState(() {
-      _tournaments = response.result;
-    });
-  }
-
+//-----------------------------------------------------------------------
+//-------------------------- getContent ---------------------------------
+//-----------------------------------------------------------------------
   Widget _getContent() {
     return _tournaments.length == 0 ? _noContent() : _getListView();
   }
 
+//-----------------------------------------------------------------------
+//-------------------------- noContent ----------------------------------
+//-----------------------------------------------------------------------
   Widget _noContent() {
     return Container(
       margin: EdgeInsets.all(20),
@@ -115,6 +87,9 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
     );
   }
 
+//-----------------------------------------------------------------------
+//-------------------------- getListView --------------------------------
+//-----------------------------------------------------------------------
   Widget _getListView() {
     return RefreshIndicator(
       onRefresh: _getTournaments,
@@ -208,6 +183,58 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
     );
   }
 
+//***********************************************************************
+//******************** Método getTournaments ****************************
+//***********************************************************************
+  Future<Null> _getTournaments() async {
+    setState(() {
+      _showLoader = true;
+    });
+
+    var connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _showLoader = false;
+      });
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: 'Verifica que estés conectado a Internet',
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+
+    Response response = await ApiHelper.getTournaments(widget.token);
+
+    setState(() {
+      _showLoader = false;
+    });
+
+    if (!response.isSuccess) {
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: response.message,
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+
+    setState(() {
+      _tournaments = response.result;
+    });
+
+    var a = 1;
+  }
+
+//***********************************************************************
+//******************** Método showFilter ********************************
+//***********************************************************************
+
   void _showFilter() {
     showDialog(
         context: context,
@@ -245,6 +272,9 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
         });
   }
 
+//***********************************************************************
+//******************** Método removeFilter ******************************
+//***********************************************************************
   void _removeFilter() {
     setState(() {
       _isFiltered = false;
@@ -252,6 +282,9 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
     _getTournaments();
   }
 
+//***********************************************************************
+//******************** Método filter ************************************
+//***********************************************************************
   _filter() {
     if (_search.isEmpty) {
       return;
@@ -271,6 +304,9 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
     Navigator.of(context).pop();
   }
 
+//***********************************************************************
+//******************** Método goInfoTournament **************************
+//***********************************************************************
   void _goInfoTournament(Tournament tournament) async {
     String? result = await Navigator.push(
         context,

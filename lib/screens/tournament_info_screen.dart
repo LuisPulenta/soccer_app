@@ -1,8 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:soccer_app/components/loader_component.dart';
-import 'package:soccer_app/models/group.dart';
-import 'package:soccer_app/models/groupdetail.dart';
+import 'package:soccer_app/helpers/api_helper.dart';
+import 'package:soccer_app/models/models.dart';
 import 'package:soccer_app/models/token.dart';
 import 'package:soccer_app/models/tournament.dart';
 
@@ -34,6 +35,7 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
     super.initState();
     Tournament _tournament = widget.tournament;
     List<Groups> _groups = widget.tournament.groups;
+    _getGroups();
   }
 
 //***********************************************************************
@@ -64,9 +66,7 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
     return Column(
       children: <Widget>[
         Expanded(
-          child: widget.tournament.groups.length == 0
-              ? _noContent()
-              : _getListView(),
+          child: _groups.length == 0 ? _noContent() : _getListView(),
         )
       ],
     );
@@ -80,7 +80,7 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
       margin: EdgeInsets.all(20),
       child: Center(
         child: Text(
-          'No hay equipos en este Torneo.',
+          'No hay grupos en este Torneo.',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
@@ -92,7 +92,7 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
 //-----------------------------------------------------------------------
   _getListView() {
     return ListView(
-      children: widget.tournament.groups.map((e) {
+      children: _groups.map((e) {
         return Card(
             color: Color(0xFFFFFFCC),
             shadowColor: Color(0xFF0000FF),
@@ -133,28 +133,63 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
   }
 
 //***********************************************************************
+//******************** Método getGroups *********************************
+//***********************************************************************
+  Future<Null> _getGroups() async {
+    setState(() {
+      _showLoader = true;
+    });
+
+    var connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _showLoader = false;
+      });
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: 'Verifica que estés conectado a Internet',
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+
+    Response response = await ApiHelper.getGroups(widget.tournament.id);
+
+    setState(() {
+      _showLoader = false;
+    });
+
+    if (!response.isSuccess) {
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: response.message,
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+
+    setState(() {
+      _groups = response.result;
+    });
+
+    var a = 1;
+  }
+
+//***********************************************************************
 //******************** Método goGroup ***********************************
 //***********************************************************************
   void _goGroup(Groups group) async {
-    _groupDetails = group.groupDetails;
-    _groupDetails.sort((b, a) {
-      int pointsComp = a.points.compareTo(b.points);
-      if (pointsComp != 0) return pointsComp;
-      int goalDifferenceComp = a.goalDifference.compareTo(b.goalDifference);
-      if (goalDifferenceComp != 0) return goalDifferenceComp;
-      int goalsForComp = a.goalsFor.compareTo(b.goalsFor);
-      if (goalsForComp != 0) return goalsForComp;
-      int goalsName = b.team.initials.compareTo(a.team.initials);
-      return goalsName;
-    });
-
     String? result = await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => GroupInfoScreen(
                   token: widget.token,
                   group: group,
-                  groupDetails: _groupDetails,
                 )));
   }
 }
