@@ -45,7 +45,7 @@ class Matches {
     goalsLocal = json['goalsLocal'];
     goalsVisitor = json['goalsVisitor'];
     isClosed = json['isClosed'];
-    dateName = json['dateName2'];
+    dateName = json['dateName'];
   }
 
   Map<String, dynamic> toJson() {
@@ -58,7 +58,7 @@ class Matches {
     data['goalsLocal'] = this.goalsLocal;
     data['goalsVisitor'] = this.goalsVisitor;
     data['isClosed'] = this.isClosed;
-    data['dateName2'] = this.dateName;
+    data['dateName'] = this.dateName;
     return data;
   }
 }

@@ -31,7 +31,19 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
   List<Matches> _matches = [];
   List<Matches> _pendingMatches = [];
   List<Matches> _completeMatches = [];
+  List<Matches> _pendingMatchesFiltered = [];
+  List<Matches> _completeMatchesFiltered = [];
   List<GroupDetails> _groupDetails = [];
+
+  String _filter = '';
+  String _filterError = '';
+  bool _filterShowError = false;
+  TextEditingController _filterController = TextEditingController();
+
+  String _filter2 = '';
+  String _filter2Error = '';
+  bool _filter2ShowError = false;
+  TextEditingController _filter2Controller = TextEditingController();
 
 //***********************************************************************
 //******************** Init State ***************************************
@@ -49,7 +61,15 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
           .compareTo(b.dateLocal.toString().toLowerCase());
     });
 
-    var a = 1;
+    _pendingMatches.sort((b, a) {
+      return a.dateLocal
+          .toString()
+          .toLowerCase()
+          .compareTo(b.dateLocal.toString().toLowerCase());
+    });
+
+    _completeMatchesFiltered = _completeMatches;
+    _pendingMatchesFiltered = _pendingMatches;
   }
 
 //***********************************************************************
@@ -92,8 +112,10 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
 //-------------------------------------------------------------------------
 //-------------------------- 2° TABBAR ------------------------------------
 //-------------------------------------------------------------------------
-                Container(
-                  color: Colors.yellow,
+                Center(
+                  child: _showLoader
+                      ? LoaderComponent(text: 'Por favor espere...')
+                      : _getPendingMatches(),
                 ),
 //-------------------------------------------------------------------------
 //-------------------------- 3° TABBAR ------------------------------------
@@ -196,11 +218,44 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
           centerTitle: true,
           backgroundColor: Color.fromARGB(166, 5, 68, 7),
         ),
-        //_showFilaTitulo(),
+        Row(
+          children: [
+            Expanded(flex: 3, child: _showFilter()),
+            Expanded(flex: 1, child: _showEraseButton()),
+            Expanded(flex: 1, child: _showSearchButton()),
+          ],
+        ),
         Expanded(
-          child: _completeMatches.length == 0
+          child: _completeMatchesFiltered.length == 0
               ? _noContentCompleteMatches()
               : _getListViewCompleteMatches(),
+        )
+      ],
+    );
+  }
+
+//-----------------------------------------------------------------------
+//-------------------------- getCompleteMatches -------------------------
+//-----------------------------------------------------------------------
+  Widget _getPendingMatches() {
+    return Column(
+      children: <Widget>[
+        AppBar(
+          title: Text("Pendientes"),
+          centerTitle: true,
+          backgroundColor: Color.fromARGB(166, 5, 68, 7),
+        ),
+        Row(
+          children: [
+            Expanded(flex: 3, child: _showFilter2()),
+            Expanded(flex: 1, child: _showEraseButton2()),
+            Expanded(flex: 1, child: _showSearchButton2()),
+          ],
+        ),
+        Expanded(
+          child: _pendingMatchesFiltered.length == 0
+              ? _noContentPendingMatches()
+              : _getListViewPendingMatches(),
         )
       ],
     );
@@ -230,6 +285,21 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
       child: Center(
         child: Text(
           'No hay partidos finalizados.',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+//-----------------------------------------------------------------------
+//-------------------------- noContentPendingMatches -------------------
+//-----------------------------------------------------------------------
+  Widget _noContentPendingMatches() {
+    return Container(
+      margin: EdgeInsets.all(20),
+      child: Center(
+        child: Text(
+          'No hay partidos pendientes.',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
@@ -397,7 +467,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
   _getListViewCompleteMatches() {
     return ListView(
       padding: EdgeInsets.all(0),
-      children: _completeMatches.map((e) {
+      children: _completeMatchesFiltered.map((e) {
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Card(
@@ -455,6 +525,104 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                                 fontSize: 34,
                                 fontWeight: FontWeight.bold,
                               )),
+                          Text(
+                            '${DateFormat('dd/MM/yyyy').format(DateTime.parse(e.dateLocal))}',
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      //----------- Columna Visitante -----------
+                      Expanded(
+                        child: Column(
+                          children: <Widget>[
+                            CachedNetworkImage(
+                              imageUrl: e.visitor.logoFullPath,
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                              fit: BoxFit.contain,
+                              height: 80,
+                              width: 80,
+                              placeholder: (context, url) => Image(
+                                image: AssetImage('assets/loading.gif'),
+                                fit: BoxFit.contain,
+                                height: 80,
+                                width: 80,
+                              ),
+                            ),
+                            Text(e.visitor.initials,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )),
+        );
+      }).toList(),
+    );
+  }
+
+//-----------------------------------------------------------------------
+//-------------------------- _getListViewPendingMatches ----------------
+//-----------------------------------------------------------------------
+  _getListViewPendingMatches() {
+    return ListView(
+      padding: EdgeInsets.all(0),
+      children: _pendingMatchesFiltered.map((e) {
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 10),
+          child: Card(
+              color: Color(0xFFFFFFCC),
+              margin: EdgeInsets.all(1),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Container(
+                  margin: EdgeInsets.all(1),
+                  padding: EdgeInsets.all(0),
+                  //----------- Fila Principal -----------
+                  child: Row(
+                    children: <Widget>[
+                      //----------- Columna Local -----------
+                      Expanded(
+                        child: Column(
+                          children: <Widget>[
+                            CachedNetworkImage(
+                              imageUrl: e.local.logoFullPath,
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                              fit: BoxFit.contain,
+                              height: 80,
+                              width: 80,
+                              placeholder: (context, url) => Image(
+                                image: AssetImage('assets/loading.gif'),
+                                fit: BoxFit.contain,
+                                height: 80,
+                                width: 80,
+                              ),
+                            ),
+                            Text(e.local.initials,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                          ],
+                        ),
+                      ),
+
+                      //----------- Columna Resultado -----------
+
+                      Column(
+                        children: [
+                          Text(
+                            e.dateName.toString(),
+                            style: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
                           Text(
                             '${DateFormat('dd/MM/yyyy').format(DateTime.parse(e.dateLocal))}',
                             style: TextStyle(
@@ -743,6 +911,304 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
       ;
     });
 
+    var a = 1;
+    _completeMatchesFiltered = _completeMatches;
+    _pendingMatchesFiltered = _pendingMatches;
+
+    setState(() {});
+  }
+
+//-----------------------------------------------------------------
+//--------------------- METODO SHOWFILTER -------------------------
+//-----------------------------------------------------------------
+
+  Widget _showFilter() {
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: TextField(
+        controller: _filterController,
+        decoration: InputDecoration(
+          iconColor: Color(0xFF781f1e),
+          prefixIconColor: Color(0xFF781f1e),
+          hoverColor: Color(0xFF781f1e),
+          focusColor: Color(0xFF781f1e),
+          fillColor: Colors.white,
+          filled: true,
+          hintText: 'Buscar...',
+          labelText: 'Buscar:',
+          errorText: _filterShowError ? _filterError : null,
+          prefixIcon: Icon(Icons.badge),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: Color(0xFF781f1e)),
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        onChanged: (value) {
+          _filter = value;
+        },
+      ),
+    );
+  }
+
+//-----------------------------------------------------------------
+//--------------------- METODO SHOWFILTER2 -------------------------
+//-----------------------------------------------------------------
+
+  Widget _showFilter2() {
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: TextField(
+        controller: _filter2Controller,
+        decoration: InputDecoration(
+          iconColor: Color(0xFF781f1e),
+          prefixIconColor: Color(0xFF781f1e),
+          hoverColor: Color(0xFF781f1e),
+          focusColor: Color(0xFF781f1e),
+          fillColor: Colors.white,
+          filled: true,
+          hintText: 'Buscar...',
+          labelText: 'Buscar:',
+          errorText: _filter2ShowError ? _filter2Error : null,
+          prefixIcon: Icon(Icons.badge),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: Color(0xFF781f1e)),
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        onChanged: (value) {
+          _filter2 = value;
+        },
+      ),
+    );
+  }
+
+//-----------------------------------------------------------------
+//--------------------- METODO SHOWERASEBUTTON -------------------------
+//-----------------------------------------------------------------
+
+  Widget _showEraseButton() {
+    return Container(
+      margin: EdgeInsets.only(left: 5, right: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          Expanded(
+            child: ElevatedButton(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.delete),
+                  SizedBox(
+                    width: 5,
+                  ),
+                ],
+              ),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.red,
+                minimumSize: Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              onPressed: () {
+                _filterController.text = '';
+                _completeMatchesFiltered = _completeMatches;
+                setState(() {});
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+//-----------------------------------------------------------------
+//--------------------- METODO SHOWERASEBUTTON -------------------------
+//-----------------------------------------------------------------
+
+  Widget _showEraseButton2() {
+    return Container(
+      margin: EdgeInsets.only(left: 5, right: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          Expanded(
+            child: ElevatedButton(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.delete),
+                  SizedBox(
+                    width: 5,
+                  ),
+                ],
+              ),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.red,
+                minimumSize: Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              onPressed: () {
+                _filter2Controller.text = '';
+                _pendingMatchesFiltered = _pendingMatches;
+                setState(() {});
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+//-----------------------------------------------------------------
+//--------------------- METODO SHOWSEARCHBUTTON -------------------
+//-----------------------------------------------------------------
+
+  Widget _showSearchButton() {
+    return Container(
+      margin: EdgeInsets.only(left: 5, right: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          Expanded(
+            child: ElevatedButton(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.search),
+                  SizedBox(
+                    width: 5,
+                  ),
+                ],
+              ),
+              style: ElevatedButton.styleFrom(
+                primary: Color.fromARGB(166, 5, 68, 7),
+                minimumSize: Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              onPressed: () => _search(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+//-----------------------------------------------------------------
+//--------------------- METODO SHOWSEARCHBUTTON2 -------------------
+//-----------------------------------------------------------------
+
+  Widget _showSearchButton2() {
+    return Container(
+      margin: EdgeInsets.only(left: 5, right: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          Expanded(
+            child: ElevatedButton(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.search),
+                  SizedBox(
+                    width: 5,
+                  ),
+                ],
+              ),
+              style: ElevatedButton.styleFrom(
+                primary: Color.fromARGB(166, 5, 68, 7),
+                minimumSize: Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              onPressed: () => _search2(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+//-----------------------------------------------------------------
+//--------------------- METODO SEARCH -----------------------------
+//-----------------------------------------------------------------
+
+  _search() async {
+    FocusScope.of(context).unfocus();
+    if (_filter.isEmpty) {
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: 'Ingrese un texto a buscar',
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+    _completeMatchesFiltered = [];
+    _completeMatches.forEach((_completeMatch) {
+      if (_completeMatch.local.initials
+              .toLowerCase()
+              .contains(_filter.toLowerCase()) ||
+          _completeMatch.visitor.initials
+              .toLowerCase()
+              .contains(_filter.toLowerCase()) ||
+          _completeMatch.dateName!
+              .toLowerCase()
+              .contains(_filter.toLowerCase())) {
+        _completeMatchesFiltered.add(_completeMatch);
+      }
+    });
+    _completeMatchesFiltered.sort((b, a) {
+      return a.dateLocal
+          .toString()
+          .toLowerCase()
+          .compareTo(b.dateLocal.toString().toLowerCase());
+    });
+    setState(() {});
+  }
+
+//-----------------------------------------------------------------
+//--------------------- METODO SEARCH2 ----------------------------
+//-----------------------------------------------------------------
+
+  _search2() async {
+    FocusScope.of(context).unfocus();
+    if (_filter2.isEmpty) {
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: 'Ingrese un texto a buscar',
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+    _pendingMatchesFiltered = [];
+    _pendingMatches.forEach((_pendingMatch) {
+      if (_pendingMatch.local.initials
+              .toLowerCase()
+              .contains(_filter2.toLowerCase()) ||
+          _pendingMatch.visitor.initials
+              .toLowerCase()
+              .contains(_filter2.toLowerCase()) ||
+          _pendingMatch.dateName!
+              .toLowerCase()
+              .contains(_filter2.toLowerCase())) {
+        _pendingMatchesFiltered.add(_pendingMatch);
+      }
+    });
+    _pendingMatchesFiltered.sort((b, a) {
+      return a.dateLocal
+          .toString()
+          .toLowerCase()
+          .compareTo(b.dateLocal.toString().toLowerCase());
+    });
     setState(() {});
   }
 }
