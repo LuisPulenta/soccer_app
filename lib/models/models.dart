@@ -1,5 +1,8 @@
+export 'package:soccer_app/models/admin.dart';
 export 'package:soccer_app/models/datename.dart';
 export 'package:soccer_app/models/group.dart';
+export 'package:soccer_app/models/groupbet.dart';
+export 'package:soccer_app/models/groupbetplayer.dart';
 export 'package:soccer_app/models/groupdetail.dart';
 export 'package:soccer_app/models/match.dart';
 export 'package:soccer_app/models/response.dart';

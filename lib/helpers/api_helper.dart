@@ -253,4 +253,31 @@ class ApiHelper {
     }
     return Response(isSuccess: true, result: list);
   }
+
+  //---------------------------------------------------------------------------
+  static Future<Response> getMyGroups(String codigo) async {
+    var url =
+        Uri.parse('${Constants.apiUrl}/api/Tournaments/GetMyGroups/$codigo');
+    var response = await http.post(
+      url,
+      headers: {
+        'content-type': 'application/json',
+        'accept': 'application/json',
+      },
+    );
+    var body = response.body;
+
+    if (response.statusCode >= 400) {
+      return Response(isSuccess: false, message: body);
+    }
+
+    List<GroupBet> list = [];
+    var decodedJson = jsonDecode(body);
+    if (decodedJson != null) {
+      for (var item in decodedJson) {
+        list.add(GroupBet.fromJson(item));
+      }
+    }
+    return Response(isSuccess: true, result: list);
+  }
 }

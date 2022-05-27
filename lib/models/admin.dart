@@ -1,6 +1,6 @@
 import 'package:soccer_app/models/team.dart';
 
-class User {
+class Admin {
   int id = 0;
   String userId = '';
   String firstName = '';
@@ -22,7 +22,7 @@ class User {
   String pictureFullPath = '';
   int? emailConfirmed = 0;
 
-  User(
+  Admin(
       {required this.id,
       required this.userId,
       required this.firstName,
@@ -37,7 +37,7 @@ class User {
       required this.pictureFullPath,
       required this.emailConfirmed});
 
-  User.fromJson(Map<String, dynamic> json) {
+  Admin.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     userId = json['userId'];
     firstName = json['firstName'];

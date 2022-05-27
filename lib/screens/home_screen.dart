@@ -214,7 +214,15 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             title: Text('Grupos'),
             tileColor: Colors.white,
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MyGroupsScreen(
+                            token: widget.token,
+                            user: widget.user,
+                          )));
+            },
           ),
           ListTile(
             leading: Icon(
@@ -223,7 +231,15 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             title: Text('Predicciones'),
             tileColor: Colors.white,
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MyPredictionsScreen(
+                            token: widget.token,
+                            user: widget.user,
+                          )));
+            },
           ),
           ListTile(
             leading: Icon(
@@ -232,7 +248,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             title: Text('Reglamento'),
             tileColor: Colors.white,
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => RulesScreen()));
+            },
           ),
           Divider(
             color: Colors.black,

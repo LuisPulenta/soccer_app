@@ -419,6 +419,7 @@ class _LoginScreenState extends State<LoginScreen> {
             builder: (context) => RegisterUserScreen(
                   token: Token(expiration: '', token: ''),
                   user: User(
+                      id: 0,
                       userId: '',
                       firstName: '',
                       lastName: '',
