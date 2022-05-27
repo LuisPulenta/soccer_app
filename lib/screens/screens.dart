@@ -5,7 +5,7 @@ export 'package:soccer_app/screens/group_info_screen.dart';
 export 'package:soccer_app/screens/home_screen.dart';
 export 'package:soccer_app/screens/login_screen.dart';
 export 'package:soccer_app/screens/my_groups_screen.dart';
-export 'package:soccer_app/screens/my_predictios_screen.dart';
+export 'package:soccer_app/screens/predictions_screen.dart';
 export 'package:soccer_app/screens/recover_password_screen.dart';
 export 'package:soccer_app/screens/register_user_screen.dart';
 export 'package:soccer_app/screens/rules_screen.dart';

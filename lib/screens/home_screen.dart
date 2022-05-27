@@ -204,6 +204,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   MaterialPageRoute(
                       builder: (context) => TournamentsScreen(
                             token: widget.token,
+                            opcion: 1,
+                            user: widget.user,
                           )));
             },
           ),
@@ -235,8 +237,9 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => MyPredictionsScreen(
+                      builder: (context) => TournamentsScreen(
                             token: widget.token,
+                            opcion: 2,
                             user: widget.user,
                           )));
             },

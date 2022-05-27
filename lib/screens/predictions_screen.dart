@@ -1,36 +1,37 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:soccer_app/components/loader_component.dart';
 import 'package:soccer_app/helpers/api_helper.dart';
 import 'package:soccer_app/models/models.dart';
+import 'package:flutter/gestures.dart';
 
-class GroupInfoScreen extends StatefulWidget {
+class PredictionsScreen extends StatefulWidget {
   final Token token;
-  final Groups group;
+  final User user;
+  final Tournament tournament;
 
-  GroupInfoScreen({required this.token, required this.group});
+  PredictionsScreen(
+      {required this.token, required this.user, required this.tournament});
 
   @override
-  _GroupInfoScreenState createState() => _GroupInfoScreenState();
+  State<PredictionsScreen> createState() => _PredictionsScreenState();
 }
 
-class _GroupInfoScreenState extends State<GroupInfoScreen>
+class _PredictionsScreenState extends State<PredictionsScreen>
     with SingleTickerProviderStateMixin {
 //***********************************************************************
 //******************** Declaración de Variables *************************
 //***********************************************************************
   bool _showLoader = false;
   TabController? _tabController;
-  List<Matches> _matches = [];
-  List<Matches> _pendingMatches = [];
-  List<Matches> _completeMatches = [];
-  List<Matches> _pendingMatchesFiltered = [];
-  List<Matches> _completeMatchesFiltered = [];
-  List<GroupDetails> _groupDetails = [];
+  List<Matches> _predictions = [];
+  List<Matches> _pendingPredictions = [];
+  List<Matches> _completePredictions = [];
+  List<Matches> _pendingPredictionsFiltered = [];
+  List<Matches> _completePredictionsFiltered = [];
 
   String _filter = '';
   String _filterError = '';
@@ -48,25 +49,24 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-    _getGroupDetails();
+    _tabController = TabController(length: 2, vsync: this);
 
-    _completeMatches.sort((b, a) {
+    _completePredictions.sort((b, a) {
       return a.dateLocal
           .toString()
           .toLowerCase()
           .compareTo(b.dateLocal.toString().toLowerCase());
     });
 
-    _pendingMatches.sort((b, a) {
+    _pendingPredictions.sort((b, a) {
       return a.dateLocal
           .toString()
           .toLowerCase()
           .compareTo(b.dateLocal.toString().toLowerCase());
     });
 
-    _completeMatchesFiltered = _completeMatches;
-    _pendingMatchesFiltered = _pendingMatches;
+    _completePredictionsFiltered = _completePredictions;
+    _pendingPredictionsFiltered = _pendingPredictions;
   }
 
 //***********************************************************************
@@ -104,7 +104,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                 Center(
                   child: _showLoader
                       ? LoaderComponent(text: 'Por favor espere...')
-                      : _getContent(),
+                      : _getPendingPredictions(),
                 ),
 //-------------------------------------------------------------------------
 //-------------------------- 2° TABBAR ------------------------------------
@@ -112,15 +112,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                 Center(
                   child: _showLoader
                       ? LoaderComponent(text: 'Por favor espere...')
-                      : _getPendingMatches(),
-                ),
-//-------------------------------------------------------------------------
-//-------------------------- 3° TABBAR ------------------------------------
-//-------------------------------------------------------------------------
-                Center(
-                  child: _showLoader
-                      ? LoaderComponent(text: 'Por favor espere...')
-                      : _getCompleteMatches(),
+                      : _getCompletePredictions(),
                 ),
               ],
             ),
@@ -138,20 +130,6 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
             unselectedLabelColor: Colors.grey,
             labelPadding: EdgeInsets.fromLTRB(10, 1, 10, 1),
             tabs: <Widget>[
-              Tab(
-                child: Row(
-                  children: [
-                    Icon(Icons.star),
-                    SizedBox(
-                      width: 2,
-                    ),
-                    Text(
-                      "Posiciones",
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ],
-                ),
-              ),
               Tab(
                 child: Row(
                   children: [
@@ -174,7 +152,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                       width: 2,
                     ),
                     Text(
-                      "Finalizados.",
+                      "Finalizadas.",
                       style: TextStyle(fontSize: 14),
                     ),
                   ],
@@ -186,32 +164,13 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
   }
 
 //-----------------------------------------------------------------------
-//-------------------------- getContent ---------------------------------
+//-------------------------- getCompletePredictions ---------------------
 //-----------------------------------------------------------------------
-  Widget _getContent() {
+  Widget _getCompletePredictions() {
     return Column(
       children: <Widget>[
         AppBar(
-          title: Text(widget.group.name),
-          centerTitle: true,
-          backgroundColor: Color.fromARGB(166, 5, 68, 7),
-        ),
-        _showFilaTitulo(),
-        Expanded(
-          child: _groupDetails.length == 0 ? _noContent() : _getListView(),
-        )
-      ],
-    );
-  }
-
-//-----------------------------------------------------------------------
-//-------------------------- getCompleteMatches -------------------------
-//-----------------------------------------------------------------------
-  Widget _getCompleteMatches() {
-    return Column(
-      children: <Widget>[
-        AppBar(
-          title: Text("Finalizados"),
+          title: Text("Predicciones Finalizadas"),
           centerTitle: true,
           backgroundColor: Color.fromARGB(166, 5, 68, 7),
         ),
@@ -223,22 +182,22 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
           ],
         ),
         Expanded(
-          child: _completeMatchesFiltered.length == 0
-              ? _noContentCompleteMatches()
-              : _getListViewCompleteMatches(),
+          child: _completePredictionsFiltered.length == 0
+              ? _noContentCompletePredictions()
+              : _getListViewCompletePredictions(),
         )
       ],
     );
   }
 
 //-----------------------------------------------------------------------
-//-------------------------- getPendingMatches --------------------------
+//-------------------------- getPendingPredictions ----------------------
 //-----------------------------------------------------------------------
-  Widget _getPendingMatches() {
+  Widget _getPendingPredictions() {
     return Column(
       children: <Widget>[
         AppBar(
-          title: Text("Pendientes"),
+          title: Text("Predicciones Pendientes"),
           centerTitle: true,
           backgroundColor: Color.fromARGB(166, 5, 68, 7),
         ),
@@ -250,9 +209,9 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
           ],
         ),
         Expanded(
-          child: _pendingMatchesFiltered.length == 0
-              ? _noContentPendingMatches()
-              : _getListViewPendingMatches(),
+          child: _pendingPredictionsFiltered.length == 0
+              ? _noContentPendingPredictions()
+              : _getListViewPendingPredictions(),
         )
       ],
     );
@@ -266,7 +225,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
       margin: EdgeInsets.all(20),
       child: Center(
         child: Text(
-          'No hay equipos en este Grupo.',
+          'No hay predicciones en este Torneo.',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
@@ -274,14 +233,14 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
   }
 
 //-----------------------------------------------------------------------
-//-------------------------- noContentCompleteMatches -------------------
+//-------------------------- noContentCompletePredictions ---------------
 //-----------------------------------------------------------------------
-  Widget _noContentCompleteMatches() {
+  Widget _noContentCompletePredictions() {
     return Container(
       margin: EdgeInsets.all(20),
       child: Center(
         child: Text(
-          'No hay partidos finalizados.',
+          'No hay predicciones finalizadas.',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
@@ -289,14 +248,14 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
   }
 
 //-----------------------------------------------------------------------
-//-------------------------- noContentPendingMatches -------------------
+//-------------------------- noContentPendingPredictions ----------------
 //-----------------------------------------------------------------------
-  Widget _noContentPendingMatches() {
+  Widget _noContentPendingPredictions() {
     return Container(
       margin: EdgeInsets.all(20),
       child: Center(
         child: Text(
-          'No hay partidos pendientes.',
+          'No hay predicciones pendientes.',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
@@ -304,167 +263,12 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
   }
 
 //-----------------------------------------------------------------------
-//-------------------------- getListView --------------------------------
+//-------------------------- _getListViewCompletePredictions ------------
 //-----------------------------------------------------------------------
-  _getListView() {
+  _getListViewCompletePredictions() {
     return ListView(
       padding: EdgeInsets.all(0),
-      children: _groupDetails.map((e) {
-        return Container(
-          margin: const EdgeInsets.symmetric(horizontal: 10),
-          child: Card(
-              color: Color(0xFFFFFFCC),
-              margin: EdgeInsets.all(1),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Container(
-                  margin: EdgeInsets.all(1),
-                  padding: EdgeInsets.all(0),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                          child: Column(
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CachedNetworkImage(
-                                imageUrl: e.team.logoFullPath,
-                                errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
-                                fit: BoxFit.contain,
-                                height: 35,
-                                width: 35,
-                                placeholder: (context, url) => Image(
-                                  image: AssetImage('assets/loading.gif'),
-                                  fit: BoxFit.cover,
-                                  height: 35,
-                                  width: 35,
-                                ),
-                              ),
-                              Container(
-                                width: 40,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      e.team.initials,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              //----- Puntos -----
-                              Container(
-                                width: 30,
-                                child: Text(
-                                  e.points.toString(),
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                              //----- PJ -----
-                              Container(
-                                width: 30,
-                                child: Text(
-                                  e.matchesPlayed.toString(),
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                              //----- PG -----
-                              Container(
-                                width: 30,
-                                child: Text(
-                                  e.matchesWon.toString(),
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                              //----- PE -----
-                              Container(
-                                width: 30,
-                                child: Text(
-                                  e.matchesTied.toString(),
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                              //----- PP -----
-                              Container(
-                                width: 30,
-                                child: Text(
-                                  e.matchesLost.toString(),
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                              //----- GF -----
-                              Container(
-                                width: 30,
-                                child: Text(
-                                  e.goalsFor.toString(),
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                              //----- GC -----
-                              Container(
-                                width: 30,
-                                child: Text(
-                                  e.goalsAgainst.toString(),
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                              //----- DG -----
-                              Container(
-                                width: 30,
-                                child: Text(
-                                  e.goalDifference.toString(),
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      )),
-                    ],
-                  ),
-                ),
-              )),
-        );
-      }).toList(),
-    );
-  }
-
-//-----------------------------------------------------------------------
-//-------------------------- _getListViewCompleteMatches ----------------
-//-----------------------------------------------------------------------
-  _getListViewCompleteMatches() {
-    return ListView(
-      padding: EdgeInsets.all(0),
-      children: _completeMatchesFiltered.map((e) {
+      children: _completePredictionsFiltered.map((e) {
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Card(
@@ -565,12 +369,12 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
   }
 
 //-----------------------------------------------------------------------
-//-------------------------- _getListViewPendingMatches ----------------
+//-------------------------- _getListViewPendingPredictions -------------
 //-----------------------------------------------------------------------
-  _getListViewPendingMatches() {
+  _getListViewPendingPredictions() {
     return ListView(
       padding: EdgeInsets.all(0),
-      children: _pendingMatchesFiltered.map((e) {
+      children: _pendingPredictionsFiltered.map((e) {
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Card(
@@ -662,200 +466,6 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- _showFilaTitulo ----------------------------
-//-----------------------------------------------------------------------
-  Widget _showFilaTitulo() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10),
-      child: Card(
-          color: Colors.greenAccent,
-          margin: EdgeInsets.all(1),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Container(
-              margin: EdgeInsets.all(1),
-              padding: EdgeInsets.all(0),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                      child: Column(
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: 85,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Equipo',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          //----- Puntos -----
-                          Container(
-                            width: 30,
-                            child: Text(
-                              'Pts',
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                          //----- PJ -----
-                          Container(
-                            width: 30,
-                            child: Text(
-                              'PJ',
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                          //----- PG -----
-                          Container(
-                            width: 30,
-                            child: Text(
-                              'PG',
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                          //----- PE -----
-                          Container(
-                            width: 30,
-                            child: Text(
-                              'PE',
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                          //----- PP -----
-                          Container(
-                            width: 30,
-                            child: Text(
-                              'PP',
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                          //----- GF -----
-                          Container(
-                            width: 30,
-                            child: Text(
-                              'GF',
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                          //----- GC -----
-                          Container(
-                            width: 30,
-                            child: Text(
-                              'GC',
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                          //----- DG -----
-                          Container(
-                            width: 30,
-                            child: Text(
-                              'DG',
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  )),
-                ],
-              ),
-            ),
-          )),
-    );
-  }
-
-//***********************************************************************
-//******************** Método getGroupDetails ***************************
-//***********************************************************************
-  Future<Null> _getGroupDetails() async {
-    setState(() {
-      _showLoader = true;
-    });
-
-    var connectivityResult = await Connectivity().checkConnectivity();
-
-    if (connectivityResult == ConnectivityResult.none) {
-      setState(() {
-        _showLoader = false;
-      });
-      await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
-      return;
-    }
-
-    Response response = await ApiHelper.getGroupDetails(widget.group.id);
-
-    setState(() {
-      _showLoader = false;
-    });
-
-    if (!response.isSuccess) {
-      await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
-      return;
-    }
-
-    _groupDetails = response.result;
-    _groupDetails.sort((b, a) {
-      int pointsComp = a.points.compareTo(b.points);
-      if (pointsComp != 0) return pointsComp;
-      int goalDifferenceComp = a.goalDifference.compareTo(b.goalDifference);
-      if (goalDifferenceComp != 0) return goalDifferenceComp;
-      int goalsForComp = a.goalsFor.compareTo(b.goalsFor);
-      if (goalsForComp != 0) return goalsForComp;
-      int goalsName = b.team.initials.compareTo(a.team.initials);
-      return goalsName;
-    });
-
-    setState(() {});
-
-    _getMatches();
-  }
-
 //***********************************************************************
 //******************** Método getMatches ********************************
 //***********************************************************************
@@ -880,7 +490,8 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
       return;
     }
 
-    Response response = await ApiHelper.getMatches(widget.group.id);
+    Response response =
+        await ApiHelper.getPredictions(widget.tournament.id, widget.user.id);
 
     setState(() {
       _showLoader = false;
@@ -897,20 +508,20 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
       return;
     }
 
-    _matches = response.result;
+    _predictions = response.result;
 
-    _matches.forEach((match) {
+    _predictions.forEach((match) {
       if (match.isClosed) {
-        _completeMatches.add(match);
+        _completePredictions.add(match);
       } else {
-        _pendingMatches.add(match);
+        _pendingPredictions.add(match);
       }
       ;
     });
 
     var a = 1;
-    _completeMatchesFiltered = _completeMatches;
-    _pendingMatchesFiltered = _pendingMatches;
+    _completePredictionsFiltered = _completePredictions;
+    _pendingPredictionsFiltered = _pendingPredictions;
 
     setState(() {});
   }
@@ -979,7 +590,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
     );
   }
 
-//-----------------------------------------------------------------
+  //-----------------------------------------------------------------
 //--------------------- METODO SHOWERASEBUTTON -------------------------
 //-----------------------------------------------------------------
 
@@ -1009,7 +620,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
               ),
               onPressed: () {
                 _filterController.text = '';
-                _completeMatchesFiltered = _completeMatches;
+                _completePredictionsFiltered = _completePredictions;
                 setState(() {});
               },
             ),
@@ -1049,7 +660,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
               ),
               onPressed: () {
                 _filter2Controller.text = '';
-                _pendingMatchesFiltered = _pendingMatches;
+                _pendingPredictionsFiltered = _pendingPredictions;
                 setState(() {});
               },
             ),
@@ -1059,7 +670,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
     );
   }
 
-//-----------------------------------------------------------------
+  //-----------------------------------------------------------------
 //--------------------- METODO SHOWSEARCHBUTTON -------------------
 //-----------------------------------------------------------------
 
@@ -1095,7 +706,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
     );
   }
 
-//-----------------------------------------------------------------
+  //-----------------------------------------------------------------
 //--------------------- METODO SHOWSEARCHBUTTON2 -------------------
 //-----------------------------------------------------------------
 
@@ -1147,8 +758,8 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
           ]);
       return;
     }
-    _completeMatchesFiltered = [];
-    _completeMatches.forEach((_completeMatch) {
+    _completePredictionsFiltered = [];
+    _completePredictions.forEach((_completeMatch) {
       if (_completeMatch.local.initials
               .toLowerCase()
               .contains(_filter.toLowerCase()) ||
@@ -1158,10 +769,10 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
           _completeMatch.dateName!
               .toLowerCase()
               .contains(_filter.toLowerCase())) {
-        _completeMatchesFiltered.add(_completeMatch);
+        _completePredictionsFiltered.add(_completeMatch);
       }
     });
-    _completeMatchesFiltered.sort((b, a) {
+    _completePredictionsFiltered.sort((b, a) {
       return a.dateLocal
           .toString()
           .toLowerCase()
@@ -1186,8 +797,8 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
           ]);
       return;
     }
-    _pendingMatchesFiltered = [];
-    _pendingMatches.forEach((_pendingMatch) {
+    _pendingPredictionsFiltered = [];
+    _pendingPredictions.forEach((_pendingMatch) {
       if (_pendingMatch.local.initials
               .toLowerCase()
               .contains(_filter2.toLowerCase()) ||
@@ -1197,10 +808,10 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
           _pendingMatch.dateName!
               .toLowerCase()
               .contains(_filter2.toLowerCase())) {
-        _pendingMatchesFiltered.add(_pendingMatch);
+        _pendingPredictionsFiltered.add(_pendingMatch);
       }
     });
-    _pendingMatchesFiltered.sort((b, a) {
+    _pendingPredictionsFiltered.sort((b, a) {
       return a.dateLocal
           .toString()
           .toLowerCase()

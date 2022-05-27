@@ -5,15 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:soccer_app/components/loader_component.dart';
 import 'package:soccer_app/helpers/api_helper.dart';
-import 'package:soccer_app/models/response.dart';
-import 'package:soccer_app/models/token.dart';
-import 'package:soccer_app/models/tournament.dart';
-import 'package:soccer_app/screens/tournament_info_screen.dart';
+import 'package:soccer_app/models/models.dart';
+import 'package:soccer_app/screens/screens.dart';
 
 class TournamentsScreen extends StatefulWidget {
   final Token token;
+  final int opcion;
+  final User user;
 
-  TournamentsScreen({required this.token});
+  TournamentsScreen(
+      {required this.token, required this.opcion, required this.user});
 
   @override
   _TournamentsScreenState createState() => _TournamentsScreenState();
@@ -223,10 +224,16 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
           ]);
       return;
     }
-
-    setState(() {
-      _tournaments = response.result;
+    _tournaments = response.result;
+    _tournaments.sort((b, a) {
+      return a.startDate
+          .toString()
+          .toString()
+          .toLowerCase()
+          .compareTo(b.startDate.toString().toLowerCase());
     });
+
+    setState(() {});
 
     var a = 1;
   }
@@ -308,13 +315,28 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
 //******************** Método goInfoTournament **************************
 //***********************************************************************
   void _goInfoTournament(Tournament tournament) async {
-    String? result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => TournamentInfoScreen(
-                token: widget.token, tournament: tournament)));
-    if (result == 'yes') {
-      _getTournaments();
+    if (widget.opcion == 1) {
+      String? result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => TournamentInfoScreen(
+                  token: widget.token, tournament: tournament)));
+      if (result == 'yes') {
+        _getTournaments();
+      }
+    }
+
+    if (widget.opcion == 2) {
+      String? result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => PredictionsScreen(
+                  token: widget.token,
+                  user: widget.user,
+                  tournament: tournament)));
+      if (result == 'yes') {
+        _getTournaments();
+      }
     }
   }
 }
