@@ -25,6 +25,7 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
 //******************** Declaración de Variables *************************
 //***********************************************************************
   List<Tournament> _tournaments = [];
+  List<Tournament> _tournamentsAux = [];
   bool _showLoader = false;
   bool _isFiltered = false;
   String _search = '';
@@ -224,7 +225,25 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
           ]);
       return;
     }
-    _tournaments = response.result;
+    _tournamentsAux = response.result;
+
+    if (widget.opcion == 1) {
+      _tournaments = _tournamentsAux;
+    }
+
+    if (widget.opcion == 2) {
+      _tournaments = _tournamentsAux;
+    }
+
+    // if (widget.opcion == 2) {
+    //   _tournaments = [];
+    //   _tournamentsAux.forEach((tournament) {
+    //     if (!DateTime.now().isAfter(DateTime.parse(tournament.endDateLocal))) {
+    //       _tournaments.add(tournament);
+    //     }
+    //   });
+    // }
+
     _tournaments.sort((b, a) {
       return a.startDate
           .toString()

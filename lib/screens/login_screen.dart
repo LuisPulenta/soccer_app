@@ -437,7 +437,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       points: 0,
                       fullName: '',
                       email: '',
-                      emailConfirmed: 0,
                       pictureFullPath: ''),
                   myProfile: false,
                 )));

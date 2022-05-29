@@ -101,26 +101,35 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
 //-------------------------------------------------------------------------
 //-------------------------- 1° TABBAR ------------------------------------
 //-------------------------------------------------------------------------
-                Center(
-                  child: _showLoader
-                      ? LoaderComponent(text: 'Por favor espere...')
-                      : _getContent(),
+                Container(
+                  color: Color(0xFF00D99D),
+                  child: Center(
+                    child: _showLoader
+                        ? LoaderComponent(text: 'Por favor espere...')
+                        : _getContent(),
+                  ),
                 ),
 //-------------------------------------------------------------------------
 //-------------------------- 2° TABBAR ------------------------------------
 //-------------------------------------------------------------------------
-                Center(
-                  child: _showLoader
-                      ? LoaderComponent(text: 'Por favor espere...')
-                      : _getPendingMatches(),
+                Container(
+                  color: Color(0xFF00D99D),
+                  child: Center(
+                    child: _showLoader
+                        ? LoaderComponent(text: 'Por favor espere...')
+                        : _getPendingMatches(),
+                  ),
                 ),
 //-------------------------------------------------------------------------
 //-------------------------- 3° TABBAR ------------------------------------
 //-------------------------------------------------------------------------
-                Center(
-                  child: _showLoader
-                      ? LoaderComponent(text: 'Por favor espere...')
-                      : _getCompleteMatches(),
+                Container(
+                  color: Color(0xFF00D99D),
+                  child: Center(
+                    child: _showLoader
+                        ? LoaderComponent(text: 'Por favor espere...')
+                        : _getCompleteMatches(),
+                  ),
                 ),
               ],
             ),
@@ -140,10 +149,11 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
             tabs: <Widget>[
               Tab(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.star),
                     SizedBox(
-                      width: 2,
+                      width: 10,
                     ),
                     Text(
                       "Posiciones",
@@ -154,10 +164,11 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
               ),
               Tab(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.pending_actions),
                     SizedBox(
-                      width: 2,
+                      width: 10,
                     ),
                     Text(
                       "Pendientes",
@@ -168,10 +179,11 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
               ),
               Tab(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.done_all),
                     SizedBox(
-                      width: 2,
+                      width: 10,
                     ),
                     Text(
                       "Finalizados.",
@@ -263,6 +275,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
 //-----------------------------------------------------------------------
   Widget _noContent() {
     return Container(
+      color: Color(0xFF00D99D),
       margin: EdgeInsets.all(20),
       child: Center(
         child: Text(
@@ -278,6 +291,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
 //-----------------------------------------------------------------------
   Widget _noContentCompleteMatches() {
     return Container(
+      color: Color(0xFF00D99D),
       margin: EdgeInsets.all(20),
       child: Center(
         child: Text(
@@ -293,6 +307,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
 //-----------------------------------------------------------------------
   Widget _noContentPendingMatches() {
     return Container(
+      color: Color(0xFF00D99D),
       margin: EdgeInsets.all(20),
       child: Center(
         child: Text(
@@ -311,6 +326,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
       padding: EdgeInsets.all(0),
       children: _groupDetails.map((e) {
         return Container(
+          color: Color(0xFF00D99D),
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Card(
               color: Color(0xFFFFFFCC),
@@ -466,6 +482,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
       padding: EdgeInsets.all(0),
       children: _completeMatchesFiltered.map((e) {
         return Container(
+          color: Color(0xFF00D99D),
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Card(
               color: Color(0xFFFFFFCC),
@@ -572,6 +589,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
       padding: EdgeInsets.all(0),
       children: _pendingMatchesFiltered.map((e) {
         return Container(
+          color: Color(0xFF00D99D),
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Card(
               color: Color(0xFFFFFFCC),
@@ -669,7 +687,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10),
       child: Card(
-          color: Colors.greenAccent,
+          color: Color.fromARGB(255, 240, 229, 105),
           margin: EdgeInsets.all(1),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),

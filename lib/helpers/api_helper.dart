@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:soccer_app/models/models.dart';
+import 'package:soccer_app/models/prediction.dart';
 import 'constants.dart';
 
 class ApiHelper {
@@ -282,14 +283,16 @@ class ApiHelper {
   }
 
   //---------------------------------------------------------------------------
-  static Future<Response> getPredictions(int tournamentId, int userId) async {
+  static Future<Response> getPredictions(
+      int tournamentId, int userId, Token token) async {
     var url = Uri.parse(
         '${Constants.apiUrl}/api/Predictions/GetPredictionsForUser/$tournamentId/$userId');
-    var response = await http.post(
+    var response = await http.get(
       url,
       headers: {
         'content-type': 'application/json',
         'accept': 'application/json',
+        'authorization': 'bearer ${token.token}',
       },
     );
     var body = response.body;
@@ -298,11 +301,11 @@ class ApiHelper {
       return Response(isSuccess: false, message: body);
     }
 
-    List<Matches> list = [];
+    List<Prediction> list = [];
     var decodedJson = jsonDecode(body);
     if (decodedJson != null) {
       for (var item in decodedJson) {
-        list.add(Matches.fromJson(item));
+        list.add(Prediction.fromJson(item));
       }
     }
     return Response(isSuccess: true, result: list);

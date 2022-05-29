@@ -20,7 +20,6 @@ class User {
   int userType = 0;
   String fullName = '';
   String pictureFullPath = '';
-  int? emailConfirmed = 0;
 
   User(
       {required this.id,
@@ -34,8 +33,7 @@ class User {
       required this.email,
       required this.userType,
       required this.fullName,
-      required this.pictureFullPath,
-      required this.emailConfirmed});
+      required this.pictureFullPath});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -50,7 +48,6 @@ class User {
     userType = json['userType'];
     fullName = json['fullName'];
     pictureFullPath = json['pictureFullPath'];
-    emailConfirmed = json['emailConfirmed'];
   }
 
   Map<String, dynamic> toJson() {
@@ -67,7 +64,6 @@ class User {
     data['userType'] = this.userType;
     data['fullName'] = this.fullName;
     data['pictureFullPath'] = this.pictureFullPath;
-    data['emailConfirmed'] = this.emailConfirmed;
     return data;
   }
 }

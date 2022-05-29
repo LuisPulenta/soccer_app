@@ -7,6 +7,7 @@ import 'package:soccer_app/components/loader_component.dart';
 import 'package:soccer_app/helpers/api_helper.dart';
 import 'package:soccer_app/models/models.dart';
 import 'package:flutter/gestures.dart';
+import 'package:soccer_app/models/prediction.dart';
 
 class PredictionsScreen extends StatefulWidget {
   final Token token;
@@ -27,11 +28,11 @@ class _PredictionsScreenState extends State<PredictionsScreen>
 //***********************************************************************
   bool _showLoader = false;
   TabController? _tabController;
-  List<Matches> _predictions = [];
-  List<Matches> _pendingPredictions = [];
-  List<Matches> _completePredictions = [];
-  List<Matches> _pendingPredictionsFiltered = [];
-  List<Matches> _completePredictionsFiltered = [];
+  List<Prediction> _predictions = [];
+  List<Prediction> _pendingPredictions = [];
+  List<Prediction> _completePredictions = [];
+  List<Prediction> _pendingPredictionsFiltered = [];
+  List<Prediction> _completePredictionsFiltered = [];
 
   String _filter = '';
   String _filterError = '';
@@ -43,6 +44,16 @@ class _PredictionsScreenState extends State<PredictionsScreen>
   bool _filter2ShowError = false;
   TextEditingController _filter2Controller = TextEditingController();
 
+  String _localGoals = '';
+  String _localGoalsError = '';
+  bool _localGoalsShowError = false;
+  TextEditingController _localGoalsController = TextEditingController();
+
+  String _visitorGoals = '';
+  String _visitorGoalsError = '';
+  bool _visitorGoalsShowError = false;
+  TextEditingController _visitorGoalsController = TextEditingController();
+
 //***********************************************************************
 //******************** Init State ***************************************
 //***********************************************************************
@@ -50,23 +61,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-
-    _completePredictions.sort((b, a) {
-      return a.dateLocal
-          .toString()
-          .toLowerCase()
-          .compareTo(b.dateLocal.toString().toLowerCase());
-    });
-
-    _pendingPredictions.sort((b, a) {
-      return a.dateLocal
-          .toString()
-          .toLowerCase()
-          .compareTo(b.dateLocal.toString().toLowerCase());
-    });
-
-    _completePredictionsFiltered = _completePredictions;
-    _pendingPredictionsFiltered = _pendingPredictions;
+    _getPredictions();
   }
 
 //***********************************************************************
@@ -101,18 +96,24 @@ class _PredictionsScreenState extends State<PredictionsScreen>
 //-------------------------------------------------------------------------
 //-------------------------- 1° TABBAR ------------------------------------
 //-------------------------------------------------------------------------
-                Center(
-                  child: _showLoader
-                      ? LoaderComponent(text: 'Por favor espere...')
-                      : _getPendingPredictions(),
+                Container(
+                  color: Color(0xFF00D99D),
+                  child: Center(
+                    child: _showLoader
+                        ? LoaderComponent(text: 'Por favor espere...')
+                        : _getPendingPredictions(),
+                  ),
                 ),
 //-------------------------------------------------------------------------
 //-------------------------- 2° TABBAR ------------------------------------
 //-------------------------------------------------------------------------
-                Center(
-                  child: _showLoader
-                      ? LoaderComponent(text: 'Por favor espere...')
-                      : _getCompletePredictions(),
+                Container(
+                  color: Color(0xFF00D99D),
+                  child: Center(
+                    child: _showLoader
+                        ? LoaderComponent(text: 'Por favor espere...')
+                        : _getCompletePredictions(),
+                  ),
                 ),
               ],
             ),
@@ -132,10 +133,11 @@ class _PredictionsScreenState extends State<PredictionsScreen>
             tabs: <Widget>[
               Tab(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.pending_actions),
                     SizedBox(
-                      width: 2,
+                      width: 10,
                     ),
                     Text(
                       "Pendientes",
@@ -146,10 +148,11 @@ class _PredictionsScreenState extends State<PredictionsScreen>
               ),
               Tab(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.done_all),
                     SizedBox(
-                      width: 2,
+                      width: 10,
                     ),
                     Text(
                       "Finalizadas.",
@@ -181,6 +184,9 @@ class _PredictionsScreenState extends State<PredictionsScreen>
             Expanded(flex: 1, child: _showSearchButton()),
           ],
         ),
+        _completePredictionsFiltered.length == 0
+            ? Container()
+            : _showCompleteResumen(),
         Expanded(
           child: _completePredictionsFiltered.length == 0
               ? _noContentCompletePredictions()
@@ -208,6 +214,9 @@ class _PredictionsScreenState extends State<PredictionsScreen>
             Expanded(flex: 1, child: _showSearchButton2()),
           ],
         ),
+        _pendingPredictionsFiltered.length == 0
+            ? Container()
+            : _showPendingResumen(),
         Expanded(
           child: _pendingPredictionsFiltered.length == 0
               ? _noContentPendingPredictions()
@@ -273,7 +282,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Card(
               color: Color(0xFFFFFFCC),
-              margin: EdgeInsets.all(1),
+              margin: EdgeInsets.all(2),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Container(
@@ -286,25 +295,47 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                       Expanded(
                         child: Column(
                           children: <Widget>[
-                            CachedNetworkImage(
-                              imageUrl: e.local.logoFullPath,
-                              errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
-                              fit: BoxFit.contain,
-                              height: 80,
-                              width: 80,
-                              placeholder: (context, url) => Image(
-                                image: AssetImage('assets/loading.gif'),
+                            InkWell(
+                              onTap: () {
+                                _filter = e.match!.local.initials;
+                                _search();
+                              },
+                              child: CachedNetworkImage(
+                                imageUrl: e.match!.local.logoFullPath,
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
                                 fit: BoxFit.contain,
                                 height: 80,
                                 width: 80,
+                                placeholder: (context, url) => Image(
+                                  image: AssetImage('assets/loading.gif'),
+                                  fit: BoxFit.contain,
+                                  height: 80,
+                                  width: 80,
+                                ),
                               ),
                             ),
-                            Text(e.local.initials,
+                            Text(e.match!.local.initials,
                                 style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                 )),
+                            Divider(
+                              color: Colors.black,
+                            ),
+                            Text("Real",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                            Text(
+                                e.match!.goalsLocal.toString() +
+                                    " - " +
+                                    e.match!.goalsVisitor.toString(),
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold))
                           ],
                         ),
                       ),
@@ -314,22 +345,49 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                       Column(
                         children: [
                           Text(
-                            e.dateName.toString(),
+                            e.match!.dateName.toString(),
                             style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.bold),
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold),
                           ),
                           Text(
-                              e.goalsLocal.toString() +
-                                  "-" +
-                                  e.goalsVisitor.toString(),
-                              style: TextStyle(
-                                fontSize: 34,
-                                fontWeight: FontWeight.bold,
-                              )),
-                          Text(
-                            '${DateFormat('dd/MM/yyyy').format(DateTime.parse(e.dateLocal))}',
-                            style: TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.bold),
+                            '${DateFormat('dd/MM/yyyy').format(DateTime.parse(e.match!.dateLocal))}',
+                            style: TextStyle(fontSize: 14),
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                color: Colors.indigo,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.black)),
+                            child: Column(
+                              children: [
+                                Container(
+                                  color: Colors.indigo,
+                                  child: Text(
+                                    "Puntos",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Container(
+                                  color: Colors.indigo,
+                                  child: Text(
+                                    e.points.toString(),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 34,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -338,7 +396,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                         child: Column(
                           children: <Widget>[
                             CachedNetworkImage(
-                              imageUrl: e.visitor.logoFullPath,
+                              imageUrl: e.match!.visitor.logoFullPath,
                               errorWidget: (context, url, error) =>
                                   Icon(Icons.error),
                               fit: BoxFit.contain,
@@ -351,11 +409,27 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                 width: 80,
                               ),
                             ),
-                            Text(e.visitor.initials,
+                            Text(e.match!.visitor.initials,
                                 style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                 )),
+                            Divider(
+                              color: Colors.black,
+                            ),
+                            Text("Predicción",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold)),
+                            Text(
+                                e.goalsLocal.toString() +
+                                    " - " +
+                                    e.goalsVisitor.toString(),
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold))
                           ],
                         ),
                       ),
@@ -378,8 +452,10 @@ class _PredictionsScreenState extends State<PredictionsScreen>
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Card(
-              color: Color(0xFFFFFFCC),
-              margin: EdgeInsets.all(1),
+              color: (e.goalsLocal == null && e.goalsVisitor == null)
+                  ? Color(0xFFFFFFCC)
+                  : Color.fromARGB(255, 141, 235, 94),
+              margin: EdgeInsets.all(2),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Container(
@@ -393,7 +469,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                         child: Column(
                           children: <Widget>[
                             CachedNetworkImage(
-                              imageUrl: e.local.logoFullPath,
+                              imageUrl: e.match!.local.logoFullPath,
                               errorWidget: (context, url, error) =>
                                   Icon(Icons.error),
                               fit: BoxFit.contain,
@@ -406,7 +482,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                 width: 80,
                               ),
                             ),
-                            Text(e.local.initials,
+                            Text(e.match!.local.initials,
                                 style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
@@ -419,16 +495,58 @@ class _PredictionsScreenState extends State<PredictionsScreen>
 
                       Column(
                         children: [
+                          Row(
+                            children: [
+                              Container(
+                                width: 50,
+                                height: 50,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: Colors.black)),
+                                child: e.goalsLocal != null
+                                    ? Text(e.goalsLocal.toString(),
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.bold))
+                                    : Text(""),
+                              ),
+                              Text(" - ",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.bold)),
+                              Container(
+                                width: 50,
+                                height: 50,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10),
+                                    border: Border.all(color: Colors.black)),
+                                child: e.goalsVisitor != null
+                                    ? Text(e.goalsVisitor.toString(),
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.bold))
+                                    : Text(""),
+                              ),
+                            ],
+                          ),
                           Text(
-                            e.dateName.toString(),
+                            e.match!.dateName.toString(),
                             style: TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            '${DateFormat('dd/MM/yyyy').format(DateTime.parse(e.dateLocal))}',
+                            '${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(e.match!.dateLocal).add(Duration(hours: -3)))}',
                             style: TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.bold),
                           ),
+                          _showButton(e),
                         ],
                       ),
                       //----------- Columna Visitante -----------
@@ -436,7 +554,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                         child: Column(
                           children: <Widget>[
                             CachedNetworkImage(
-                              imageUrl: e.visitor.logoFullPath,
+                              imageUrl: e.match!.visitor.logoFullPath,
                               errorWidget: (context, url, error) =>
                                   Icon(Icons.error),
                               fit: BoxFit.contain,
@@ -449,7 +567,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                 width: 80,
                               ),
                             ),
-                            Text(e.visitor.initials,
+                            Text(e.match!.visitor.initials,
                                 style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
@@ -467,9 +585,9 @@ class _PredictionsScreenState extends State<PredictionsScreen>
   }
 
 //***********************************************************************
-//******************** Método getMatches ********************************
+//******************** Método getPredictions ********************************
 //***********************************************************************
-  Future<Null> _getMatches() async {
+  Future<Null> _getPredictions() async {
     setState(() {
       _showLoader = true;
     });
@@ -490,8 +608,8 @@ class _PredictionsScreenState extends State<PredictionsScreen>
       return;
     }
 
-    Response response =
-        await ApiHelper.getPredictions(widget.tournament.id, widget.user.id);
+    Response response = await ApiHelper.getPredictions(
+        widget.tournament.id, widget.user.id, widget.token);
 
     setState(() {
       _showLoader = false;
@@ -510,19 +628,35 @@ class _PredictionsScreenState extends State<PredictionsScreen>
 
     _predictions = response.result;
 
-    _predictions.forEach((match) {
-      if (match.isClosed) {
-        _completePredictions.add(match);
+    _predictions.forEach((prediction) {
+      if (prediction.match!.isClosed! == true) {
+        _completePredictions.add(prediction);
       } else {
-        _pendingPredictions.add(match);
+        _pendingPredictions.add(prediction);
       }
       ;
     });
 
-    var a = 1;
     _completePredictionsFiltered = _completePredictions;
     _pendingPredictionsFiltered = _pendingPredictions;
 
+    _completePredictionsFiltered.sort((b, a) {
+      int dateNameComp = a.match!.dateName!.compareTo(b.match!.dateName!);
+      if (dateNameComp != 0) return dateNameComp;
+      int initialsName =
+          b.match!.local.initials.compareTo(a.match!.local.initials);
+      return initialsName;
+    });
+
+    _pendingPredictionsFiltered.sort((b, a) {
+      int dateNameComp = a.match!.dateName!.compareTo(b.match!.dateName!);
+      if (dateNameComp != 0) return dateNameComp;
+      int initialsName =
+          b.match!.local.initials.compareTo(a.match!.local.initials);
+      return initialsName;
+    });
+
+    var aa = 123;
     setState(() {});
   }
 
@@ -760,23 +894,24 @@ class _PredictionsScreenState extends State<PredictionsScreen>
     }
     _completePredictionsFiltered = [];
     _completePredictions.forEach((_completeMatch) {
-      if (_completeMatch.local.initials
+      if (_completeMatch.match!.local.initials
               .toLowerCase()
               .contains(_filter.toLowerCase()) ||
-          _completeMatch.visitor.initials
+          _completeMatch.match!.visitor.initials
               .toLowerCase()
               .contains(_filter.toLowerCase()) ||
-          _completeMatch.dateName!
+          _completeMatch.match!.dateName!
               .toLowerCase()
               .contains(_filter.toLowerCase())) {
         _completePredictionsFiltered.add(_completeMatch);
       }
     });
     _completePredictionsFiltered.sort((b, a) {
-      return a.dateLocal
-          .toString()
-          .toLowerCase()
-          .compareTo(b.dateLocal.toString().toLowerCase());
+      int dateNameComp = a.match!.dateName!.compareTo(b.match!.dateName!);
+      if (dateNameComp != 0) return dateNameComp;
+      int initialsName =
+          b.match!.local.initials.compareTo(a.match!.local.initials);
+      return initialsName;
     });
     setState(() {});
   }
@@ -799,24 +934,569 @@ class _PredictionsScreenState extends State<PredictionsScreen>
     }
     _pendingPredictionsFiltered = [];
     _pendingPredictions.forEach((_pendingMatch) {
-      if (_pendingMatch.local.initials
+      if (_pendingMatch.match!.local.initials
               .toLowerCase()
               .contains(_filter2.toLowerCase()) ||
-          _pendingMatch.visitor.initials
+          _pendingMatch.match!.visitor.initials
               .toLowerCase()
               .contains(_filter2.toLowerCase()) ||
-          _pendingMatch.dateName!
+          _pendingMatch.match!.dateName!
               .toLowerCase()
               .contains(_filter2.toLowerCase())) {
         _pendingPredictionsFiltered.add(_pendingMatch);
       }
     });
+
     _pendingPredictionsFiltered.sort((b, a) {
-      return a.dateLocal
-          .toString()
-          .toLowerCase()
-          .compareTo(b.dateLocal.toString().toLowerCase());
+      int dateNameComp = a.match!.dateName!.compareTo(b.match!.dateName!);
+      if (dateNameComp != 0) return dateNameComp;
+      int initialsName =
+          b.match!.local.initials.compareTo(a.match!.local.initials);
+      return initialsName;
     });
     setState(() {});
+  }
+
+//-----------------------------------------------------------------------
+//-------------------------- _showCompleteResumen -----------------------
+//-----------------------------------------------------------------------
+  Widget _showCompleteResumen() {
+    int puntos = 0;
+
+    _completePredictionsFiltered.forEach((prediction) {
+      if (prediction.points != null) {
+        puntos = puntos + prediction.points!;
+      }
+      ;
+    });
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      child: Card(
+          color: Color.fromARGB(255, 240, 229, 105),
+          margin: EdgeInsets.all(1),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Container(
+              margin: EdgeInsets.all(1),
+              padding: EdgeInsets.all(0),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                      child: Column(
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: 85,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Partidos:',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            width: 85,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  (_completePredictionsFiltered.length)
+                                      .toString(),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            width: 85,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Puntos:',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            width: 85,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  puntos.toString(),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )),
+                ],
+              ),
+            ),
+          )),
+    );
+  }
+
+//-----------------------------------------------------------------------
+//-------------------------- _showCompleteResumen -----------------------
+//-----------------------------------------------------------------------
+  Widget _showPendingResumen() {
+    int pendientes = 0;
+
+    _pendingPredictionsFiltered.forEach((prediction) {
+      if (prediction.goalsLocal == null && prediction.goalsVisitor == null) {
+        pendientes = pendientes + 1;
+      }
+      ;
+    });
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      child: Card(
+          color: Color.fromARGB(255, 240, 229, 105),
+          margin: EdgeInsets.all(1),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Container(
+              margin: EdgeInsets.all(1),
+              padding: EdgeInsets.all(0),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                      child: Column(
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: 85,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Partidos:',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            width: 85,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  (_pendingPredictionsFiltered.length)
+                                      .toString(),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            width: 85,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Pendientes:',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            width: 85,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  pendientes.toString(),
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  )),
+                ],
+              ),
+            ),
+          )),
+    );
+  }
+
+//-----------------------------------------------------------------------
+//-------------------------- showButton -------------------------------
+//-----------------------------------------------------------------------
+  Widget _showButton(Prediction e) {
+    return Container(
+      width: 160,
+      height: 50,
+      margin: EdgeInsets.only(left: 0, right: 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          Expanded(
+            child: ElevatedButton(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.sports_soccer),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text('Cargar goles'),
+                ],
+              ),
+              style: ElevatedButton.styleFrom(
+                primary: Color.fromARGB(166, 5, 68, 7),
+                minimumSize: Size(100, 40),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              onPressed: () {
+                _localGoalsController.text =
+                    e.goalsLocal == null ? '' : e.goalsLocal.toString();
+
+                _visitorGoalsController.text =
+                    e.goalsVisitor == null ? '' : e.goalsVisitor.toString();
+
+                _localGoalsShowError = false;
+                _visitorGoalsShowError = false;
+
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        backgroundColor: Colors.grey[300],
+                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                        actionsPadding: EdgeInsets.all(0),
+                        titlePadding: EdgeInsets.only(top: 10, left: 10),
+                        title: Text("Ingrese los Goles"),
+                        content: Container(
+                          height: 130,
+                          child: Row(
+                            children: [
+                              //--------------- Escudo e Iniciales Local --------------
+                              Container(
+                                padding: EdgeInsets.all(0),
+                                height: 90,
+                                width: 65,
+                                child: Column(
+                                  children: [
+                                    CachedNetworkImage(
+                                      imageUrl: e.match!.local.logoFullPath,
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
+                                      fit: BoxFit.contain,
+                                      height: 65,
+                                      width: 65,
+                                      placeholder: (context, url) => Image(
+                                        image: AssetImage('assets/loading.gif'),
+                                        fit: BoxFit.contain,
+                                        height: 65,
+                                        width: 65,
+                                      ),
+                                    ),
+                                    Text(e.match!.local.initials,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(width: 10),
+
+                              //--------------- Goles Local --------------
+                              Container(
+                                width: 60,
+                                alignment: Alignment.center,
+                                child: TextField(
+                                  autofocus: true,
+                                  keyboardType: TextInputType.number,
+                                  textAlign: TextAlign.center,
+                                  controller: _localGoalsController,
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold),
+                                  decoration: InputDecoration(
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                      hintText: '',
+                                      labelText: '',
+                                      errorText: _localGoalsShowError
+                                          ? _localGoalsError
+                                          : null,
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10))),
+                                  onChanged: (value) {
+                                    _localGoals = value;
+                                  },
+                                ),
+                              ),
+                              //--------------- Separador --------------
+                              Text(
+                                " - ",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              //--------------- Goles Visitante --------------
+                              Container(
+                                width: 60,
+                                alignment: Alignment.center,
+                                child: TextField(
+                                  textAlign: TextAlign.center,
+                                  keyboardType: TextInputType.number,
+                                  controller: _visitorGoalsController,
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold),
+                                  decoration: InputDecoration(
+                                      fillColor: Colors.white,
+                                      filled: true,
+                                      hintText: '',
+                                      labelText: '',
+                                      errorText: _visitorGoalsShowError
+                                          ? _visitorGoalsError
+                                          : null,
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10))),
+                                  onChanged: (value) {
+                                    _visitorGoals = value;
+                                  },
+                                ),
+                              ),
+                              SizedBox(width: 10),
+                              //--------------- Escudo e Iniciales Visitante --------------
+                              Container(
+                                padding: EdgeInsets.all(0),
+                                height: 90,
+                                width: 65,
+                                child: Column(
+                                  children: [
+                                    CachedNetworkImage(
+                                      imageUrl: e.match!.visitor.logoFullPath,
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error),
+                                      fit: BoxFit.contain,
+                                      height: 65,
+                                      width: 65,
+                                      placeholder: (context, url) => Image(
+                                        image: AssetImage('assets/loading.gif'),
+                                        fit: BoxFit.contain,
+                                        height: 65,
+                                        width: 65,
+                                      ),
+                                    ),
+                                    Text(e.match!.visitor.initials,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        )),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        actions: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Icon(Icons.cancel),
+                                      Text('Cancelar'),
+                                    ],
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Color(0xFFB4161B),
+                                    minimumSize: Size(double.infinity, 50),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                child: ElevatedButton(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Icon(Icons.save),
+                                      Text('Aceptar'),
+                                    ],
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Color.fromARGB(166, 5, 68, 7),
+                                    minimumSize: Size(double.infinity, 50),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                  ),
+                                  onPressed: () async {
+                                    if (_localGoalsController.text == "") {
+                                      await showAlertDialog(
+                                          context: context,
+                                          title: 'Error',
+                                          message:
+                                              'Ingrese Goles para el Local',
+                                          actions: <AlertDialogAction>[
+                                            AlertDialogAction(
+                                                key: null, label: 'Aceptar'),
+                                          ]);
+                                      return;
+                                    }
+                                    ;
+
+                                    if (_visitorGoalsController.text == "") {
+                                      await showAlertDialog(
+                                          context: context,
+                                          title: 'Error',
+                                          message:
+                                              'Ingrese Goles para el Visitante',
+                                          actions: <AlertDialogAction>[
+                                            AlertDialogAction(
+                                                key: null, label: 'Aceptar'),
+                                          ]);
+                                      return;
+                                    }
+                                    ;
+
+                                    for (Prediction prediction
+                                        in _pendingPredictions) {
+                                      if (prediction.match!.id == e.match!.id) {
+                                        prediction.goalsLocal = int.parse(
+                                            _localGoalsController.text);
+                                        prediction.goalsVisitor = int.parse(
+                                            _visitorGoalsController.text);
+                                        _savePrediction(e);
+                                      }
+                                    }
+
+                                    Navigator.pop(context);
+                                    setState(() {});
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                      );
+                    },
+                    barrierDismissible: false);
+              },
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+//***********************************************************************
+//******************** savePrediction ***********************************
+//***********************************************************************
+  _savePrediction(Prediction prediction) async {
+    setState(() {
+      _showLoader = true;
+    });
+
+    Map<String, dynamic> request = {
+      'userId': widget.user.userId,
+      'matchId': prediction.match!.id,
+      'goalsLocal': prediction.goalsLocal,
+      'goalsVisitor': prediction.goalsVisitor,
+    };
+
+    var connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _showLoader = false;
+      });
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: 'Verifica que estés conectado a Internet',
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+
+    Response response =
+        await ApiHelper.post('/api/Predictions/', request, widget.token);
+
+    setState(() {
+      _showLoader = false;
+    });
+
+    if (!response.isSuccess) {
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: response.message,
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+    //Navigator.pop(context, 'yes');
   }
 }

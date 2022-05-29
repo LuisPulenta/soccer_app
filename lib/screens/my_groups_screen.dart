@@ -7,6 +7,7 @@ import 'package:soccer_app/components/loader_component.dart';
 import 'package:soccer_app/helpers/api_helper.dart';
 import 'package:soccer_app/models/models.dart';
 import 'package:soccer_app/screens/add_bet_group_screen.dart';
+import 'package:soccer_app/screens/screens.dart';
 
 class MyGroupsScreen extends StatefulWidget {
   final Token token;
@@ -24,6 +25,19 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
 //*****************************************************************************
   bool _showLoader = false;
   List<GroupBet> _myGroups = [];
+
+  GroupBet groupSelected = GroupBet(
+      id: 0,
+      name: '',
+      logoPath: '',
+      adminName: '',
+      adminPicture: '',
+      adminTeam: '',
+      tournamentName: '',
+      creationDate: '',
+      groupBetPlayers: [],
+      cantPlayers: 0,
+      logoFullPath: '');
 
 //*****************************************************************************
 //************************** INIT STATE ***************************************
@@ -205,8 +219,8 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
           margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
           child: InkWell(
             onTap: () {
-              // asignacionSelected = e;
-              // _goInfoMyGroup(e);
+              groupSelected = e;
+              _goInfoMyGroup(e);
             },
             child: Container(
               margin: EdgeInsets.all(0),
@@ -318,12 +332,24 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
         );
       }).toList(),
     );
+  }
 
 //*****************************************************************************
 //************************** METODO GOINFMYGROUP ********************************
 //*****************************************************************************
 
-    void _goInfoMyGroup() async {}
+  void _goInfoMyGroup(GroupBet groupBet) async {
+    //String? result =
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MyGroupScreen(
+                  user: widget.user,
+                  group: groupBet,
+                )));
+    // if (result == 'Yes') {
+    //   setState(() {});
+    // }
   }
 
 //***********************************************************************
