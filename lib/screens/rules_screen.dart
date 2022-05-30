@@ -33,7 +33,7 @@ class _RulesScreenState extends State<RulesScreen> {
             alignment: Alignment.centerLeft,
             padding: EdgeInsets.only(left: 30, top: 10, bottom: 10, right: 10),
             child: Text(
-                "- 2 Puntos, por acertar si el ganador fue el Local, si el ganador fue el visitante, o si fue empate."),
+                "- 2 Puntos, por acertar si el ganador fue el Local, si el ganador fue el Visitante, o si fue Empate."),
           ),
           Container(
             alignment: Alignment.centerLeft,

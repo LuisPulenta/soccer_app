@@ -34,6 +34,7 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
       adminPicture: '',
       adminTeam: '',
       tournamentName: '',
+      tournamentId: 0,
       creationDate: '',
       groupBetPlayers: [],
       cantPlayers: 0,
@@ -47,6 +48,8 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
   void initState() {
     super.initState();
     _getMyGroups();
+
+    var a = 1;
   }
 
 //*****************************************************************************
@@ -344,6 +347,7 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
         context,
         MaterialPageRoute(
             builder: (context) => MyGroupScreen(
+                  token: widget.token,
                   user: widget.user,
                   group: groupBet,
                 )));
@@ -403,7 +407,5 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
     });
 
     setState(() {});
-
-    var a = 1;
   }
 }

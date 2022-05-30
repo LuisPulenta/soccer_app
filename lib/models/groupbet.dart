@@ -8,6 +8,7 @@ class GroupBet {
   String adminPicture = '';
   String adminTeam = '';
   String tournamentName = '';
+  int tournamentId = 0;
   String creationDate = '';
   List<GroupBetPlayers>? groupBetPlayers = [];
   int cantPlayers = 0;
@@ -21,6 +22,7 @@ class GroupBet {
       required this.adminPicture,
       required this.adminTeam,
       required this.tournamentName,
+      required this.tournamentId,
       required this.creationDate,
       required this.groupBetPlayers,
       required this.cantPlayers,
@@ -34,6 +36,7 @@ class GroupBet {
     adminPicture = json['adminPicture'];
     adminTeam = json['adminTeam'];
     tournamentName = json['tournamentName'];
+    tournamentId = json['tournamentId'];
     creationDate = json['creationDate'];
     if (json['groupBetPlayers'] != null) {
       groupBetPlayers = <GroupBetPlayers>[];
@@ -54,6 +57,7 @@ class GroupBet {
     data['adminPicture'] = this.adminPicture;
     data['adminTeam'] = this.adminTeam;
     data['tournamentName'] = this.tournamentName;
+    data['tournamentId'] = this.tournamentId;
     data['creationDate'] = this.creationDate;
     if (this.groupBetPlayers != null) {
       data['groupBetPlayers'] =

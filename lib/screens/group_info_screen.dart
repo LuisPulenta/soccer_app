@@ -926,7 +926,6 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
       ;
     });
 
-    var a = 1;
     _completeMatchesFiltered = _completeMatches;
     _pendingMatchesFiltered = _pendingMatches;
 

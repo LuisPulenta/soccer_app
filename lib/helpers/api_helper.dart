@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:soccer_app/models/group_position.dart';
 import 'package:soccer_app/models/models.dart';
 import 'package:soccer_app/models/prediction.dart';
 import 'constants.dart';
@@ -306,6 +307,35 @@ class ApiHelper {
     if (decodedJson != null) {
       for (var item in decodedJson) {
         list.add(Prediction.fromJson(item));
+      }
+    }
+    return Response(isSuccess: true, result: list);
+  }
+
+  //---------------------------------------------------------------------------
+  static Future<Response> getPositionsByTournament(
+      int tournament, int groupBet, Token token) async {
+    var url = Uri.parse(
+        '${Constants.apiUrl}/api/Predictions/GetPositionsByTournament/$tournament/$groupBet');
+    var response = await http.get(
+      url,
+      headers: {
+        'content-type': 'application/json',
+        'accept': 'application/json',
+        'authorization': 'bearer ${token.token}',
+      },
+    );
+    var body = response.body;
+
+    if (response.statusCode >= 400) {
+      return Response(isSuccess: false, message: body);
+    }
+
+    List<GroupPosition> list = [];
+    var decodedJson = jsonDecode(body);
+    if (decodedJson != null) {
+      for (var item in decodedJson) {
+        list.add(GroupPosition.fromJson(item));
       }
     }
     return Response(isSuccess: true, result: list);

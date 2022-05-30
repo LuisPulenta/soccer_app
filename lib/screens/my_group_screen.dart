@@ -1,13 +1,18 @@
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:soccer_app/components/loader_component.dart';
+import 'package:soccer_app/helpers/api_helper.dart';
 import 'package:soccer_app/models/models.dart';
 
 class MyGroupScreen extends StatefulWidget {
+  final Token token;
   final User user;
   final GroupBet group;
 
-  const MyGroupScreen({required this.user, required this.group});
+  const MyGroupScreen(
+      {required this.token, required this.user, required this.group});
 
   @override
   State<MyGroupScreen> createState() => _MyGroupScreenState();
@@ -19,7 +24,7 @@ class _MyGroupScreenState extends State<MyGroupScreen> {
 //***********************************************************************
 
   bool _showLoader = false;
-  List<GroupBetPlayers>? _groupBetPlayers = [];
+  List<GroupPosition>? _groupBetPlayers = [];
 
 //***********************************************************************
 //******************** Init State ***************************************
@@ -27,9 +32,7 @@ class _MyGroupScreenState extends State<MyGroupScreen> {
   @override
   void initState() {
     super.initState();
-    _groupBetPlayers = widget.group.groupBetPlayers;
-    var a = 1;
-    //_getGroupPlayers();
+    _getGroupPositions();
   }
 
 //***********************************************************************
@@ -64,10 +67,12 @@ class _MyGroupScreenState extends State<MyGroupScreen> {
                 color: Colors.black,
                 height: 2,
               ),
-              Center(
-                child: _showLoader
-                    ? LoaderComponent(text: 'Por favor espere...')
-                    : _getContent(),
+              Expanded(
+                child: Container(
+                  child: _showLoader
+                      ? LoaderComponent(text: 'Por favor espere...')
+                      : _getContent(),
+                ),
               ),
             ],
           ),
@@ -99,73 +104,149 @@ class _MyGroupScreenState extends State<MyGroupScreen> {
 //-----------------------------------------------------------------------
 //-------------------------- getListView --------------------------------
 //-----------------------------------------------------------------------
-  Widget _getListView() {
-    return Text("ListView");
-    // return ListView(
-    //   children: _groupBetPlayers!.map((e) {
-    //     return Card(
-    //       color: Color(0xFFFFFFCC),
-    //       shadowColor: Color(0xFF0000FF),
-    //       elevation: 10,
-    //       margin: EdgeInsets.all(10),
-    //       child: InkWell(
-    //         onTap: () => _goInfoGroupPlayer(e),
-    //         child: Container(
-    //           margin: EdgeInsets.all(10),
-    //           padding: EdgeInsets.all(5),
-    //           child: Row(
-    //             children: [
-    //               // ClipRRect(
-    //               //   borderRadius: BorderRadius.circular(0),
-    //               //   child: CachedNetworkImage(
-    //               //     imageUrl: e.isAccepted.toString(),
-    //               //     errorWidget: (context, url, error) => Icon(Icons.error),
-    //               //     fit: BoxFit.contain,
-    //               //     height: 80,
-    //               //     width: 120,
-    //               //     placeholder: (context, url) => Image(
-    //               //       image: AssetImage('assets/loading.gif'),
-    //               //       fit: BoxFit.cover,
-    //               //       height: 80,
-    //               //       width: 120,
-    //               //     ),
-    //               //   ),
-    //               // ),
-    //               // Expanded(
-    //               //   child: Container(
-    //               //     margin: EdgeInsets.symmetric(horizontal: 10),
-    //               //     child: Row(
-    //               //       mainAxisAlignment: MainAxisAlignment.start,
-    //               //       children: [
-    //               //         Expanded(
-    //               //           child: Column(
-    //               //             children: [
-    //               //               Row(
-    //               //                 children: [
-    //               //                   Expanded(
-    //               //                     child: Text(e.isBlocked.toString(),
-    //               //                         style: TextStyle(
-    //               //                           fontSize: 16,
-    //               //                           fontWeight: FontWeight.bold,
-    //               //                         )),
-    //               //                   ),
-    //               //                 ],
-    //               //               ),
-    //               //             ],
-    //               //           ),
-    //               //         ),
-    //               //       ],
-    //               //     ),
-    //               //   ),
-    //               // ),
-    //               Icon(Icons.arrow_forward_ios),
-    //             ],
-    //           ),
-    //         ),
-    //       ),
-    //     );
-    //   }).toList(),
-    // );
+  _getListView() {
+    return ListView(
+      padding: EdgeInsets.all(0),
+      children: _groupBetPlayers!.map((e) {
+        return Card(
+            color: Color(0xFFFFFFCC),
+            shadowColor: Color(0xFF0000FF),
+            elevation: 10,
+            margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            child: InkWell(
+              onTap: () {},
+              child: Container(
+                margin: EdgeInsets.all(10),
+                padding: EdgeInsets.all(5),
+                child: Row(
+                  children: <Widget>[
+                    Column(
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                              color: e.ranking == 1
+                                  ? Colors.amber
+                                  : e.ranking == 2
+                                      ? Color.fromARGB(255, 141, 145, 149)
+                                      : e.ranking == 3
+                                          ? Color.fromARGB(255, 156, 66, 59)
+                                          : Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.black)),
+                          child: Text(e.ranking.toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold)),
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        e.ranking == 1
+                            ? Text("Oro")
+                            : e.ranking == 2
+                                ? Text("Plata")
+                                : e.ranking == 3
+                                    ? Text("Bronce")
+                                    : Text(""),
+                      ],
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Stack(
+                      children: [
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(80),
+                            child: CachedNetworkImage(
+                              imageUrl: e.playerResponse!.pictureFullPath,
+                              errorWidget: (context, url, error) =>
+                                  Icon(Icons.error),
+                              fit: BoxFit.cover,
+                              height: 80,
+                              width: 80,
+                              placeholder: (context, url) => Image(
+                                image: AssetImage('assets/loading.gif'),
+                                fit: BoxFit.cover,
+                                height: 80,
+                                width: 80,
+                              ),
+                            )),
+                        Positioned(
+                          right: 0,
+                          bottom: 0,
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(80),
+                              child: CachedNetworkImage(
+                                imageUrl: e.playerResponse!.team!.logoFullPath,
+                                errorWidget: (context, url, error) =>
+                                    Icon(Icons.error),
+                                fit: BoxFit.contain,
+                                height: 30,
+                                width: 30,
+                                placeholder: (context, url) => Image(
+                                  image: AssetImage('assets/loading.gif'),
+                                  fit: BoxFit.contain,
+                                  height: 30,
+                                  width: 30,
+                                ),
+                              )),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              e.playerResponse!.fullName,
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "(a) " + e.playerResponse!.nickName,
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        e.points.toString(),
+                        style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue),
+                      ),
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios,
+                      size: 40,
+                    )
+                  ],
+                ),
+              ),
+            ));
+      }).toList(),
+    );
   }
 
 //-----------------------------------------------------------------------------
@@ -364,5 +445,63 @@ class _MyGroupScreenState extends State<MyGroupScreen> {
 //***********************************************************************
 //******************** Método goInfoTournament **************************
 //***********************************************************************
-  void _goInfoGroupPlayer(GroupBetPlayers groupBetPlayer) async {}
+  void _goInfoGroupPlayer(GroupPosition groupBetPlayer) async {}
+
+//***********************************************************************
+//******************** Método getGroupPositions *************************
+//***********************************************************************
+  Future<Null> _getGroupPositions() async {
+    setState(() {
+      _showLoader = true;
+    });
+
+    var connectivityResult = await Connectivity().checkConnectivity();
+
+    if (connectivityResult == ConnectivityResult.none) {
+      setState(() {
+        _showLoader = false;
+      });
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: 'Verifica que estés conectado a Internet',
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+
+    Response response = await ApiHelper.getPositionsByTournament(
+        widget.group.tournamentId, widget.group.id, widget.token);
+
+    setState(() {
+      _showLoader = false;
+    });
+
+    if (!response.isSuccess) {
+      await showAlertDialog(
+          context: context,
+          title: 'Error',
+          message: response.message,
+          actions: <AlertDialogAction>[
+            AlertDialogAction(key: null, label: 'Aceptar'),
+          ]);
+      return;
+    }
+
+    _groupBetPlayers = response.result;
+    // _groupBetPlayers.sort((b, a) {
+    //   int pointsComp = a.points.compareTo(b.points);
+    //   if (pointsComp != 0) return pointsComp;
+    //   int goalDifferenceComp = a.goalDifference.compareTo(b.goalDifference);
+    //   if (goalDifferenceComp != 0) return goalDifferenceComp;
+    //   int goalsForComp = a.goalsFor.compareTo(b.goalsFor);
+    //   if (goalsForComp != 0) return goalsForComp;
+    //   int goalsName = b.team.initials.compareTo(a.team.initials);
+    //   return goalsName;
+    // }
+    // );
+
+    setState(() {});
+  }
 }

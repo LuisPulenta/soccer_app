@@ -253,8 +253,6 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
     });
 
     setState(() {});
-
-    var a = 1;
   }
 
 //***********************************************************************

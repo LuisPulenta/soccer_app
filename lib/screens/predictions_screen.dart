@@ -656,7 +656,6 @@ class _PredictionsScreenState extends State<PredictionsScreen>
       return initialsName;
     });
 
-    var aa = 123;
     setState(() {});
   }
 
