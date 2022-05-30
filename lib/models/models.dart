@@ -13,3 +13,4 @@ export 'package:soccer_app/models/user.dart';
 export 'package:soccer_app/models/league.dart';
 export 'package:soccer_app/models/group_position.dart';
 export 'package:soccer_app/models/player_response.dart';
+export 'package:soccer_app/models/prediction.dart';

@@ -7,7 +7,6 @@ import 'package:soccer_app/components/loader_component.dart';
 import 'package:soccer_app/helpers/api_helper.dart';
 import 'package:soccer_app/models/models.dart';
 import 'package:flutter/gestures.dart';
-import 'package:soccer_app/models/prediction.dart';
 
 class PredictionsScreen extends StatefulWidget {
   final Token token;
@@ -585,7 +584,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
   }
 
 //***********************************************************************
-//******************** Método getPredictions ********************************
+//******************** Método getPredictions ****************************
 //***********************************************************************
   Future<Null> _getPredictions() async {
     setState(() {
@@ -723,8 +722,8 @@ class _PredictionsScreenState extends State<PredictionsScreen>
     );
   }
 
-  //-----------------------------------------------------------------
-//--------------------- METODO SHOWERASEBUTTON -------------------------
+//-----------------------------------------------------------------
+//--------------------- METODO SHOWERASEBUTTON --------------------
 //-----------------------------------------------------------------
 
   Widget _showEraseButton() {
@@ -803,7 +802,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
     );
   }
 
-  //-----------------------------------------------------------------
+//-----------------------------------------------------------------
 //--------------------- METODO SHOWSEARCHBUTTON -------------------
 //-----------------------------------------------------------------
 

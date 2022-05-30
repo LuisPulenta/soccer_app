@@ -13,3 +13,4 @@ export 'package:soccer_app/screens/rules_screen.dart';
 export 'package:soccer_app/screens/take_picture_screen.dart';
 export 'package:soccer_app/screens/tournament_info_screen.dart';
 export 'package:soccer_app/screens/tournaments_screen.dart';
+export 'package:soccer_app/screens/predictions_user.dart';

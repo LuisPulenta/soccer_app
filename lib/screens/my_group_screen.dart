@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:soccer_app/components/loader_component.dart';
 import 'package:soccer_app/helpers/api_helper.dart';
 import 'package:soccer_app/models/models.dart';
+import 'package:soccer_app/screens/predictions_user.dart';
 
 class MyGroupScreen extends StatefulWidget {
   final Token token;
@@ -114,7 +115,7 @@ class _MyGroupScreenState extends State<MyGroupScreen> {
             elevation: 10,
             margin: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             child: InkWell(
-              onTap: () {},
+              onTap: () => _goPredictionsUser(e),
               child: Container(
                 margin: EdgeInsets.all(10),
                 padding: EdgeInsets.all(5),
@@ -490,18 +491,23 @@ class _MyGroupScreenState extends State<MyGroupScreen> {
     }
 
     _groupBetPlayers = response.result;
-    // _groupBetPlayers.sort((b, a) {
-    //   int pointsComp = a.points.compareTo(b.points);
-    //   if (pointsComp != 0) return pointsComp;
-    //   int goalDifferenceComp = a.goalDifference.compareTo(b.goalDifference);
-    //   if (goalDifferenceComp != 0) return goalDifferenceComp;
-    //   int goalsForComp = a.goalsFor.compareTo(b.goalsFor);
-    //   if (goalsForComp != 0) return goalsForComp;
-    //   int goalsName = b.team.initials.compareTo(a.team.initials);
-    //   return goalsName;
-    // }
-    // );
-
     setState(() {});
+  }
+
+//***********************************************************************
+//******************** Método goPredictionsUser *************************
+//***********************************************************************
+  void _goPredictionsUser(GroupPosition groupPosition) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PredictionsUser(
+          groupPosition: groupPosition,
+          user: widget.user,
+          tournamentId: widget.group.tournamentId,
+          token: widget.token,
+        ),
+      ),
+    );
   }
 }
