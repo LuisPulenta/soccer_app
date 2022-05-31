@@ -628,7 +628,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
     _predictions = response.result;
 
     _predictions.forEach((prediction) {
-      if (prediction.match!.isClosed! == true) {
+      if (prediction.match!.isClosed == true) {
         _completePredictions.add(prediction);
       } else {
         _pendingPredictions.add(prediction);

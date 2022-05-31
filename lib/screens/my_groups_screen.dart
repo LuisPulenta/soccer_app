@@ -31,6 +31,7 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
       name: '',
       logoPath: '',
       adminName: '',
+      adminNickName: '',
       adminPicture: '',
       adminTeam: '',
       tournamentName: '',

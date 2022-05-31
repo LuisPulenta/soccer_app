@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:soccer_app/components/loader_component.dart';
 import 'package:soccer_app/helpers/api_helper.dart';
 import 'package:soccer_app/models/models.dart';
-import 'package:soccer_app/screens/predictions_user.dart';
+import 'package:soccer_app/screens/screens.dart';
 
 class MyGroupScreen extends StatefulWidget {
   final Token token;
@@ -61,13 +61,17 @@ class _MyGroupScreenState extends State<MyGroupScreen> {
                 height: 10,
               ),
               _showButtons(),
-              SizedBox(
-                height: 10,
-              ),
-              Divider(
-                color: Colors.black,
-                height: 2,
-              ),
+              widget.user.fullName == widget.group.adminName
+                  ? SizedBox(
+                      height: 10,
+                    )
+                  : Container(),
+              widget.user.fullName == widget.group.adminName
+                  ? Divider(
+                      color: Colors.black,
+                      height: 2,
+                    )
+                  : Container(),
               Expanded(
                 child: Container(
                   child: _showLoader
@@ -285,7 +289,7 @@ class _MyGroupScreenState extends State<MyGroupScreen> {
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(80),
                 child: CachedNetworkImage(
-                  imageUrl: widget.user.pictureFullPath,
+                  imageUrl: widget.group.adminPicture,
                   errorWidget: (context, url, error) => Icon(Icons.error),
                   fit: BoxFit.cover,
                   height: 80,
@@ -304,7 +308,7 @@ class _MyGroupScreenState extends State<MyGroupScreen> {
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(80),
                 child: CachedNetworkImage(
-                  imageUrl: widget.user.team.logoFullPath,
+                  imageUrl: widget.group.adminTeam,
                   errorWidget: (context, url, error) => Icon(Icons.error),
                   fit: BoxFit.contain,
                   height: 50,
@@ -331,13 +335,13 @@ class _MyGroupScreenState extends State<MyGroupScreen> {
                         style: TextStyle(
                             color: Colors.black, fontWeight: FontWeight.bold)),
                   ),
-                  Text(widget.user.firstName + " " + widget.user.lastName,
+                  Text(widget.group.adminName,
                       textAlign: TextAlign.left,
                       style: TextStyle(
                           color: Color.fromARGB(255, 33, 33, 243),
                           fontSize: 16,
                           fontWeight: FontWeight.bold)),
-                  Text(" (a) " + widget.user.nickName,
+                  Text(" (a) " + widget.group.adminNickName,
                       textAlign: TextAlign.left,
                       style: TextStyle(
                           color: Colors.red,
@@ -360,88 +364,51 @@ class _MyGroupScreenState extends State<MyGroupScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          Expanded(
-            child: ElevatedButton(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.contact_mail),
-                  SizedBox(
-                    width: 20,
+          widget.user.fullName == widget.group.adminName
+              ? Expanded(
+                  child: ElevatedButton(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.contact_mail),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text('Invitar'),
+                      ],
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      primary: Color.fromARGB(255, 8, 69, 48),
+                      minimumSize: Size(double.infinity, 40),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                    ),
+                    onPressed: () => _invitar(),
                   ),
-                  Text('Invitar'),
-                ],
-              ),
-              style: ElevatedButton.styleFrom(
-                primary: Color.fromARGB(255, 8, 69, 48),
-                minimumSize: Size(double.infinity, 40),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
-              onPressed: () => _invitar(),
-            ),
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Expanded(
-            child: ElevatedButton(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.delete),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text('Borrar'),
-                ],
-              ),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.red,
-                minimumSize: Size(double.infinity, 40),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
-              onPressed: () => _borrar(),
-            ),
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Expanded(
-            child: ElevatedButton(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.logout),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text('Salir'),
-                ],
-              ),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.indigo,
-                minimumSize: Size(double.infinity, 40),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
-              onPressed: () => _salir(),
-            ),
-          ),
+                )
+              : Container(),
         ],
       ),
     );
   }
 
-  void _invitar() {}
-
-  void _salir() {}
-
-  void _borrar() {}
+//***********************************************************************
+//******************** Método _invitar **********************************
+//***********************************************************************
+  void _invitar() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => InvitarScreen(
+          group: widget.group,
+          user: widget.user,
+          tournamentId: widget.group.tournamentId,
+          token: widget.token,
+        ),
+      ),
+    );
+  }
 
 //***********************************************************************
 //******************** Método goInfoTournament **************************

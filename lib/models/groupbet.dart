@@ -5,6 +5,7 @@ class GroupBet {
   String name = '';
   String logoPath = '';
   String adminName = '';
+  String adminNickName = '';
   String adminPicture = '';
   String adminTeam = '';
   String tournamentName = '';
@@ -19,6 +20,7 @@ class GroupBet {
       required this.name,
       required this.logoPath,
       required this.adminName,
+      required this.adminNickName,
       required this.adminPicture,
       required this.adminTeam,
       required this.tournamentName,
@@ -33,6 +35,7 @@ class GroupBet {
     name = json['name'];
     logoPath = json['logoPath'];
     adminName = json['adminName'];
+    adminNickName = json['adminNickName'];
     adminPicture = json['adminPicture'];
     adminTeam = json['adminTeam'];
     tournamentName = json['tournamentName'];
@@ -54,6 +57,7 @@ class GroupBet {
     data['name'] = this.name;
     data['logoPath'] = this.logoPath;
     data['adminName'] = this.adminName;
+    data['adminNickName'] = this.adminNickName;
     data['adminPicture'] = this.adminPicture;
     data['adminTeam'] = this.adminTeam;
     data['tournamentName'] = this.tournamentName;
