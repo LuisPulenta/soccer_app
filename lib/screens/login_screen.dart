@@ -18,13 +18,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  //String _email = '';
-  String _email = 'luis@yopmail.com';
+  String _email = '';
+  //String _email = 'luis@yopmail.com';
   String _emailError = '';
   bool _emailShowError = false;
 
-  //String _password = '';
-  String _password = '123456';
+  String _password = '';
+  //String _password = '123456';
   String _passwordError = '';
   bool _passwordShowError = false;
 

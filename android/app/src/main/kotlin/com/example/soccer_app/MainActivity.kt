@@ -1,4 +1,4 @@
-package com.example.soccer_app
+package com.luisnu.soccer_app
 
 import io.flutter.embedding.android.FlutterActivity
 
