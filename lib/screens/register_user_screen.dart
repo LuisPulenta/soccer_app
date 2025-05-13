@@ -108,14 +108,36 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
               child: Column(
                 children: <Widget>[
                   _showPhoto(),
+                  const Divider(
+                    color: Colors.black,
+                    thickness: 2,
+                  ),
                   _showFirstName(),
                   _showLastName(),
                   _showNickName(),
+                  const Divider(
+                    color: Colors.black,
+                    thickness: 2,
+                  ),
+                  const Text('¿De qué club sos hincha?',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold)),
+                  const Text('(Selecciona una Liga y luego un Equipo)'),
                   _showLeagues(),
                   _showTeams(),
+                  const Divider(
+                    color: Colors.black,
+                    thickness: 2,
+                  ),
                   _showEmail(),
                   _showPassword(),
                   _showConfirm(),
+                  const Divider(
+                    color: Colors.black,
+                    thickness: 2,
+                  ),
                   _showButtons(),
                   const SizedBox(
                     height: 10,
@@ -382,7 +404,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 5),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                   hintText: 'Ingresa Email...',
                   labelText: 'Email',
                   errorText: _emailShowError ? _emailError : null,

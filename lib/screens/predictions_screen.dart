@@ -332,7 +332,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold)),
                             Text(
-                                "${e.match!.goalsLocal} - ${e.match!.goalsVisitor}",
+                                '${e.match!.goalsLocal} - ${e.match!.goalsVisitor}',
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 28,
@@ -424,7 +424,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                     color: Colors.black,
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold)),
-                            Text("${e.goalsLocal} - ${e.goalsVisitor}",
+                            Text('${e.goalsLocal} - ${e.goalsVisitor}',
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 28,
@@ -536,7 +536,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                             ],
                           ),
                           Text(
-                            e.match!.dateName.toString(),
+                            '${e.match!.dateName.toString()} ',
                             style: const TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.bold),
                           ),
@@ -640,16 +640,16 @@ class _PredictionsScreenState extends State<PredictionsScreen>
     _completePredictionsFiltered = _completePredictions;
     _pendingPredictionsFiltered = _pendingPredictions;
 
-    _completePredictionsFiltered.sort((b, a) {
-      int dateNameComp = a.match!.dateName!.compareTo(b.match!.dateName!);
+    _completePredictionsFiltered.sort((a, b) {
+      int dateNameComp = a.match!.date.compareTo(b.match!.date);
       if (dateNameComp != 0) return dateNameComp;
       int initialsName =
           b.match!.local.initials.compareTo(a.match!.local.initials);
       return initialsName;
     });
 
-    _pendingPredictionsFiltered.sort((b, a) {
-      int dateNameComp = a.match!.dateName!.compareTo(b.match!.dateName!);
+    _pendingPredictionsFiltered.sort((a, b) {
+      int dateNameComp = a.match!.date.compareTo(b.match!.date);
       if (dateNameComp != 0) return dateNameComp;
       int initialsName =
           b.match!.local.initials.compareTo(a.match!.local.initials);
@@ -749,7 +749,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: const [
                   Icon(Icons.delete),
                   SizedBox(
                     width: 5,
@@ -789,7 +789,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: const [
                   Icon(Icons.delete),
                   SizedBox(
                     width: 5,
@@ -816,7 +816,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
           Expanded(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(166, 5, 68, 7),
+                backgroundColor: const Color.fromARGB(166, 5, 68, 7),
                 minimumSize: const Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
@@ -825,7 +825,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
               onPressed: () => _search(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: const [
                   Icon(Icons.search),
                   SizedBox(
                     width: 5,
@@ -852,7 +852,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
           Expanded(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(166, 5, 68, 7),
+                backgroundColor: const Color.fromARGB(166, 5, 68, 7),
                 minimumSize: const Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
@@ -861,7 +861,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
               onPressed: () => _search2(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: const [
                   Icon(Icons.search),
                   SizedBox(
                     width: 5,
@@ -1174,7 +1174,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
           Expanded(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color.fromARGB(166, 5, 68, 7),
+                backgroundColor: const Color.fromARGB(166, 5, 68, 7),
                 minimumSize: const Size(100, 40),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
@@ -1339,7 +1339,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                               Expanded(
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFFB4161B),
+                                    backgroundColor: const Color(0xFFB4161B),
                                     minimumSize:
                                         const Size(double.infinity, 50),
                                     shape: RoundedRectangleBorder(
@@ -1352,7 +1352,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
-                                    children: [
+                                    children: const [
                                       Icon(Icons.cancel),
                                       Text('Cancelar'),
                                     ],
@@ -1366,7 +1366,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                 child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor:
-                                        Color.fromARGB(166, 5, 68, 7),
+                                        const Color.fromARGB(166, 5, 68, 7),
                                     minimumSize:
                                         const Size(double.infinity, 50),
                                     shape: RoundedRectangleBorder(
@@ -1417,7 +1417,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
-                                    children: [
+                                    children: const [
                                       Icon(Icons.save),
                                       Text('Aceptar'),
                                     ],
@@ -1435,7 +1435,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: const [
                   Icon(Icons.sports_soccer),
                   SizedBox(
                     width: 15,
