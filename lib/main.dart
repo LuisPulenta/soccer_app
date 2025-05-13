@@ -1,14 +1,23 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:soccer_app/models/token.dart';
-import 'package:soccer_app/models/user.dart';
-import 'package:soccer_app/screens/home_screen.dart';
-import 'package:soccer_app/screens/login_screen.dart';
-import 'package:soccer_app/screens/wait_screen.dart';
 
-void main() => runApp(MyApp());
+import 'models/token.dart';
+import 'models/user.dart';
+import 'screens/home_screen.dart';
+import 'screens/login_screen.dart';
+import 'screens/wait_screen.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  //Estas líneas son para que funcione el http con las direcciones https
+  final context = SecurityContext.defaultContext;
+  context.allowLegacyUnsafeRenegotiation = true;
+
+  runApp(const MyApp());
+}
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -36,9 +45,9 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Soccer App',
       home: _isLoading
-          ? WaitScreen()
+          ? const WaitScreen()
           : _showLoginPage
-              ? LoginScreen()
+              ? const LoginScreen()
               : HomeScreen(
                   token: _token,
                   user: _user,

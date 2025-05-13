@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class LoaderComponent extends StatelessWidget {
   final String text;
 
-  LoaderComponent({this.text = ''});
+  const LoaderComponent({super.key, this.text = ''});
 
   @override
   Widget build(BuildContext context) {
@@ -12,17 +12,17 @@ class LoaderComponent extends StatelessWidget {
         width: 200,
         height: 100,
         decoration: BoxDecoration(
-            color: Color(0xFFFFFFFF),
+            color: const Color(0xFFFFFFFF),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: Colors.black)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(),
-            SizedBox(
+            const CircularProgressIndicator(),
+            const SizedBox(
               height: 20,
             ),
-            Text(text, style: TextStyle(fontSize: 15)),
+            Text(text, style: const TextStyle(fontSize: 15)),
           ],
         ),
       ),

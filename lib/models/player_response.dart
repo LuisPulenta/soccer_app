@@ -1,4 +1,4 @@
-import 'package:soccer_app/models/models.dart';
+import 'models.dart';
 
 class PlayerResponse {
   int id = 0;
@@ -42,7 +42,7 @@ class PlayerResponse {
     lastName = json['lastName'];
     picturePath = json['picturePath'];
     nickName = json['nickName'];
-    team = json['team'] != null ? new Team.fromJson(json['team']) : null;
+    team = json['team'] != null ? Team.fromJson(json['team']) : null;
     points = json['points'];
     email = json['email'];
     userType = json['userType'];
@@ -51,21 +51,21 @@ class PlayerResponse {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['userId'] = this.userId;
-    data['firstName'] = this.firstName;
-    data['lastName'] = this.lastName;
-    data['picturePath'] = this.picturePath;
-    data['nickName'] = this.nickName;
-    if (this.team != null) {
-      data['team'] = this.team!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['userId'] = userId;
+    data['firstName'] = firstName;
+    data['lastName'] = lastName;
+    data['picturePath'] = picturePath;
+    data['nickName'] = nickName;
+    if (team != null) {
+      data['team'] = team!.toJson();
     }
-    data['points'] = this.points;
-    data['email'] = this.email;
-    data['userType'] = this.userType;
-    data['fullName'] = this.fullName;
-    data['pictureFullPath'] = this.pictureFullPath;
+    data['points'] = points;
+    data['email'] = email;
+    data['userType'] = userType;
+    data['fullName'] = fullName;
+    data['pictureFullPath'] = pictureFullPath;
     return data;
   }
 }

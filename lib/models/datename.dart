@@ -1,4 +1,4 @@
-import 'package:soccer_app/models/match.dart';
+import 'match.dart';
 
 class DateNames {
   int id = 0;
@@ -14,17 +14,17 @@ class DateNames {
     if (json['matches'] != null) {
       matches = [];
       json['matches'].forEach((v) {
-        matches.add(new Matches.fromJson(v));
+        matches.add(Matches.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    if (this.matches != null) {
-      data['matches'] = this.matches.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    if (matches != null) {
+      data['matches'] = matches.map((v) => v.toJson()).toList();
     }
     return data;
   }

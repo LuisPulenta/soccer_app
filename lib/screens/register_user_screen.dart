@@ -1,25 +1,29 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:soccer_app/models/models.dart';
-import 'package:soccer_app/screens/screens.dart';
-import 'package:soccer_app/screens/take_picture_screen.dart';
 import 'package:camera/camera.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:soccer_app/components/loader_component.dart';
-import 'package:soccer_app/helpers/api_helper.dart';
+
+import '../components/loader_component.dart';
+import '../helpers/api_helper.dart';
+import '../models/models.dart';
+import 'screens.dart';
 
 class RegisterUserScreen extends StatefulWidget {
   final Token token;
   final User user;
   final bool myProfile;
 
-  RegisterUserScreen(
-      {required this.token, required this.user, required this.myProfile});
+  const RegisterUserScreen(
+      {super.key,
+      required this.token,
+      required this.user,
+      required this.myProfile});
 
   @override
   _RegisterUserScreenState createState() => _RegisterUserScreenState();
@@ -36,34 +40,34 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
   String _firstName = '';
   String _firstNameError = '';
   bool _firstNameShowError = false;
-  TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
 
   String _lastName = '';
   String _lastNameError = '';
   bool _lastNameShowError = false;
-  TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
 
   String _nickName = '';
   String _nickNameError = '';
   bool _nickNameShowError = false;
-  TextEditingController _nickNameController = TextEditingController();
+  final TextEditingController _nickNameController = TextEditingController();
 
   String _email = '';
   String _emailError = '';
   bool _emailShowError = false;
-  TextEditingController _emailController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
   bool _passwordShow = false;
 
   String _password = '';
   String _passwordError = '';
   bool _passwordShowError = false;
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   String _confirm = '';
   String _confirmError = '';
   bool _confirmShowError = false;
-  TextEditingController _confirmController = TextEditingController();
+  final TextEditingController _confirmController = TextEditingController();
 
   int _leagueSelected = 0;
   String _leagueSelectedError = '';
@@ -90,13 +94,13 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFF00D99D),
+        backgroundColor: const Color(0xFF00D99D),
         appBar: AppBar(
           title: widget.myProfile == false
-              ? Text('Nuevo Usuario')
-              : Text(widget.user.firstName + ' ' + widget.user.lastName),
+              ? const Text('Nuevo Usuario')
+              : Text('${widget.user.firstName} ${widget.user.lastName}'),
           centerTitle: true,
-          backgroundColor: Color.fromARGB(255, 8, 69, 48),
+          backgroundColor: const Color.fromARGB(255, 8, 69, 48),
         ),
         body: Stack(
           children: [
@@ -113,14 +117,14 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                   _showPassword(),
                   _showConfirm(),
                   _showButtons(),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                 ],
               ),
             ),
             _showLoader
-                ? LoaderComponent(
+                ? const LoaderComponent(
                     text: 'Por favor espere...',
                   )
                 : Container(),
@@ -135,9 +139,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     return InkWell(
       child: Stack(children: <Widget>[
         Container(
-          margin: EdgeInsets.only(top: 10),
+          margin: const EdgeInsets.only(top: 10),
           child: widget.user.userId.isEmpty && !_photoChanged
-              ? Image(
+              ? const Image(
                   image: AssetImage('assets/noimage.png'),
                   width: 160,
                   height: 160,
@@ -154,11 +158,11 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                       : CachedNetworkImage(
                           imageUrl: widget.user.pictureFullPath,
                           errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
+                              const Icon(Icons.error),
                           fit: BoxFit.cover,
                           height: 160,
                           width: 160,
-                          placeholder: (context, url) => Image(
+                          placeholder: (context, url) => const Image(
                             image: AssetImage('assets/nouser.png'),
                             fit: BoxFit.cover,
                             height: 160,
@@ -178,7 +182,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                   color: Colors.green[50],
                   height: 60,
                   width: 60,
-                  child: Icon(
+                  child: const Icon(
                     Icons.photo_camera,
                     size: 40,
                     color: Color.fromARGB(255, 8, 69, 48),
@@ -197,7 +201,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                   color: Colors.green[50],
                   height: 60,
                   width: 60,
-                  child: Icon(
+                  child: const Icon(
                     Icons.image,
                     size: 40,
                     color: Color.fromARGB(255, 8, 69, 48),
@@ -214,14 +218,16 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 //-----------------------------------------------------------------------
   Widget _showFirstName() {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: TextField(
         controller: _firstNameController,
         decoration: InputDecoration(
+            isDense: true,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10),
             hintText: 'Ingresa nombres...',
             labelText: 'Nombres',
             errorText: _firstNameShowError ? _firstNameError : null,
-            suffixIcon: Icon(Icons.person),
+            suffixIcon: const Icon(Icons.person),
             fillColor: Colors.white,
             filled: true,
             border:
@@ -238,14 +244,16 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 //-----------------------------------------------------------------------
   Widget _showLastName() {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: TextField(
         controller: _lastNameController,
         decoration: InputDecoration(
+            isDense: true,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10),
             hintText: 'Ingresa nombres...',
             labelText: 'Apellido',
             errorText: _lastNameShowError ? _lastNameError : null,
-            suffixIcon: Icon(Icons.person),
+            suffixIcon: const Icon(Icons.person),
             fillColor: Colors.white,
             filled: true,
             border:
@@ -262,14 +270,16 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 //-----------------------------------------------------------------------
   Widget _showNickName() {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: TextField(
         controller: _nickNameController,
         decoration: InputDecoration(
+            isDense: true,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 10),
             hintText: 'Ingresa apodo...',
             labelText: 'Apodo',
             errorText: _nickNameShowError ? _nickNameError : null,
-            suffixIcon: Icon(Icons.sentiment_satisfied),
+            suffixIcon: const Icon(Icons.sentiment_satisfied),
             fillColor: Colors.white,
             filled: true,
             border:
@@ -286,10 +296,11 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 //-----------------------------------------------------------------------
   Widget _showLeagues() {
     return Container(
-      padding: EdgeInsets.all(10),
-      child: _leagues.length == 0
-          ? Text('')
+      padding: const EdgeInsets.all(10),
+      child: _leagues.isEmpty
+          ? const Text('')
           : DropdownButtonFormField(
+              isDense: true,
               items: _getComboLeagues(),
               value: _leagueSelected,
               onChanged: (option) {
@@ -297,11 +308,11 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                 _teams = [];
                 _teamSelected = 0;
 
-                _leagues.forEach((league) {
+                for (var league in _leagues) {
                   if (league.id == _leagueSelected) {
                     _teams = league.teams;
                   }
-                });
+                }
 
                 _teams.sort((a, b) {
                   return a.name
@@ -316,6 +327,8 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                 setState(() {});
               },
               decoration: InputDecoration(
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                 hintText: 'Seleccione una Liga...',
                 labelText: 'Liga',
                 fillColor: Colors.white,
@@ -332,11 +345,12 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 //-------------------------- showTeams --------------------------------
 //-----------------------------------------------------------------------
   Widget _showTeams() {
-    return _teams.length == 0
+    return _teams.isEmpty
         ? Container()
         : Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: DropdownButtonFormField(
+                isDense: true,
                 items: _getComboTeams(),
                 value: _teamSelected,
                 onChanged: (option) {
@@ -344,6 +358,8 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                   setState(() {});
                 },
                 decoration: InputDecoration(
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                   hintText: 'Seleccione un Equipo...',
                   labelText: 'Equipo',
                   fillColor: Colors.white,
@@ -361,15 +377,16 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
   Widget _showEmail() {
     return widget.myProfile == false
         ? Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: TextField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 5),
                   hintText: 'Ingresa Email...',
                   labelText: 'Email',
                   errorText: _emailShowError ? _emailError : null,
-                  suffixIcon: Icon(Icons.email),
+                  suffixIcon: const Icon(Icons.email),
                   fillColor: Colors.white,
                   filled: true,
                   border: OutlineInputBorder(
@@ -388,20 +405,21 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
   Widget _showPassword() {
     return widget.myProfile == false
         ? Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: TextField(
               obscureText: !_passwordShow,
               decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 5),
                 hintText: 'Ingresa una contraseña...',
                 labelText: 'Contraseña',
                 errorText: _passwordShowError ? _passwordError : null,
-                prefixIcon: Icon(Icons.lock),
+                prefixIcon: const Icon(Icons.lock),
                 fillColor: Colors.white,
                 filled: true,
                 suffixIcon: IconButton(
                   icon: _passwordShow
-                      ? Icon(Icons.visibility)
-                      : Icon(Icons.visibility_off),
+                      ? const Icon(Icons.visibility)
+                      : const Icon(Icons.visibility_off),
                   onPressed: () {
                     setState(() {
                       _passwordShow = !_passwordShow;
@@ -425,20 +443,21 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
   Widget _showConfirm() {
     return widget.myProfile == false
         ? Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: TextField(
               obscureText: !_passwordShow,
               decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 5),
                 hintText: 'Ingresa la confirmación de contraseña...',
                 labelText: 'Confirmación de contraseña',
                 errorText: _confirmShowError ? _confirmError : null,
-                prefixIcon: Icon(Icons.lock),
+                prefixIcon: const Icon(Icons.lock),
                 fillColor: Colors.white,
                 filled: true,
                 suffixIcon: IconButton(
                   icon: _passwordShow
-                      ? Icon(Icons.visibility)
-                      : Icon(Icons.visibility_off),
+                      ? const Icon(Icons.visibility)
+                      : const Icon(Icons.visibility_off),
                   onPressed: () {
                     setState(() {
                       _passwordShow = !_passwordShow;
@@ -461,14 +480,14 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 //-----------------------------------------------------------------------
   Widget _showButtons() {
     return Container(
-      margin: EdgeInsets.only(left: 10, right: 10),
+      margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           _showRegisterButton(),
           widget.user.userId.isEmpty
               ? Container()
-              : SizedBox(
+              : const SizedBox(
                   width: 20,
                 ),
           widget.user.userId.isEmpty
@@ -476,9 +495,17 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
               : widget.myProfile
                   ? Expanded(
                       child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFB4161B),
+                          minimumSize: const Size(100, 50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                        ),
+                        onPressed: () => _changePassword(),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                          children: const [
                             Icon(Icons.lock),
                             SizedBox(
                               width: 15,
@@ -486,14 +513,6 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                             Text('Contraseña'),
                           ],
                         ),
-                        style: ElevatedButton.styleFrom(
-                          primary: Color(0xFFB4161B),
-                          minimumSize: Size(100, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                        onPressed: () => _changePassword(),
                       ),
                     )
                   : Container()
@@ -508,26 +527,26 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
   Widget _showRegisterButton() {
     return Expanded(
       child: ElevatedButton(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.person_add),
-            SizedBox(
-              width: 15,
-            ),
-            widget.myProfile == false
-                ? Text('Registrar usuario')
-                : Text('Guardar usuario'),
-          ],
-        ),
         style: ElevatedButton.styleFrom(
-          primary: Color.fromARGB(255, 8, 69, 48),
-          minimumSize: Size(double.infinity, 50),
+          backgroundColor: const Color.fromARGB(255, 8, 69, 48),
+          minimumSize: const Size(double.infinity, 50),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
           ),
         ),
         onPressed: () => _save(),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.person_add),
+            const SizedBox(
+              width: 15,
+            ),
+            widget.myProfile == false
+                ? const Text('Registrar usuario')
+                : const Text('Guardar usuario'),
+          ],
+        ),
       ),
     );
   }
@@ -544,9 +563,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         title: 'Seleccionar cámara',
         message: '¿Qué cámara desea utilizar?',
         actions: <AlertDialogAction>[
-          AlertDialogAction(key: 'no', label: 'Trasera'),
-          AlertDialogAction(key: 'yes', label: 'Delantera'),
-          AlertDialogAction(key: 'cancel', label: 'Cancelar'),
+          const AlertDialogAction(key: 'no', label: 'Trasera'),
+          const AlertDialogAction(key: 'yes', label: 'Delantera'),
+          const AlertDialogAction(key: 'cancel', label: 'Cancelar'),
         ]);
     if (response1 == 'yes') {
       firstCamera = cameras.first;
@@ -575,8 +594,8 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 //******************** Método SelectPicture *****************************
 //***********************************************************************
   void _selectPicture() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       setState(() {
         _photoChanged = true;
@@ -717,7 +736,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
           title: 'Error',
           message: 'Verifica que estés conectado a Internet',
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
@@ -753,7 +772,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
           title: 'Error',
           message: response.message,
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
@@ -764,7 +783,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         message:
             'Se ha enviado un correo con las instrucciones para activar el usuario. Por favor actívelo para poder ingresar a la Aplicación.',
         actions: <AlertDialogAction>[
-          AlertDialogAction(key: null, label: 'Aceptar'),
+          const AlertDialogAction(key: null, label: 'Aceptar'),
         ]);
 
     Navigator.pop(context, 'yes');
@@ -786,7 +805,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         isSpace = false;
       }
 
-      if (string[i] == " ") {
+      if (string[i] == ' ') {
         isSpace = true;
       } else {
         isSpace = false;
@@ -802,17 +821,17 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 //***********************************************************************
   List<DropdownMenuItem<int>> _getComboLeagues() {
     List<DropdownMenuItem<int>> list = [];
-    list.add(DropdownMenuItem(
-      child: Text('Seleccione una Liga...'),
+    list.add(const DropdownMenuItem(
       value: 0,
+      child: Text('Seleccione una Liga...'),
     ));
 
-    _leagues.forEach((league) {
+    for (var league in _leagues) {
       list.add(DropdownMenuItem(
-        child: Text(league.name),
         value: league.id,
+        child: Text(league.name),
       ));
-    });
+    }
 
     return list;
   }
@@ -820,7 +839,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 //***********************************************************************
 //******************** Método getLeagues ********************************
 //***********************************************************************
-  Future<Null> _getLeagues() async {
+  Future<void> _getLeagues() async {
     setState(() {
       _showLoader = true;
     });
@@ -836,7 +855,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
           title: 'Error',
           message: 'Verifica que estés conectado a Internet',
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
@@ -853,7 +872,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
           title: 'Error',
           message: response.message,
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
@@ -876,17 +895,17 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 //***********************************************************************
   List<DropdownMenuItem<int>> _getComboTeams() {
     List<DropdownMenuItem<int>> list = [];
-    list.add(DropdownMenuItem(
-      child: Text('Seleccione un Equipo...'),
+    list.add(const DropdownMenuItem(
       value: 0,
+      child: Text('Seleccione un Equipo...'),
     ));
 
-    _teams.forEach((team) {
+    for (var team in _teams) {
       list.add(DropdownMenuItem(
-        child: Text(team.name),
         value: team.id,
+        child: Text(team.name),
       ));
-    });
+    }
 
     _teams.sort((a, b) {
       return a.name
@@ -921,10 +940,16 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 
     _teamSelected = widget.user.team.id;
 
-    _leagues.forEach((league) {
+    for (var league in _leagues) {
       if (league.id == _leagueSelected) {
         _teams = league.teams;
       }
+    }
+    _teams.sort((a, b) {
+      return a.name
+          .toString()
+          .toLowerCase()
+          .compareTo(b.name.toString().toLowerCase());
     });
   }
 
@@ -962,8 +987,8 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
       'leagueId': _leagueSelected,
       'teamId': _teamSelected,
       'pictureArray': base64image,
-      'password': "xxxxxx",
-      'passwordConfirm': "xxxxxx",
+      'password': 'xxxxxx',
+      'passwordConfirm': 'xxxxxx',
     };
 
     var connectivityResult = await Connectivity().checkConnectivity();
@@ -977,7 +1002,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
           title: 'Error',
           message: 'Verifica que estés conectado a Internet',
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
@@ -995,7 +1020,7 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
           title: 'Error',
           message: response.message,
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }

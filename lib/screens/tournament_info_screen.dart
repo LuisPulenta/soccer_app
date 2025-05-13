@@ -1,19 +1,18 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:soccer_app/components/loader_component.dart';
-import 'package:soccer_app/helpers/api_helper.dart';
-import 'package:soccer_app/models/models.dart';
-import 'package:soccer_app/models/token.dart';
-import 'package:soccer_app/models/tournament.dart';
 
+import '../components/loader_component.dart';
+import '../helpers/api_helper.dart';
+import '../models/models.dart';
 import 'group_info_screen.dart';
 
 class TournamentInfoScreen extends StatefulWidget {
   final Token token;
   final Tournament tournament;
 
-  TournamentInfoScreen({required this.token, required this.tournament});
+  const TournamentInfoScreen(
+      {super.key, required this.token, required this.tournament});
 
   @override
   _TournamentInfoScreenState createState() => _TournamentInfoScreenState();
@@ -25,7 +24,7 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
 //***********************************************************************
   bool _showLoader = false;
   List<Groups> _groups = [];
-  List<GroupDetails> _groupDetails = [];
+  final List<GroupDetails> _groupDetails = [];
 
 //***********************************************************************
 //******************** Init State ***************************************
@@ -33,8 +32,8 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
   @override
   void initState() {
     super.initState();
-    Tournament _tournament = widget.tournament;
-    List<Groups> _groups = widget.tournament.groups;
+    Tournament tournament = widget.tournament;
+    List<Groups> groups = widget.tournament.groups;
     _getGroups();
   }
 
@@ -44,19 +43,18 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF00D99D),
+      backgroundColor: const Color(0xFF00D99D),
       appBar: AppBar(
         title: Text(widget.tournament.name),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(166, 5, 68, 7),
+        backgroundColor: const Color.fromARGB(166, 5, 68, 7),
       ),
       body: Center(
         child: _showLoader
-            ? LoaderComponent(text: 'Por favor espere...')
+            ? const LoaderComponent(text: 'Por favor espere...')
             : _getContent(),
       ),
     );
-    ;
   }
 
 //-----------------------------------------------------------------------
@@ -66,7 +64,7 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
     return Column(
       children: <Widget>[
         Expanded(
-          child: _groups.length == 0 ? _noContent() : _getListView(),
+          child: _groups.isEmpty ? _noContent() : _getListView(),
         )
       ],
     );
@@ -77,8 +75,8 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
 //-----------------------------------------------------------------------
   Widget _noContent() {
     return Container(
-      margin: EdgeInsets.all(20),
-      child: Center(
+      margin: const EdgeInsets.all(20),
+      child: const Center(
         child: Text(
           'No hay grupos en este Torneo.',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -94,15 +92,15 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
     return ListView(
       children: _groups.map((e) {
         return Card(
-            color: Color(0xFFFFFFCC),
-            shadowColor: Color(0xFF0000FF),
+            color: const Color(0xFFFFFFCC),
+            shadowColor: const Color(0xFF0000FF),
             elevation: 10,
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             child: InkWell(
               onTap: () => _goGroup(e),
               child: Container(
-                margin: EdgeInsets.all(10),
-                padding: EdgeInsets.all(5),
+                margin: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(5),
                 child: Row(
                   children: <Widget>[
                     Expanded(
@@ -112,7 +110,7 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
                           children: [
                             Text(
                               'Zona: ${e.name}',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 14,
                               ),
                             ),
@@ -120,7 +118,7 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
                         ),
                       ],
                     )),
-                    Icon(
+                    const Icon(
                       Icons.arrow_forward_ios,
                       size: 40,
                     )
@@ -135,7 +133,7 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
 //***********************************************************************
 //******************** Método getGroups *********************************
 //***********************************************************************
-  Future<Null> _getGroups() async {
+  Future<void> _getGroups() async {
     setState(() {
       _showLoader = true;
     });
@@ -151,7 +149,7 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
           title: 'Error',
           message: 'Verifica que estés conectado a Internet',
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
@@ -168,7 +166,7 @@ class _TournamentInfoScreenState extends State<TournamentInfoScreen> {
           title: 'Error',
           message: response.message,
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }

@@ -27,14 +27,14 @@ class Team {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['initials'] = this.initials;
-    data['logoPath'] = this.logoPath;
-    data['leagueId'] = this.leagueId;
-    data['leagueName'] = this.leagueName;
-    data['logoFullPath'] = this.logoFullPath;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['initials'] = initials;
+    data['logoPath'] = logoPath;
+    data['leagueId'] = leagueId;
+    data['leagueName'] = leagueName;
+    data['logoFullPath'] = logoFullPath;
     return data;
   }
 }

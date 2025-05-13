@@ -1,21 +1,22 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:soccer_app/components/loader_component.dart';
-import 'package:soccer_app/helpers/api_helper.dart';
-import 'package:soccer_app/models/models.dart';
-import 'package:soccer_app/screens/take_picture_screen.dart';
+
+import '../components/loader_component.dart';
+import '../helpers/api_helper.dart';
+import '../models/models.dart';
+import 'take_picture_screen.dart';
 
 class AddBetGroupScreen extends StatefulWidget {
   final Token token;
   final User user;
 
-  AddBetGroupScreen({required this.token, required this.user});
+  const AddBetGroupScreen({super.key, required this.token, required this.user});
 
   @override
   State<AddBetGroupScreen> createState() => _AddBetGroupScreenState();
@@ -32,7 +33,7 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
   String _name = '';
   String _nameError = '';
   bool _nameShowError = false;
-  TextEditingController _nameController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
 
   int _tournamentSelected = 0;
   String _tournamentSelectedError = '';
@@ -56,11 +57,11 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF00D99D),
+      backgroundColor: const Color(0xFF00D99D),
       appBar: AppBar(
-        title: Text('Nuevo Grupo de Apuestas'),
+        title: const Text('Nuevo Grupo de Apuestas'),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 8, 69, 48),
+        backgroundColor: const Color.fromARGB(255, 8, 69, 48),
       ),
       body: Stack(
         children: [
@@ -69,21 +70,21 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
               children: <Widget>[
                 _showPhoto(),
                 Text(errorPhoto,
-                    style: TextStyle(color: Colors.red, fontSize: 18)),
+                    style: const TextStyle(color: Colors.red, fontSize: 18)),
                 _showName(),
                 _showTournaments(),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 _showButtons(),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
               ],
             ),
           ),
           _showLoader
-              ? LoaderComponent(
+              ? const LoaderComponent(
                   text: 'Por favor espere...',
                 )
               : Container(),
@@ -99,9 +100,9 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
     return InkWell(
       child: Stack(children: <Widget>[
         Container(
-          margin: EdgeInsets.only(top: 10),
+          margin: const EdgeInsets.only(top: 10),
           child: widget.user.userId.isEmpty && !_photoChanged
-              ? Image(
+              ? const Image(
                   image: AssetImage('assets/noimage.png'),
                   width: 160,
                   height: 160,
@@ -115,7 +116,7 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
                           height: 160,
                           fit: BoxFit.cover,
                         )
-                      : Image(
+                      : const Image(
                           image: AssetImage('assets/noimage.png'),
                           fit: BoxFit.cover,
                           height: 160,
@@ -134,7 +135,7 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
                   color: Colors.green[50],
                   height: 60,
                   width: 60,
-                  child: Icon(
+                  child: const Icon(
                     Icons.photo_camera,
                     size: 40,
                     color: Color.fromARGB(255, 8, 69, 48),
@@ -153,7 +154,7 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
                   color: Colors.green[50],
                   height: 60,
                   width: 60,
-                  child: Icon(
+                  child: const Icon(
                     Icons.image,
                     size: 40,
                     color: Color.fromARGB(255, 8, 69, 48),
@@ -170,14 +171,14 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
 //-----------------------------------------------------------------------
   Widget _showName() {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: TextField(
         controller: _nameController,
         decoration: InputDecoration(
             hintText: 'Ingresa nombre...',
             labelText: 'Nombre',
             errorText: _nameShowError ? _nameError : null,
-            suffixIcon: Icon(Icons.closed_caption),
+            suffixIcon: const Icon(Icons.closed_caption),
             fillColor: Colors.white,
             filled: true,
             border:
@@ -194,9 +195,9 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
 //-----------------------------------------------------------------------
   Widget _showTournaments() {
     return Container(
-      padding: EdgeInsets.all(10),
-      child: _tournaments.length == 0
-          ? Text('')
+      padding: const EdgeInsets.all(10),
+      child: _tournaments.isEmpty
+          ? const Text('')
           : DropdownButtonFormField(
               items: _getComboTournaments(),
               value: _tournamentSelected,
@@ -223,17 +224,17 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
 //***********************************************************************
   List<DropdownMenuItem<int>> _getComboTournaments() {
     List<DropdownMenuItem<int>> list = [];
-    list.add(DropdownMenuItem(
-      child: Text('Seleccione un Torneo...'),
+    list.add(const DropdownMenuItem(
       value: 0,
+      child: Text('Seleccione un Torneo...'),
     ));
 
-    _tournaments.forEach((tournament) {
+    for (var tournament in _tournaments) {
       list.add(DropdownMenuItem(
-        child: Text(tournament.name),
         value: tournament.id,
+        child: Text(tournament.name),
       ));
-    });
+    }
 
     return list;
   }
@@ -250,9 +251,9 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
         title: 'Seleccionar cámara',
         message: '¿Qué cámara desea utilizar?',
         actions: <AlertDialogAction>[
-          AlertDialogAction(key: 'no', label: 'Trasera'),
-          AlertDialogAction(key: 'yes', label: 'Delantera'),
-          AlertDialogAction(key: 'cancel', label: 'Cancelar'),
+          const AlertDialogAction(key: 'no', label: 'Trasera'),
+          const AlertDialogAction(key: 'yes', label: 'Delantera'),
+          const AlertDialogAction(key: 'cancel', label: 'Cancelar'),
         ]);
     if (response1 == 'yes') {
       firstCamera = cameras.first;
@@ -281,8 +282,8 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
 //******************** Método SelectPicture *****************************
 //***********************************************************************
   void _selectPicture() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       setState(() {
         _photoChanged = true;
@@ -294,7 +295,7 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
 //***********************************************************************
 //******************** Método getTournaments ****************************
 //***********************************************************************
-  Future<Null> _getTournaments() async {
+  Future<void> _getTournaments() async {
     setState(() {
       _showLoader = true;
     });
@@ -310,7 +311,7 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
           title: 'Error',
           message: 'Verifica que estés conectado a Internet',
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
@@ -327,7 +328,7 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
           title: 'Error',
           message: response.message,
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
@@ -350,7 +351,7 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
     return Center(
       child: Container(
         width: double.infinity,
-        margin: EdgeInsets.only(left: 10, right: 10),
+        margin: const EdgeInsets.only(left: 10, right: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
@@ -367,6 +368,14 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
   Widget _showSaveButton() {
     return Expanded(
       child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color.fromARGB(255, 8, 69, 48),
+          minimumSize: const Size(double.infinity, 50),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+        ),
+        onPressed: () => _save(),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -377,14 +386,6 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
             Text('Guardar'),
           ],
         ),
-        style: ElevatedButton.styleFrom(
-          primary: Color.fromARGB(255, 8, 69, 48),
-          minimumSize: Size(double.infinity, 50),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ),
-        onPressed: () => _save(),
       ),
     );
   }
@@ -463,7 +464,7 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
           title: 'Error',
           message: 'Verifica que estés conectado a Internet',
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
@@ -481,7 +482,7 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
           title: 'Error',
           message: response.message,
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }

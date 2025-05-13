@@ -3,18 +3,22 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:soccer_app/components/loader_component.dart';
-import 'package:soccer_app/helpers/api_helper.dart';
-import 'package:soccer_app/models/models.dart';
-import 'package:soccer_app/screens/screens.dart';
+
+import '../components/loader_component.dart';
+import '../helpers/api_helper.dart';
+import '../models/models.dart';
+import 'screens.dart';
 
 class TournamentsScreen extends StatefulWidget {
   final Token token;
   final int opcion;
   final User user;
 
-  TournamentsScreen(
-      {required this.token, required this.opcion, required this.user});
+  const TournamentsScreen(
+      {super.key,
+      required this.token,
+      required this.opcion,
+      required this.user});
 
   @override
   _TournamentsScreenState createState() => _TournamentsScreenState();
@@ -45,21 +49,22 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF00D99D),
+      backgroundColor: const Color(0xFF00D99D),
       appBar: AppBar(
-        title: Text('Torneos'),
+        title: const Text('Torneos'),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(166, 5, 68, 7),
+        backgroundColor: const Color.fromARGB(166, 5, 68, 7),
         actions: <Widget>[
           _isFiltered
               ? IconButton(
-                  onPressed: _removeFilter, icon: Icon(Icons.filter_none))
-              : IconButton(onPressed: _showFilter, icon: Icon(Icons.filter_alt))
+                  onPressed: _removeFilter, icon: const Icon(Icons.filter_none))
+              : IconButton(
+                  onPressed: _showFilter, icon: const Icon(Icons.filter_alt))
         ],
       ),
       body: Center(
         child: _showLoader
-            ? LoaderComponent(text: 'Por favor espere...')
+            ? const LoaderComponent(text: 'Por favor espere...')
             : _getContent(),
       ),
     );
@@ -69,7 +74,7 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
 //-------------------------- getContent ---------------------------------
 //-----------------------------------------------------------------------
   Widget _getContent() {
-    return _tournaments.length == 0 ? _noContent() : _getListView();
+    return _tournaments.isEmpty ? _noContent() : _getListView();
   }
 
 //-----------------------------------------------------------------------
@@ -77,13 +82,13 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
 //-----------------------------------------------------------------------
   Widget _noContent() {
     return Container(
-      margin: EdgeInsets.all(20),
+      margin: const EdgeInsets.all(20),
       child: Center(
         child: Text(
           _isFiltered
               ? 'No hay torneos con ese criterio de búsqueda'
               : 'No hay torneos registrados',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
       ),
     );
@@ -98,26 +103,27 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
       child: ListView(
         children: _tournaments.map((e) {
           return Card(
-            color: Color(0xFFFFFFCC),
-            shadowColor: Color(0xFF0000FF),
+            color: const Color(0xFFFFFFCC),
+            shadowColor: const Color(0xFF0000FF),
             elevation: 10,
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             child: InkWell(
               onTap: () => _goInfoTournament(e),
               child: Container(
-                margin: EdgeInsets.all(10),
-                padding: EdgeInsets.all(5),
+                margin: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(5),
                 child: Row(
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(0),
                       child: CachedNetworkImage(
                         imageUrl: e.logoFullPath,
-                        errorWidget: (context, url, error) => Icon(Icons.error),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                         fit: BoxFit.contain,
                         height: 80,
                         width: 120,
-                        placeholder: (context, url) => Image(
+                        placeholder: (context, url) => const Image(
                           image: AssetImage('assets/loading.gif'),
                           fit: BoxFit.cover,
                           height: 80,
@@ -127,7 +133,7 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
                     ),
                     Expanded(
                       child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 10),
+                        margin: const EdgeInsets.symmetric(horizontal: 10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -138,32 +144,34 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
                                     children: [
                                       Expanded(
                                         child: Text(e.name,
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
                                             )),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 5,
                                   ),
                                   Row(
                                     children: [
                                       Text(
-                                        '${DateFormat('dd/MM/yyyy').format(DateTime.parse(e.startDateLocal))}',
-                                        style: TextStyle(fontSize: 12),
+                                        DateFormat('dd/MM/yyyy').format(
+                                            DateTime.parse(e.startDateLocal)),
+                                        style: const TextStyle(fontSize: 12),
                                       ),
                                     ],
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 5,
                                   ),
                                   Row(
                                     children: [
                                       Text(
-                                        '${DateFormat('dd/MM/yyyy').format(DateTime.parse(e.endDateLocal))}',
-                                        style: TextStyle(fontSize: 12),
+                                        DateFormat('dd/MM/yyyy').format(
+                                            DateTime.parse(e.endDateLocal)),
+                                        style: const TextStyle(fontSize: 12),
                                       ),
                                     ],
                                   ),
@@ -174,7 +182,7 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
                         ),
                       ),
                     ),
-                    Icon(Icons.arrow_forward_ios),
+                    const Icon(Icons.arrow_forward_ios),
                   ],
                 ),
               ),
@@ -188,7 +196,7 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
 //***********************************************************************
 //******************** Método getTournaments ****************************
 //***********************************************************************
-  Future<Null> _getTournaments() async {
+  Future<void> _getTournaments() async {
     setState(() {
       _showLoader = true;
     });
@@ -204,7 +212,7 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
           title: 'Error',
           message: 'Verifica que estés conectado a Internet',
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
@@ -221,7 +229,7 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
           title: 'Error',
           message: response.message,
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
@@ -267,10 +275,10 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            title: Text('Filtrar Usuarios'),
+            title: const Text('Filtrar Usuarios'),
             content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              Text('Escriba las primeras letras del Torneo'),
-              SizedBox(
+              const Text('Escriba las primeras letras del Torneo'),
+              const SizedBox(
                 height: 10,
               ),
               TextField(
@@ -278,7 +286,7 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
                 decoration: InputDecoration(
                     hintText: 'Criterio de búsqueda...',
                     labelText: 'Buscar',
-                    suffixIcon: Icon(Icons.search),
+                    suffixIcon: const Icon(Icons.search),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10))),
                 onChanged: (value) {
@@ -289,8 +297,9 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
             actions: <Widget>[
               TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text('Cancelar')),
-              TextButton(onPressed: () => _filter(), child: Text('Filtrar')),
+                  child: const Text('Cancelar')),
+              TextButton(
+                  onPressed: () => _filter(), child: const Text('Filtrar')),
             ],
           );
         });

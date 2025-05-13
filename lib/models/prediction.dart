@@ -1,4 +1,4 @@
-import 'package:soccer_app/models/models.dart';
+import 'models.dart';
 
 class Prediction {
   int id = 0;
@@ -40,19 +40,19 @@ class Prediction {
     goalsLocal = json['goalsLocal'];
     goalsVisitor = json['goalsVisitor'];
     points = json['points'];
-    player = json['player'] != null ? new User.fromJson(json['player']) : null;
-    match = json['match'] != null ? new Matches.fromJson(json['match']) : null;
+    player = json['player'] != null ? User.fromJson(json['player']) : null;
+    match = json['match'] != null ? Matches.fromJson(json['match']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['goalsLocal'] = this.goalsLocal;
-    data['goalsVisitor'] = this.goalsVisitor;
-    data['points'] = this.points;
-    data['player'] = this.player;
-    if (this.match != null) {
-      data['match'] = this.match!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['goalsLocal'] = goalsLocal;
+    data['goalsVisitor'] = goalsVisitor;
+    data['points'] = points;
+    data['player'] = player;
+    if (match != null) {
+      data['match'] = match!.toJson();
     }
     return data;
   }

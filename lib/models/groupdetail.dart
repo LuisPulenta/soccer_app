@@ -1,4 +1,4 @@
-import 'package:soccer_app/models/team.dart';
+import 'team.dart';
 
 class GroupDetails {
   int id = 0;
@@ -42,22 +42,22 @@ class GroupDetails {
     goalsFor = json['goalsFor'];
     goalsAgainst = json['goalsAgainst'];
     goalDifference = json['goalDifference'];
-    team = new Team.fromJson(json['team']);
+    team = Team.fromJson(json['team']);
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['matchesPlayed'] = this.matchesPlayed;
-    data['matchesWon'] = this.matchesWon;
-    data['matchesTied'] = this.matchesTied;
-    data['matchesLost'] = this.matchesLost;
-    data['points'] = this.points;
-    data['goalsFor'] = this.goalsFor;
-    data['goalsAgainst'] = this.goalsAgainst;
-    data['goalDifference'] = this.goalDifference;
-    if (this.team != null) {
-      data['team'] = this.team.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['matchesPlayed'] = matchesPlayed;
+    data['matchesWon'] = matchesWon;
+    data['matchesTied'] = matchesTied;
+    data['matchesLost'] = matchesLost;
+    data['points'] = points;
+    data['goalsFor'] = goalsFor;
+    data['goalsAgainst'] = goalsAgainst;
+    data['goalDifference'] = goalDifference;
+    if (team != null) {
+      data['team'] = team.toJson();
     }
     return data;
   }

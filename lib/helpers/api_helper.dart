@@ -1,8 +1,8 @@
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
-import 'package:soccer_app/models/group_position.dart';
-import 'package:soccer_app/models/models.dart';
-import 'package:soccer_app/models/prediction.dart';
+
+import '../models/models.dart';
 import 'constants.dart';
 
 class ApiHelper {

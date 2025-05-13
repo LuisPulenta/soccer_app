@@ -1,13 +1,13 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:soccer_app/models/response.dart';
 
+import '../models/response.dart';
 import 'display_picture_screen.dart';
 
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
 
-  TakePictureScreen({required this.camera});
+  const TakePictureScreen({super.key, required this.camera});
 
   @override
   _TakePictureScreenState createState() => _TakePictureScreenState();
@@ -37,9 +37,9 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tomar Foto'),
+        title: const Text('Tomar Foto'),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 8, 69, 48),
+        backgroundColor: const Color.fromARGB(255, 8, 69, 48),
       ),
       body: FutureBuilder<void>(
         future: _initializeControllerFuture,
@@ -47,15 +47,15 @@ class _TakePictureScreenState extends State<TakePictureScreen> {
           if (snapshot.connectionState == ConnectionState.done) {
             return CameraPreview(_controller);
           } else {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
         },
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Color.fromARGB(255, 8, 69, 48),
-        child: Icon(
+        backgroundColor: const Color.fromARGB(255, 8, 69, 48),
+        child: const Icon(
           Icons.camera_alt,
         ),
         onPressed: () async {

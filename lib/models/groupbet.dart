@@ -1,4 +1,4 @@
-import 'package:soccer_app/models/models.dart';
+import 'models.dart';
 
 class GroupBet {
   int id = 0;
@@ -44,7 +44,7 @@ class GroupBet {
     if (json['groupBetPlayers'] != null) {
       groupBetPlayers = <GroupBetPlayers>[];
       json['groupBetPlayers'].forEach((v) {
-        groupBetPlayers!.add(new GroupBetPlayers.fromJson(v));
+        groupBetPlayers!.add(GroupBetPlayers.fromJson(v));
       });
     }
     cantPlayers = json['cantPlayers'];
@@ -52,23 +52,23 @@ class GroupBet {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['logoPath'] = this.logoPath;
-    data['adminName'] = this.adminName;
-    data['adminNickName'] = this.adminNickName;
-    data['adminPicture'] = this.adminPicture;
-    data['adminTeam'] = this.adminTeam;
-    data['tournamentName'] = this.tournamentName;
-    data['tournamentId'] = this.tournamentId;
-    data['creationDate'] = this.creationDate;
-    if (this.groupBetPlayers != null) {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['logoPath'] = logoPath;
+    data['adminName'] = adminName;
+    data['adminNickName'] = adminNickName;
+    data['adminPicture'] = adminPicture;
+    data['adminTeam'] = adminTeam;
+    data['tournamentName'] = tournamentName;
+    data['tournamentId'] = tournamentId;
+    data['creationDate'] = creationDate;
+    if (groupBetPlayers != null) {
       data['groupBetPlayers'] =
-          this.groupBetPlayers!.map((v) => v.toJson()).toList();
+          groupBetPlayers!.map((v) => v.toJson()).toList();
     }
-    data['cantPlayers'] = this.cantPlayers;
-    data['logoFullPath'] = this.logoFullPath;
+    data['cantPlayers'] = cantPlayers;
+    data['logoFullPath'] = logoFullPath;
     return data;
   }
 }

@@ -1,14 +1,16 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:soccer_app/components/loader_component.dart';
-import 'package:soccer_app/helpers/api_helper.dart';
-import 'package:soccer_app/models/models.dart';
+
+import '../components/loader_component.dart';
+import '../helpers/api_helper.dart';
+import '../models/models.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   final User user;
   final Token token;
-  ChangePasswordScreen({required this.user, required this.token});
+  const ChangePasswordScreen(
+      {super.key, required this.user, required this.token});
 
   @override
   _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
@@ -20,28 +22,30 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   String _currentPassword = '';
   String _currentPasswordError = '';
   bool _currentPasswordShowError = false;
-  TextEditingController _currentPasswordController = TextEditingController();
+  final TextEditingController _currentPasswordController =
+      TextEditingController();
 
   String _newPassword = '';
   String _newPasswordError = '';
   bool _newPasswordShowError = false;
-  TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
 
   String _confirmPassword = '';
   String _confirmPasswordError = '';
   bool _confirmPasswordShowError = false;
-  TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   bool _passwordShow = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xFF00D99D),
+        backgroundColor: const Color(0xFF00D99D),
         appBar: AppBar(
-          title: Text('Cambio de Contraseña'),
+          title: const Text('Cambio de Contraseña'),
           centerTitle: true,
-          backgroundColor: Color.fromARGB(255, 8, 69, 48),
+          backgroundColor: const Color.fromARGB(255, 8, 69, 48),
         ),
         body: Stack(
           children: [
@@ -54,7 +58,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               ],
             ),
             _showLoader
-                ? LoaderComponent(
+                ? const LoaderComponent(
                     text: 'Por favor espere...',
                   )
                 : Container(),
@@ -64,20 +68,20 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   Widget _showCurrentPassword() {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: TextField(
         obscureText: !_passwordShow,
         decoration: InputDecoration(
           hintText: 'Ingresa la contraseña actual...',
           labelText: 'Contraseña actual',
           errorText: _currentPasswordShowError ? _currentPasswordError : null,
-          prefixIcon: Icon(Icons.lock),
+          prefixIcon: const Icon(Icons.lock),
           fillColor: Colors.white,
           filled: true,
           suffixIcon: IconButton(
             icon: _passwordShow
-                ? Icon(Icons.visibility)
-                : Icon(Icons.visibility_off),
+                ? const Icon(Icons.visibility)
+                : const Icon(Icons.visibility_off),
             onPressed: () {
               setState(() {
                 _passwordShow = !_passwordShow;
@@ -95,20 +99,20 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   Widget _showNewPassword() {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: TextField(
         obscureText: !_passwordShow,
         decoration: InputDecoration(
           hintText: 'Ingresa la nueva contraseña...',
           labelText: 'Nueva Contraseña',
           errorText: _newPasswordShowError ? _newPasswordError : null,
-          prefixIcon: Icon(Icons.lock),
+          prefixIcon: const Icon(Icons.lock),
           fillColor: Colors.white,
           filled: true,
           suffixIcon: IconButton(
             icon: _passwordShow
-                ? Icon(Icons.visibility)
-                : Icon(Icons.visibility_off),
+                ? const Icon(Icons.visibility)
+                : const Icon(Icons.visibility_off),
             onPressed: () {
               setState(() {
                 _passwordShow = !_passwordShow;
@@ -126,20 +130,20 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   Widget _showConfirmPassword() {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: TextField(
         obscureText: !_passwordShow,
         decoration: InputDecoration(
           hintText: 'Confirmación de contraseña...',
           labelText: 'Confirmación de contraseña',
           errorText: _confirmPasswordShowError ? _confirmPasswordError : null,
-          prefixIcon: Icon(Icons.lock),
+          prefixIcon: const Icon(Icons.lock),
           fillColor: Colors.white,
           filled: true,
           suffixIcon: IconButton(
             icon: _passwordShow
-                ? Icon(Icons.visibility)
-                : Icon(Icons.visibility_off),
+                ? const Icon(Icons.visibility)
+                : const Icon(Icons.visibility_off),
             onPressed: () {
               setState(() {
                 _passwordShow = !_passwordShow;
@@ -157,7 +161,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
   Widget _showButtons() {
     return Container(
-      margin: EdgeInsets.only(left: 10, right: 10),
+      margin: const EdgeInsets.only(left: 10, right: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
@@ -170,6 +174,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   Widget _showChangePassword() {
     return Expanded(
       child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color.fromARGB(255, 8, 69, 48),
+          minimumSize: const Size(double.infinity, 50),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+        ),
+        onPressed: () => _save(),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -180,14 +192,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             Text('Cambiar contraseña'),
           ],
         ),
-        style: ElevatedButton.styleFrom(
-          primary: Color.fromARGB(255, 8, 69, 48),
-          minimumSize: Size(double.infinity, 50),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ),
-        onPressed: () => _save(),
       ),
     );
   }
@@ -263,7 +267,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           title: 'Error',
           message: 'Verifica que estes conectado a internet.',
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
@@ -287,7 +291,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           title: 'Error',
           message: response.message,
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
@@ -297,7 +301,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         title: 'Confirmación',
         message: 'Su contraseña ha sido cambiada con éxito.',
         actions: <AlertDialogAction>[
-          AlertDialogAction(key: null, label: 'Aceptar'),
+          const AlertDialogAction(key: null, label: 'Aceptar'),
         ]);
 
     Navigator.pop(context, 'yes');

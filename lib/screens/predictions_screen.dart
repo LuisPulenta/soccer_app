@@ -1,20 +1,24 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:soccer_app/components/loader_component.dart';
-import 'package:soccer_app/helpers/api_helper.dart';
-import 'package:soccer_app/models/models.dart';
-import 'package:flutter/gestures.dart';
+
+import '../components/loader_component.dart';
+import '../helpers/api_helper.dart';
+import '../models/models.dart';
 
 class PredictionsScreen extends StatefulWidget {
   final Token token;
   final User user;
   final Tournament tournament;
 
-  PredictionsScreen(
-      {required this.token, required this.user, required this.tournament});
+  const PredictionsScreen(
+      {super.key,
+      required this.token,
+      required this.user,
+      required this.tournament});
 
   @override
   State<PredictionsScreen> createState() => _PredictionsScreenState();
@@ -28,30 +32,30 @@ class _PredictionsScreenState extends State<PredictionsScreen>
   bool _showLoader = false;
   TabController? _tabController;
   List<Prediction> _predictions = [];
-  List<Prediction> _pendingPredictions = [];
-  List<Prediction> _completePredictions = [];
+  final List<Prediction> _pendingPredictions = [];
+  final List<Prediction> _completePredictions = [];
   List<Prediction> _pendingPredictionsFiltered = [];
   List<Prediction> _completePredictionsFiltered = [];
 
   String _filter = '';
-  String _filterError = '';
-  bool _filterShowError = false;
-  TextEditingController _filterController = TextEditingController();
+  final String _filterError = '';
+  final bool _filterShowError = false;
+  final TextEditingController _filterController = TextEditingController();
 
   String _filter2 = '';
-  String _filter2Error = '';
-  bool _filter2ShowError = false;
-  TextEditingController _filter2Controller = TextEditingController();
+  final String _filter2Error = '';
+  final bool _filter2ShowError = false;
+  final TextEditingController _filter2Controller = TextEditingController();
 
   String _localGoals = '';
-  String _localGoalsError = '';
+  final String _localGoalsError = '';
   bool _localGoalsShowError = false;
-  TextEditingController _localGoalsController = TextEditingController();
+  final TextEditingController _localGoalsController = TextEditingController();
 
   String _visitorGoals = '';
-  String _visitorGoalsError = '';
+  final String _visitorGoalsError = '';
   bool _visitorGoalsShowError = false;
-  TextEditingController _visitorGoalsController = TextEditingController();
+  final TextEditingController _visitorGoalsController = TextEditingController();
 
 //***********************************************************************
 //******************** Init State ***************************************
@@ -73,7 +77,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
       body: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -89,17 +93,17 @@ class _PredictionsScreenState extends State<PredictionsScreen>
             ),
             child: TabBarView(
               controller: _tabController,
-              physics: AlwaysScrollableScrollPhysics(),
+              physics: const AlwaysScrollableScrollPhysics(),
               dragStartBehavior: DragStartBehavior.start,
               children: <Widget>[
 //-------------------------------------------------------------------------
 //-------------------------- 1° TABBAR ------------------------------------
 //-------------------------------------------------------------------------
                 Container(
-                  color: Color(0xFF00D99D),
+                  color: const Color(0xFF00D99D),
                   child: Center(
                     child: _showLoader
-                        ? LoaderComponent(text: 'Por favor espere...')
+                        ? const LoaderComponent(text: 'Por favor espere...')
                         : _getPendingPredictions(),
                   ),
                 ),
@@ -107,10 +111,10 @@ class _PredictionsScreenState extends State<PredictionsScreen>
 //-------------------------- 2° TABBAR ------------------------------------
 //-------------------------------------------------------------------------
                 Container(
-                  color: Color(0xFF00D99D),
+                  color: const Color(0xFF00D99D),
                   child: Center(
                     child: _showLoader
-                        ? LoaderComponent(text: 'Por favor espere...')
+                        ? const LoaderComponent(text: 'Por favor espere...')
                         : _getCompletePredictions(),
                   ),
                 ),
@@ -120,7 +124,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
         ],
       ),
       bottomNavigationBar: BottomAppBar(
-        color: Color.fromARGB(166, 5, 68, 7),
+        color: const Color.fromARGB(166, 5, 68, 7),
         child: TabBar(
             controller: _tabController,
             indicatorColor: Colors.greenAccent,
@@ -128,18 +132,18 @@ class _PredictionsScreenState extends State<PredictionsScreen>
             indicatorWeight: 2,
             labelColor: Colors.white,
             unselectedLabelColor: Colors.grey,
-            labelPadding: EdgeInsets.fromLTRB(10, 1, 10, 1),
+            labelPadding: const EdgeInsets.fromLTRB(10, 1, 10, 1),
             tabs: <Widget>[
               Tab(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     Icon(Icons.pending_actions),
                     SizedBox(
                       width: 10,
                     ),
                     Text(
-                      "Pendientes",
+                      'Pendientes',
                       style: TextStyle(fontSize: 14),
                     ),
                   ],
@@ -148,13 +152,13 @@ class _PredictionsScreenState extends State<PredictionsScreen>
               Tab(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     Icon(Icons.done_all),
                     SizedBox(
                       width: 10,
                     ),
                     Text(
-                      "Finalizadas.",
+                      'Finalizadas.',
                       style: TextStyle(fontSize: 14),
                     ),
                   ],
@@ -172,9 +176,9 @@ class _PredictionsScreenState extends State<PredictionsScreen>
     return Column(
       children: <Widget>[
         AppBar(
-          title: Text("Predicciones Finalizadas"),
+          title: const Text('Predicciones Finalizadas'),
           centerTitle: true,
-          backgroundColor: Color.fromARGB(166, 5, 68, 7),
+          backgroundColor: const Color.fromARGB(166, 5, 68, 7),
         ),
         Row(
           children: [
@@ -183,11 +187,11 @@ class _PredictionsScreenState extends State<PredictionsScreen>
             Expanded(flex: 1, child: _showSearchButton()),
           ],
         ),
-        _completePredictionsFiltered.length == 0
+        _completePredictionsFiltered.isEmpty
             ? Container()
             : _showCompleteResumen(),
         Expanded(
-          child: _completePredictionsFiltered.length == 0
+          child: _completePredictionsFiltered.isEmpty
               ? _noContentCompletePredictions()
               : _getListViewCompletePredictions(),
         )
@@ -202,9 +206,9 @@ class _PredictionsScreenState extends State<PredictionsScreen>
     return Column(
       children: <Widget>[
         AppBar(
-          title: Text("Predicciones Pendientes"),
+          title: const Text('Predicciones Pendientes'),
           centerTitle: true,
-          backgroundColor: Color.fromARGB(166, 5, 68, 7),
+          backgroundColor: const Color.fromARGB(166, 5, 68, 7),
         ),
         Row(
           children: [
@@ -213,11 +217,11 @@ class _PredictionsScreenState extends State<PredictionsScreen>
             Expanded(flex: 1, child: _showSearchButton2()),
           ],
         ),
-        _pendingPredictionsFiltered.length == 0
+        _pendingPredictionsFiltered.isEmpty
             ? Container()
             : _showPendingResumen(),
         Expanded(
-          child: _pendingPredictionsFiltered.length == 0
+          child: _pendingPredictionsFiltered.isEmpty
               ? _noContentPendingPredictions()
               : _getListViewPendingPredictions(),
         )
@@ -230,8 +234,8 @@ class _PredictionsScreenState extends State<PredictionsScreen>
 //-----------------------------------------------------------------------
   Widget _noContent() {
     return Container(
-      margin: EdgeInsets.all(20),
-      child: Center(
+      margin: const EdgeInsets.all(20),
+      child: const Center(
         child: Text(
           'No hay predicciones en este Torneo.',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -245,8 +249,8 @@ class _PredictionsScreenState extends State<PredictionsScreen>
 //-----------------------------------------------------------------------
   Widget _noContentCompletePredictions() {
     return Container(
-      margin: EdgeInsets.all(20),
-      child: Center(
+      margin: const EdgeInsets.all(20),
+      child: const Center(
         child: Text(
           'No hay predicciones finalizadas.',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -260,8 +264,8 @@ class _PredictionsScreenState extends State<PredictionsScreen>
 //-----------------------------------------------------------------------
   Widget _noContentPendingPredictions() {
     return Container(
-      margin: EdgeInsets.all(20),
-      child: Center(
+      margin: const EdgeInsets.all(20),
+      child: const Center(
         child: Text(
           'No hay predicciones pendientes.',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -275,18 +279,18 @@ class _PredictionsScreenState extends State<PredictionsScreen>
 //-----------------------------------------------------------------------
   _getListViewCompletePredictions() {
     return ListView(
-      padding: EdgeInsets.all(0),
+      padding: const EdgeInsets.all(0),
       children: _completePredictionsFiltered.map((e) {
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Card(
-              color: Color(0xFFFFFFCC),
-              margin: EdgeInsets.all(2),
+              color: const Color(0xFFFFFFCC),
+              margin: const EdgeInsets.all(2),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Container(
-                  margin: EdgeInsets.all(1),
-                  padding: EdgeInsets.all(0),
+                  margin: const EdgeInsets.all(1),
+                  padding: const EdgeInsets.all(0),
                   //----------- Fila Principal -----------
                   child: Row(
                     children: <Widget>[
@@ -302,11 +306,11 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                               child: CachedNetworkImage(
                                 imageUrl: e.match!.local.logoFullPath,
                                 errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
+                                    const Icon(Icons.error),
                                 fit: BoxFit.contain,
                                 height: 80,
                                 width: 80,
-                                placeholder: (context, url) => Image(
+                                placeholder: (context, url) => const Image(
                                   image: AssetImage('assets/loading.gif'),
                                   fit: BoxFit.contain,
                                   height: 80,
@@ -315,23 +319,21 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                               ),
                             ),
                             Text(e.match!.local.initials,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                 )),
-                            Divider(
+                            const Divider(
                               color: Colors.black,
                             ),
-                            Text("Real",
+                            const Text('Real',
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold)),
                             Text(
-                                e.match!.goalsLocal.toString() +
-                                    " - " +
-                                    e.match!.goalsVisitor.toString(),
-                                style: TextStyle(
+                                "${e.match!.goalsLocal} - ${e.match!.goalsVisitor}",
+                                style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 28,
                                     fontWeight: FontWeight.bold))
@@ -345,20 +347,21 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                         children: [
                           Text(
                             e.match!.dateName.toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            '${DateFormat('dd/MM/yyyy').format(DateTime.parse(e.match!.dateLocal))}',
-                            style: TextStyle(fontSize: 14),
+                            DateFormat('dd/MM/yyyy')
+                                .format(DateTime.parse(e.match!.dateLocal)),
+                            style: const TextStyle(fontSize: 14),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 15,
                           ),
                           Container(
-                            padding: EdgeInsets.all(10),
+                            padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                                 color: Colors.indigo,
                                 borderRadius: BorderRadius.circular(10),
@@ -367,8 +370,8 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                               children: [
                                 Container(
                                   color: Colors.indigo,
-                                  child: Text(
-                                    "Puntos",
+                                  child: const Text(
+                                    'Puntos',
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 20,
@@ -379,7 +382,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                   color: Colors.indigo,
                                   child: Text(
                                     e.points.toString(),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 34,
                                         fontWeight: FontWeight.bold),
@@ -397,11 +400,11 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                             CachedNetworkImage(
                               imageUrl: e.match!.visitor.logoFullPath,
                               errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
+                                  const Icon(Icons.error),
                               fit: BoxFit.contain,
                               height: 80,
                               width: 80,
-                              placeholder: (context, url) => Image(
+                              placeholder: (context, url) => const Image(
                                 image: AssetImage('assets/loading.gif'),
                                 fit: BoxFit.contain,
                                 height: 80,
@@ -409,23 +412,20 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                               ),
                             ),
                             Text(e.match!.visitor.initials,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                 )),
-                            Divider(
+                            const Divider(
                               color: Colors.black,
                             ),
-                            Text("Predicción",
+                            const Text('Predicción',
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold)),
-                            Text(
-                                e.goalsLocal.toString() +
-                                    " - " +
-                                    e.goalsVisitor.toString(),
-                                style: TextStyle(
+                            Text("${e.goalsLocal} - ${e.goalsVisitor}",
+                                style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 28,
                                     fontWeight: FontWeight.bold))
@@ -446,20 +446,20 @@ class _PredictionsScreenState extends State<PredictionsScreen>
 //-----------------------------------------------------------------------
   _getListViewPendingPredictions() {
     return ListView(
-      padding: EdgeInsets.all(0),
+      padding: const EdgeInsets.all(0),
       children: _pendingPredictionsFiltered.map((e) {
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Card(
               color: (e.goalsLocal == null && e.goalsVisitor == null)
-                  ? Color(0xFFFFFFCC)
-                  : Color.fromARGB(255, 141, 235, 94),
-              margin: EdgeInsets.all(2),
+                  ? const Color(0xFFFFFFCC)
+                  : const Color.fromARGB(255, 141, 235, 94),
+              margin: const EdgeInsets.all(2),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Container(
-                  margin: EdgeInsets.all(1),
-                  padding: EdgeInsets.all(0),
+                  margin: const EdgeInsets.all(1),
+                  padding: const EdgeInsets.all(0),
                   //----------- Fila Principal -----------
                   child: Row(
                     children: <Widget>[
@@ -470,11 +470,11 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                             CachedNetworkImage(
                               imageUrl: e.match!.local.logoFullPath,
                               errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
+                                  const Icon(Icons.error),
                               fit: BoxFit.contain,
                               height: 80,
                               width: 80,
-                              placeholder: (context, url) => Image(
+                              placeholder: (context, url) => const Image(
                                 image: AssetImage('assets/loading.gif'),
                                 fit: BoxFit.contain,
                                 height: 80,
@@ -482,7 +482,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                               ),
                             ),
                             Text(e.match!.local.initials,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                 )),
@@ -506,13 +506,13 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                     border: Border.all(color: Colors.black)),
                                 child: e.goalsLocal != null
                                     ? Text(e.goalsLocal.toString(),
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             color: Colors.black,
                                             fontSize: 28,
                                             fontWeight: FontWeight.bold))
-                                    : Text(""),
+                                    : const Text(''),
                               ),
-                              Text(" - ",
+                              const Text(' - ',
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 28,
@@ -527,22 +527,24 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                     border: Border.all(color: Colors.black)),
                                 child: e.goalsVisitor != null
                                     ? Text(e.goalsVisitor.toString(),
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             color: Colors.black,
                                             fontSize: 28,
                                             fontWeight: FontWeight.bold))
-                                    : Text(""),
+                                    : const Text(''),
                               ),
                             ],
                           ),
                           Text(
                             e.match!.dateName.toString(),
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            '${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(e.match!.dateLocal).add(Duration(hours: -3)))}',
-                            style: TextStyle(
+                            DateFormat('dd/MM/yyyy HH:mm').format(
+                                DateTime.parse(e.match!.dateLocal)
+                                    .add(const Duration(hours: -3))),
+                            style: const TextStyle(
                                 fontSize: 14, fontWeight: FontWeight.bold),
                           ),
                           _showButton(e),
@@ -555,11 +557,11 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                             CachedNetworkImage(
                               imageUrl: e.match!.visitor.logoFullPath,
                               errorWidget: (context, url, error) =>
-                                  Icon(Icons.error),
+                                  const Icon(Icons.error),
                               fit: BoxFit.contain,
                               height: 80,
                               width: 80,
-                              placeholder: (context, url) => Image(
+                              placeholder: (context, url) => const Image(
                                 image: AssetImage('assets/loading.gif'),
                                 fit: BoxFit.contain,
                                 height: 80,
@@ -567,7 +569,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                               ),
                             ),
                             Text(e.match!.visitor.initials,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                 )),
@@ -586,7 +588,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
 //***********************************************************************
 //******************** Método getPredictions ****************************
 //***********************************************************************
-  Future<Null> _getPredictions() async {
+  Future<void> _getPredictions() async {
     setState(() {
       _showLoader = true;
     });
@@ -602,7 +604,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
           title: 'Error',
           message: 'Verifica que estés conectado a Internet',
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
@@ -620,21 +622,20 @@ class _PredictionsScreenState extends State<PredictionsScreen>
           title: 'Error',
           message: response.message,
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
 
     _predictions = response.result;
 
-    _predictions.forEach((prediction) {
+    for (var prediction in _predictions) {
       if (prediction.match!.isClosed == true) {
         _completePredictions.add(prediction);
       } else {
         _pendingPredictions.add(prediction);
       }
-      ;
-    });
+    }
 
     _completePredictionsFiltered = _completePredictions;
     _pendingPredictionsFiltered = _pendingPredictions;
@@ -664,22 +665,22 @@ class _PredictionsScreenState extends State<PredictionsScreen>
 
   Widget _showFilter() {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: TextField(
         controller: _filterController,
         decoration: InputDecoration(
-          iconColor: Color(0xFF781f1e),
-          prefixIconColor: Color(0xFF781f1e),
-          hoverColor: Color(0xFF781f1e),
-          focusColor: Color(0xFF781f1e),
+          iconColor: const Color(0xFF781f1e),
+          prefixIconColor: const Color(0xFF781f1e),
+          hoverColor: const Color(0xFF781f1e),
+          focusColor: const Color(0xFF781f1e),
           fillColor: Colors.white,
           filled: true,
           hintText: 'Buscar...',
           labelText: 'Buscar:',
           errorText: _filterShowError ? _filterError : null,
-          prefixIcon: Icon(Icons.badge),
+          prefixIcon: const Icon(Icons.badge),
           border: OutlineInputBorder(
-            borderSide: BorderSide(color: Color(0xFF781f1e)),
+            borderSide: const BorderSide(color: Color(0xFF781f1e)),
             borderRadius: BorderRadius.circular(10),
           ),
         ),
@@ -696,22 +697,22 @@ class _PredictionsScreenState extends State<PredictionsScreen>
 
   Widget _showFilter2() {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: TextField(
         controller: _filter2Controller,
         decoration: InputDecoration(
-          iconColor: Color(0xFF781f1e),
-          prefixIconColor: Color(0xFF781f1e),
-          hoverColor: Color(0xFF781f1e),
-          focusColor: Color(0xFF781f1e),
+          iconColor: const Color(0xFF781f1e),
+          prefixIconColor: const Color(0xFF781f1e),
+          hoverColor: const Color(0xFF781f1e),
+          focusColor: const Color(0xFF781f1e),
           fillColor: Colors.white,
           filled: true,
           hintText: 'Buscar...',
           labelText: 'Buscar:',
           errorText: _filter2ShowError ? _filter2Error : null,
-          prefixIcon: Icon(Icons.badge),
+          prefixIcon: const Icon(Icons.badge),
           border: OutlineInputBorder(
-            borderSide: BorderSide(color: Color(0xFF781f1e)),
+            borderSide: const BorderSide(color: Color(0xFF781f1e)),
             borderRadius: BorderRadius.circular(10),
           ),
         ),
@@ -728,24 +729,15 @@ class _PredictionsScreenState extends State<PredictionsScreen>
 
   Widget _showEraseButton() {
     return Container(
-      margin: EdgeInsets.only(left: 5, right: 5),
+      margin: const EdgeInsets.only(left: 5, right: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           Expanded(
             child: ElevatedButton(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.delete),
-                  SizedBox(
-                    width: 5,
-                  ),
-                ],
-              ),
               style: ElevatedButton.styleFrom(
-                primary: Colors.red,
-                minimumSize: Size(double.infinity, 50),
+                backgroundColor: Colors.red,
+                minimumSize: const Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
                 ),
@@ -755,6 +747,15 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                 _completePredictionsFiltered = _completePredictions;
                 setState(() {});
               },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.delete),
+                  SizedBox(
+                    width: 5,
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -768,24 +769,15 @@ class _PredictionsScreenState extends State<PredictionsScreen>
 
   Widget _showEraseButton2() {
     return Container(
-      margin: EdgeInsets.only(left: 5, right: 5),
+      margin: const EdgeInsets.only(left: 5, right: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           Expanded(
             child: ElevatedButton(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.delete),
-                  SizedBox(
-                    width: 5,
-                  ),
-                ],
-              ),
               style: ElevatedButton.styleFrom(
-                primary: Colors.red,
-                minimumSize: Size(double.infinity, 50),
+                backgroundColor: Colors.red,
+                minimumSize: const Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
                 ),
@@ -795,6 +787,15 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                 _pendingPredictionsFiltered = _pendingPredictions;
                 setState(() {});
               },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.delete),
+                  SizedBox(
+                    width: 5,
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -808,12 +809,20 @@ class _PredictionsScreenState extends State<PredictionsScreen>
 
   Widget _showSearchButton() {
     return Container(
-      margin: EdgeInsets.only(left: 5, right: 5),
+      margin: const EdgeInsets.only(left: 5, right: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           Expanded(
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(166, 5, 68, 7),
+                minimumSize: const Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              onPressed: () => _search(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -823,14 +832,6 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                   ),
                 ],
               ),
-              style: ElevatedButton.styleFrom(
-                primary: Color.fromARGB(166, 5, 68, 7),
-                minimumSize: Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
-              onPressed: () => _search(),
             ),
           ),
         ],
@@ -844,12 +845,20 @@ class _PredictionsScreenState extends State<PredictionsScreen>
 
   Widget _showSearchButton2() {
     return Container(
-      margin: EdgeInsets.only(left: 5, right: 5),
+      margin: const EdgeInsets.only(left: 5, right: 5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           Expanded(
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(166, 5, 68, 7),
+                minimumSize: const Size(double.infinity, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              onPressed: () => _search2(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -859,14 +868,6 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                   ),
                 ],
               ),
-              style: ElevatedButton.styleFrom(
-                primary: Color.fromARGB(166, 5, 68, 7),
-                minimumSize: Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
-              onPressed: () => _search2(),
             ),
           ),
         ],
@@ -886,12 +887,12 @@ class _PredictionsScreenState extends State<PredictionsScreen>
           title: 'Error',
           message: 'Ingrese un texto a buscar',
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
     _completePredictionsFiltered = [];
-    _completePredictions.forEach((_completeMatch) {
+    for (var _completeMatch in _completePredictions) {
       if (_completeMatch.match!.local.initials
               .toLowerCase()
               .contains(_filter.toLowerCase()) ||
@@ -903,7 +904,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
               .contains(_filter.toLowerCase())) {
         _completePredictionsFiltered.add(_completeMatch);
       }
-    });
+    }
     _completePredictionsFiltered.sort((b, a) {
       int dateNameComp = a.match!.dateName!.compareTo(b.match!.dateName!);
       if (dateNameComp != 0) return dateNameComp;
@@ -926,12 +927,12 @@ class _PredictionsScreenState extends State<PredictionsScreen>
           title: 'Error',
           message: 'Ingrese un texto a buscar',
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
     _pendingPredictionsFiltered = [];
-    _pendingPredictions.forEach((_pendingMatch) {
+    for (var _pendingMatch in _pendingPredictions) {
       if (_pendingMatch.match!.local.initials
               .toLowerCase()
               .contains(_filter2.toLowerCase()) ||
@@ -943,7 +944,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
               .contains(_filter2.toLowerCase())) {
         _pendingPredictionsFiltered.add(_pendingMatch);
       }
-    });
+    }
 
     _pendingPredictionsFiltered.sort((b, a) {
       int dateNameComp = a.match!.dateName!.compareTo(b.match!.dateName!);
@@ -961,23 +962,22 @@ class _PredictionsScreenState extends State<PredictionsScreen>
   Widget _showCompleteResumen() {
     int puntos = 0;
 
-    _completePredictionsFiltered.forEach((prediction) {
+    for (var prediction in _completePredictionsFiltered) {
       if (prediction.points != null) {
         puntos = puntos + prediction.points!;
       }
-      ;
-    });
+    }
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10),
       child: Card(
-          color: Color.fromARGB(255, 240, 229, 105),
-          margin: EdgeInsets.all(1),
+          color: const Color.fromARGB(255, 240, 229, 105),
+          margin: const EdgeInsets.all(1),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Container(
-              margin: EdgeInsets.all(1),
-              padding: EdgeInsets.all(0),
+              margin: const EdgeInsets.all(1),
+              padding: const EdgeInsets.all(0),
               child: Row(
                 children: <Widget>[
                   Expanded(
@@ -986,11 +986,11 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
+                          SizedBox(
                             width: 85,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
+                              children: const [
                                 Text(
                                   'Partidos:',
                                   style: TextStyle(
@@ -1001,7 +1001,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                               ],
                             ),
                           ),
-                          Container(
+                          SizedBox(
                             width: 85,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -1009,7 +1009,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                 Text(
                                   (_completePredictionsFiltered.length)
                                       .toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -1017,11 +1017,11 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                               ],
                             ),
                           ),
-                          Container(
+                          SizedBox(
                             width: 85,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
+                              children: const [
                                 Text(
                                   'Puntos:',
                                   style: TextStyle(
@@ -1032,14 +1032,14 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                               ],
                             ),
                           ),
-                          Container(
+                          SizedBox(
                             width: 85,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
                                   puntos.toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -1064,23 +1064,22 @@ class _PredictionsScreenState extends State<PredictionsScreen>
   Widget _showPendingResumen() {
     int pendientes = 0;
 
-    _pendingPredictionsFiltered.forEach((prediction) {
+    for (var prediction in _pendingPredictionsFiltered) {
       if (prediction.goalsLocal == null && prediction.goalsVisitor == null) {
         pendientes = pendientes + 1;
       }
-      ;
-    });
+    }
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10),
       child: Card(
-          color: Color.fromARGB(255, 240, 229, 105),
-          margin: EdgeInsets.all(1),
+          color: const Color.fromARGB(255, 240, 229, 105),
+          margin: const EdgeInsets.all(1),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Container(
-              margin: EdgeInsets.all(1),
-              padding: EdgeInsets.all(0),
+              margin: const EdgeInsets.all(1),
+              padding: const EdgeInsets.all(0),
               child: Row(
                 children: <Widget>[
                   Expanded(
@@ -1089,11 +1088,11 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
+                          SizedBox(
                             width: 85,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
+                              children: const [
                                 Text(
                                   'Partidos:',
                                   style: TextStyle(
@@ -1104,7 +1103,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                               ],
                             ),
                           ),
-                          Container(
+                          SizedBox(
                             width: 85,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -1112,7 +1111,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                 Text(
                                   (_pendingPredictionsFiltered.length)
                                       .toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -1120,11 +1119,11 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                               ],
                             ),
                           ),
-                          Container(
+                          SizedBox(
                             width: 85,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
+                              children: const [
                                 Text(
                                   'Pendientes:',
                                   style: TextStyle(
@@ -1135,14 +1134,14 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                               ],
                             ),
                           ),
-                          Container(
+                          SizedBox(
                             width: 85,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text(
                                   pendientes.toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.red),
@@ -1168,25 +1167,15 @@ class _PredictionsScreenState extends State<PredictionsScreen>
     return Container(
       width: 160,
       height: 50,
-      margin: EdgeInsets.only(left: 0, right: 0),
+      margin: const EdgeInsets.only(left: 0, right: 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           Expanded(
             child: ElevatedButton(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.sports_soccer),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Text('Cargar goles'),
-                ],
-              ),
               style: ElevatedButton.styleFrom(
-                primary: Color.fromARGB(166, 5, 68, 7),
-                minimumSize: Size(100, 40),
+                backgroundColor: Color.fromARGB(166, 5, 68, 7),
+                minimumSize: const Size(100, 40),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
                 ),
@@ -1206,17 +1195,18 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                     builder: (BuildContext context) {
                       return AlertDialog(
                         backgroundColor: Colors.grey[300],
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                        actionsPadding: EdgeInsets.all(0),
-                        titlePadding: EdgeInsets.only(top: 10, left: 10),
-                        title: Text("Ingrese los Goles"),
-                        content: Container(
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 10),
+                        actionsPadding: const EdgeInsets.all(0),
+                        titlePadding: const EdgeInsets.only(top: 10, left: 10),
+                        title: const Text('Ingrese los Goles'),
+                        content: SizedBox(
                           height: 130,
                           child: Row(
                             children: [
                               //--------------- Escudo e Iniciales Local --------------
                               Container(
-                                padding: EdgeInsets.all(0),
+                                padding: const EdgeInsets.all(0),
                                 height: 90,
                                 width: 65,
                                 child: Column(
@@ -1224,11 +1214,12 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                     CachedNetworkImage(
                                       imageUrl: e.match!.local.logoFullPath,
                                       errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
+                                          const Icon(Icons.error),
                                       fit: BoxFit.contain,
                                       height: 65,
                                       width: 65,
-                                      placeholder: (context, url) => Image(
+                                      placeholder: (context, url) =>
+                                          const Image(
                                         image: AssetImage('assets/loading.gif'),
                                         fit: BoxFit.contain,
                                         height: 65,
@@ -1236,14 +1227,14 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                       ),
                                     ),
                                     Text(e.match!.local.initials,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                         )),
                                   ],
                                 ),
                               ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
 
                               //--------------- Goles Local --------------
                               Container(
@@ -1254,7 +1245,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                   keyboardType: TextInputType.number,
                                   textAlign: TextAlign.center,
                                   controller: _localGoalsController,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold),
                                   decoration: InputDecoration(
@@ -1274,8 +1265,8 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                 ),
                               ),
                               //--------------- Separador --------------
-                              Text(
-                                " - ",
+                              const Text(
+                                ' - ',
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 28,
@@ -1289,7 +1280,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                   textAlign: TextAlign.center,
                                   keyboardType: TextInputType.number,
                                   controller: _visitorGoalsController,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 24,
                                       fontWeight: FontWeight.bold),
                                   decoration: InputDecoration(
@@ -1308,10 +1299,10 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                   },
                                 ),
                               ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                               //--------------- Escudo e Iniciales Visitante --------------
                               Container(
-                                padding: EdgeInsets.all(0),
+                                padding: const EdgeInsets.all(0),
                                 height: 90,
                                 width: 65,
                                 child: Column(
@@ -1319,11 +1310,12 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                     CachedNetworkImage(
                                       imageUrl: e.match!.visitor.logoFullPath,
                                       errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
+                                          const Icon(Icons.error),
                                       fit: BoxFit.contain,
                                       height: 65,
                                       width: 65,
-                                      placeholder: (context, url) => Image(
+                                      placeholder: (context, url) =>
+                                          const Image(
                                         image: AssetImage('assets/loading.gif'),
                                         fit: BoxFit.contain,
                                         height: 65,
@@ -1331,7 +1323,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                       ),
                                     ),
                                     Text(e.match!.visitor.initials,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
                                         )),
@@ -1346,6 +1338,17 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                             children: [
                               Expanded(
                                 child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Color(0xFFB4161B),
+                                    minimumSize:
+                                        const Size(double.infinity, 50),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
@@ -1354,66 +1357,48 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                       Text('Cancelar'),
                                     ],
                                   ),
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Color(0xFFB4161B),
-                                    minimumSize: Size(double.infinity, 50),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 10,
                               ),
                               Expanded(
                                 child: ElevatedButton(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Icon(Icons.save),
-                                      Text('Aceptar'),
-                                    ],
-                                  ),
                                   style: ElevatedButton.styleFrom(
-                                    primary: Color.fromARGB(166, 5, 68, 7),
-                                    minimumSize: Size(double.infinity, 50),
+                                    backgroundColor:
+                                        Color.fromARGB(166, 5, 68, 7),
+                                    minimumSize:
+                                        const Size(double.infinity, 50),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(5),
                                     ),
                                   ),
                                   onPressed: () async {
-                                    if (_localGoalsController.text == "") {
+                                    if (_localGoalsController.text == '') {
                                       await showAlertDialog(
                                           context: context,
                                           title: 'Error',
                                           message:
                                               'Ingrese Goles para el Local',
                                           actions: <AlertDialogAction>[
-                                            AlertDialogAction(
+                                            const AlertDialogAction(
                                                 key: null, label: 'Aceptar'),
                                           ]);
                                       return;
                                     }
-                                    ;
 
-                                    if (_visitorGoalsController.text == "") {
+                                    if (_visitorGoalsController.text == '') {
                                       await showAlertDialog(
                                           context: context,
                                           title: 'Error',
                                           message:
                                               'Ingrese Goles para el Visitante',
                                           actions: <AlertDialogAction>[
-                                            AlertDialogAction(
+                                            const AlertDialogAction(
                                                 key: null, label: 'Aceptar'),
                                           ]);
                                       return;
                                     }
-                                    ;
 
                                     for (Prediction prediction
                                         in _pendingPredictions) {
@@ -1429,6 +1414,14 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                                     Navigator.pop(context);
                                     setState(() {});
                                   },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Icon(Icons.save),
+                                      Text('Aceptar'),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
@@ -1440,6 +1433,16 @@ class _PredictionsScreenState extends State<PredictionsScreen>
                     },
                     barrierDismissible: false);
               },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.sports_soccer),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text('Cargar goles'),
+                ],
+              ),
             ),
           )
         ],
@@ -1473,7 +1476,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
           title: 'Error',
           message: 'Verifica que estés conectado a Internet',
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
@@ -1491,7 +1494,7 @@ class _PredictionsScreenState extends State<PredictionsScreen>
           title: 'Error',
           message: response.message,
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }

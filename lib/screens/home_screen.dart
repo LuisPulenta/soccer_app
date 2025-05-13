@@ -4,20 +4,23 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:soccer_app/helpers/api_helper.dart';
-import 'package:soccer_app/helpers/constants.dart';
-import 'package:soccer_app/models/models.dart';
 import 'package:http/http.dart' as http;
-import 'package:soccer_app/screens/screens.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../helpers/constants.dart';
+import '../models/models.dart';
+import 'screens.dart';
 
 class HomeScreen extends StatefulWidget {
   final Token token;
   final User user;
   final bool rememberme;
 
-  HomeScreen(
-      {required this.token, required this.user, required this.rememberme});
+  const HomeScreen(
+      {super.key,
+      required this.token,
+      required this.user,
+      required this.rememberme});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -38,11 +41,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF00D99D),
+      backgroundColor: const Color(0xFF00D99D),
       appBar: AppBar(
-        title: Text('Soccer'),
+        title: const Text('Soccer'),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 8, 69, 48),
+        backgroundColor: const Color.fromARGB(255, 8, 69, 48),
       ),
       body: _getBody(),
       drawer: _getMenu(),
@@ -52,15 +55,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _getBody() {
     return SingleChildScrollView(
       child: Container(
-        margin: EdgeInsets.all(30),
+        margin: const EdgeInsets.all(30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image(
+            const Image(
               image: AssetImage('assets/logo.png'),
               width: 200,
             ),
-            SizedBox(
+            const SizedBox(
               height: 40,
             ),
             Stack(
@@ -69,11 +72,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(100),
                     child: CachedNetworkImage(
                       imageUrl: _user.pictureFullPath,
-                      errorWidget: (context, url, error) => Icon(Icons.error),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                       fit: BoxFit.cover,
                       height: 200,
                       width: 200,
-                      placeholder: (context, url) => Image(
+                      placeholder: (context, url) => const Image(
                         image: AssetImage('assets/loading.gif'),
                         fit: BoxFit.cover,
                         height: 200,
@@ -87,11 +91,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: BorderRadius.circular(100),
                       child: CachedNetworkImage(
                         imageUrl: _user.team.logoFullPath,
-                        errorWidget: (context, url, error) => Icon(Icons.error),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                         fit: BoxFit.contain,
                         height: 70,
                         width: 70,
-                        placeholder: (context, url) => Image(
+                        placeholder: (context, url) => const Image(
                           image: AssetImage('assets/loading.gif'),
                           fit: BoxFit.contain,
                           height: 200,
@@ -101,13 +106,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             Center(
               child: Text(
                 'Bienvenido/a ${_user.fullName}',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -118,15 +124,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _getMenu() {
     return Drawer(
-      backgroundColor: Color.fromARGB(255, 5, 68, 7),
+      backgroundColor: const Color.fromARGB(255, 5, 68, 7),
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-              padding: EdgeInsets.all(5),
+              padding: const EdgeInsets.all(5),
               child: Stack(
                 children: [
-                  Image(
+                  const Image(
                     image: AssetImage('assets/logo.png'),
                     height: 120,
                     width: 120,
@@ -139,11 +145,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: CachedNetworkImage(
                           imageUrl: _user.pictureFullPath,
                           errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
+                              const Icon(Icons.error),
                           fit: BoxFit.cover,
                           height: 100,
                           width: 100,
-                          placeholder: (context, url) => Image(
+                          placeholder: (context, url) => const Image(
                             image: AssetImage('assets/loading.gif'),
                             fit: BoxFit.cover,
                             height: 100,
@@ -159,11 +165,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: CachedNetworkImage(
                           imageUrl: _user.team.logoFullPath,
                           errorWidget: (context, url, error) =>
-                              Icon(Icons.error),
+                              const Icon(Icons.error),
                           fit: BoxFit.contain,
                           height: 60,
                           width: 60,
-                          placeholder: (context, url) => Image(
+                          placeholder: (context, url) => const Image(
                             image: AssetImage('assets/loading.gif'),
                             fit: BoxFit.contain,
                             height: 60,
@@ -174,8 +180,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   Positioned(
                     bottom: 20,
                     left: 10,
-                    child: Text(_user.firstName + " " + _user.lastName,
-                        style: TextStyle(
+                    child: Text("${_user.firstName} ${_user.lastName}",
+                        style: const TextStyle(
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight: FontWeight.bold)),
@@ -183,8 +189,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   Positioned(
                     bottom: 0,
                     left: 45,
-                    child: Text("(a) " + _user.nickName,
-                        style: TextStyle(
+                    child: Text('(a) ' + _user.nickName,
+                        style: const TextStyle(
                             color: Colors.green,
                             fontSize: 16,
                             fontWeight: FontWeight.bold)),
@@ -192,11 +198,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               )),
           ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.emoji_events,
               color: Colors.black,
             ),
-            title: Text('Torneos'),
+            title: const Text('Torneos'),
             tileColor: Colors.white,
             onTap: () {
               Navigator.push(
@@ -210,11 +216,11 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.groups,
               color: Colors.black,
             ),
-            title: Text('Grupos'),
+            title: const Text('Grupos'),
             tileColor: Colors.white,
             onTap: () {
               Navigator.push(
@@ -227,11 +233,11 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.sports_soccer,
               color: Colors.black,
             ),
-            title: Text('Predicciones'),
+            title: const Text('Predicciones'),
             tileColor: Colors.white,
             onTap: () {
               Navigator.push(
@@ -245,37 +251,37 @@ class _HomeScreenState extends State<HomeScreen> {
             },
           ),
           ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.gavel,
               color: Colors.black,
             ),
-            title: Text('Reglamento'),
+            title: const Text('Reglamento'),
             tileColor: Colors.white,
             onTap: () {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => RulesScreen()));
             },
           ),
-          Divider(
+          const Divider(
             color: Colors.black,
             height: 2,
           ),
           ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.face,
               color: Colors.black,
             ),
             tileColor: Colors.lightGreenAccent,
-            title: Text('Editar perfil'),
+            title: const Text('Editar perfil'),
             onTap: () => _editUser(),
           ),
           ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.logout,
               color: Colors.black,
             ),
             tileColor: Colors.lightGreenAccent,
-            title: Text('Cerrar Sesión'),
+            title: const Text('Cerrar Sesión'),
             onTap: () {
               _logOut();
             },
@@ -290,10 +296,10 @@ class _HomeScreenState extends State<HomeScreen> {
     await prefs.setBool('isRemembered', false);
     await prefs.setString('userBody', '');
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => LoginScreen()));
+        context, MaterialPageRoute(builder: (context) => const LoginScreen()));
   }
 
-  Future<Null> _getUser() async {
+  Future<void> _getUser() async {
     setState(() {
       _showLoader = true;
     });
@@ -309,7 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
           title: 'Error',
           message: 'Verifica que estés conectado a Internet',
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }

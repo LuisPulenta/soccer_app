@@ -1,4 +1,4 @@
-import 'package:soccer_app/models/team.dart';
+import 'team.dart';
 
 class Matches {
   int id = 0;
@@ -40,8 +40,8 @@ class Matches {
     id = json['id'];
     date = json['date'];
     dateLocal = json['dateLocal'];
-    local = new Team.fromJson(json['local']);
-    visitor = new Team.fromJson(json['visitor']);
+    local = Team.fromJson(json['local']);
+    visitor = Team.fromJson(json['visitor']);
     goalsLocal = json['goalsLocal'];
     goalsVisitor = json['goalsVisitor'];
     isClosed = json['isClosed'];
@@ -49,16 +49,16 @@ class Matches {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['date'] = this.date;
-    data['dateLocal'] = this.dateLocal;
-    data['local'] = this.local.toJson();
-    data['visitor'] = this.visitor.toJson();
-    data['goalsLocal'] = this.goalsLocal;
-    data['goalsVisitor'] = this.goalsVisitor;
-    data['isClosed'] = this.isClosed;
-    data['dateName'] = this.dateName;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['date'] = date;
+    data['dateLocal'] = dateLocal;
+    data['local'] = local.toJson();
+    data['visitor'] = visitor.toJson();
+    data['goalsLocal'] = goalsLocal;
+    data['goalsVisitor'] = goalsVisitor;
+    data['isClosed'] = isClosed;
+    data['dateName'] = dateName;
     return data;
   }
 }

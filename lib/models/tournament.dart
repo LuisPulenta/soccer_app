@@ -1,5 +1,5 @@
-import 'package:soccer_app/models/datename.dart';
-import 'package:soccer_app/models/group.dart';
+import 'datename.dart';
+import 'group.dart';
 
 class Tournament {
   int id = 0;
@@ -40,14 +40,14 @@ class Tournament {
     if (json['groups'] != null) {
       groups = [];
       json['groups'].forEach((v) {
-        groups.add(new Groups.fromJson(v));
+        groups.add(Groups.fromJson(v));
       });
     }
 
     if (json['dateNames'] != null) {
       groups = [];
       json['dateNames'].forEach((v) {
-        dateNames.add(new DateNames.fromJson(v));
+        dateNames.add(DateNames.fromJson(v));
       });
     }
 
@@ -55,21 +55,21 @@ class Tournament {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['startDate'] = this.startDate;
-    data['startDateLocal'] = this.startDateLocal;
-    data['endDate'] = this.endDate;
-    data['endDateLocal'] = this.endDateLocal;
-    data['isActive'] = this.isActive;
-    data['logoPath'] = this.logoPath;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['startDate'] = startDate;
+    data['startDateLocal'] = startDateLocal;
+    data['endDate'] = endDate;
+    data['endDateLocal'] = endDateLocal;
+    data['isActive'] = isActive;
+    data['logoPath'] = logoPath;
 
-    data['groups'] = this.groups.map((v) => v.toJson()).toList();
+    data['groups'] = groups.map((v) => v.toJson()).toList();
 
-    data['dateNames'] = this.dateNames.map((v) => v.toJson()).toList();
+    data['dateNames'] = dateNames.map((v) => v.toJson()).toList();
 
-    data['logoFullPath'] = this.logoFullPath;
+    data['logoFullPath'] = logoFullPath;
     return data;
   }
 }

@@ -1,6 +1,3 @@
-import 'package:soccer_app/models/team.dart';
-import 'package:soccer_app/models/user.dart';
-
 class Token {
   String token = '';
   String expiration = '';
@@ -13,9 +10,9 @@ class Token {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['token'] = this.token;
-    data['expiration'] = this.expiration;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['token'] = token;
+    data['expiration'] = expiration;
     return data;
   }
 }

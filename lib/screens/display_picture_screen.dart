@@ -1,12 +1,14 @@
 import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:soccer_app/models/response.dart';
+
+import '../models/response.dart';
 
 class DisplayPictureScreen extends StatefulWidget {
   final XFile image;
 
-  DisplayPictureScreen({required this.image});
+  const DisplayPictureScreen({super.key, required this.image});
 
   @override
   _DisplayPictureScreenState createState() => _DisplayPictureScreenState();
@@ -17,9 +19,9 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Vista previa de la foto'),
+        title: const Text('Vista previa de la foto'),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 8, 69, 48),
+        backgroundColor: const Color.fromARGB(255, 8, 69, 48),
       ),
       body: Column(
         children: [
@@ -29,15 +31,14 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
             fit: BoxFit.cover,
           ),
           Container(
-              margin: EdgeInsets.all(10),
+              margin: const EdgeInsets.all(10),
               child: Row(
                 children: <Widget>[
                   Expanded(
                     child: ElevatedButton(
-                      child: Text('Usar Foto'),
                       style: ElevatedButton.styleFrom(
-                        primary: Color.fromARGB(255, 8, 69, 48),
-                        minimumSize: Size(100, 50),
+                        backgroundColor: Color.fromARGB(255, 8, 69, 48),
+                        minimumSize: const Size(100, 50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
@@ -47,17 +48,17 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
                             Response(isSuccess: true, result: widget.image);
                         Navigator.pop(context, response);
                       },
+                      child: Text('Usar Foto'),
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   Expanded(
                     child: ElevatedButton(
-                      child: Text('Volver a tomar'),
                       style: ElevatedButton.styleFrom(
-                        primary: Color.fromARGB(255, 7, 222, 11),
-                        minimumSize: Size(100, 50),
+                        backgroundColor: Color.fromARGB(255, 7, 222, 11),
+                        minimumSize: const Size(100, 50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5),
                         ),
@@ -65,6 +66,7 @@ class _DisplayPictureScreenState extends State<DisplayPictureScreen> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
+                      child: Text('Volver a tomar'),
                     ),
                   ),
                 ],

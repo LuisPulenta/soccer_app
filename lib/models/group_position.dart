@@ -1,4 +1,4 @@
-import 'package:soccer_app/models/models.dart';
+import 'models.dart';
 
 class GroupPosition {
   PlayerResponse? playerResponse;
@@ -12,19 +12,19 @@ class GroupPosition {
 
   GroupPosition.fromJson(Map<String, dynamic> json) {
     playerResponse = json['playerResponse'] != null
-        ? new PlayerResponse.fromJson(json['playerResponse'])
+        ? PlayerResponse.fromJson(json['playerResponse'])
         : null;
     points = json['points'];
     ranking = json['ranking'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.playerResponse != null) {
-      data['playerResponse'] = this.playerResponse!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (playerResponse != null) {
+      data['playerResponse'] = playerResponse!.toJson();
     }
-    data['points'] = this.points;
-    data['ranking'] = this.ranking;
+    data['points'] = points;
+    data['ranking'] = ranking;
     return data;
   }
 }

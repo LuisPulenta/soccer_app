@@ -3,17 +3,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:soccer_app/components/loader_component.dart';
-import 'package:soccer_app/helpers/api_helper.dart';
-import 'package:soccer_app/models/models.dart';
-import 'package:soccer_app/screens/add_bet_group_screen.dart';
-import 'package:soccer_app/screens/screens.dart';
+
+import '../components/loader_component.dart';
+import '../helpers/api_helper.dart';
+import '../models/models.dart';
+import 'screens.dart';
 
 class MyGroupsScreen extends StatefulWidget {
   final Token token;
   final User user;
 
-  MyGroupsScreen({required this.token, required this.user});
+  const MyGroupsScreen({super.key, required this.token, required this.user});
 
   @override
   State<MyGroupsScreen> createState() => _MyGroupsScreenState();
@@ -59,26 +59,25 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF00D99D),
+      backgroundColor: const Color(0xFF00D99D),
       appBar: AppBar(
-        title: Text('Mis Grupos de Apuesta'),
+        title: const Text('Mis Grupos de Apuesta'),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 8, 69, 48),
+        backgroundColor: const Color.fromARGB(255, 8, 69, 48),
       ),
       body: Container(
-        padding: EdgeInsets.all(5),
-        color: Color(0xFF00D99D),
+        padding: const EdgeInsets.all(5),
+        color: const Color(0xFF00D99D),
         child: Center(
           child: _showLoader
-              ? LoaderComponent(
+              ? const LoaderComponent(
                   text: 'Cargando Grupos...',
                 )
               : _getContent(),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          backgroundColor: Color.fromARGB(255, 8, 69, 48),
+          backgroundColor: const Color.fromARGB(255, 8, 69, 48),
           onPressed: () async {
             String? result = await Navigator.push(
               context,
@@ -93,7 +92,8 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
               _getMyGroups();
               setState(() {});
             }
-          }),
+          },
+          child: const Icon(Icons.add)),
     );
   }
 
@@ -106,7 +106,7 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
       children: <Widget>[
         _showInfoUser(),
         Expanded(
-          child: _myGroups.length == 0 ? _noContent() : _getListView(),
+          child: _myGroups.isEmpty ? _noContent() : _getListView(),
         )
       ],
     );
@@ -119,7 +119,7 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
     return Container(
       width: double.infinity,
       height: 100,
-      color: Color(0xFF00D99D),
+      color: const Color(0xFF00D99D),
       child: Stack(
         children: [
           Positioned(
@@ -129,11 +129,11 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
                 borderRadius: BorderRadius.circular(80),
                 child: CachedNetworkImage(
                   imageUrl: widget.user.pictureFullPath,
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                   fit: BoxFit.cover,
                   height: 80,
                   width: 80,
-                  placeholder: (context, url) => Image(
+                  placeholder: (context, url) => const Image(
                     image: AssetImage('assets/loading.gif'),
                     fit: BoxFit.cover,
                     height: 60,
@@ -148,11 +148,11 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
                 borderRadius: BorderRadius.circular(80),
                 child: CachedNetworkImage(
                   imageUrl: widget.user.team.logoFullPath,
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                   fit: BoxFit.contain,
                   height: 50,
                   width: 50,
-                  placeholder: (context, url) => Image(
+                  placeholder: (context, url) => const Image(
                     image: AssetImage('assets/loading.gif'),
                     fit: BoxFit.contain,
                     height: 50,
@@ -166,22 +166,22 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("Grupos de Apuestas de ",
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text('Grupos de Apuestas de ',
                         textAlign: TextAlign.left,
                         style: TextStyle(
                             color: Colors.black, fontWeight: FontWeight.bold)),
                   ),
-                  Text(widget.user.firstName + " " + widget.user.lastName,
+                  Text('${widget.user.firstName} ${widget.user.lastName}',
                       textAlign: TextAlign.left,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Color.fromARGB(255, 33, 33, 243),
                           fontSize: 16,
                           fontWeight: FontWeight.bold)),
-                  Text(" (a) " + widget.user.nickName,
+                  Text(' (a) ${widget.user.nickName}',
                       textAlign: TextAlign.left,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Colors.red,
                           fontSize: 16,
                           fontWeight: FontWeight.bold)),
@@ -198,8 +198,8 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
 
   Widget _noContent() {
     return Container(
-      margin: EdgeInsets.all(20),
-      child: Center(
+      margin: const EdgeInsets.all(20),
+      child: const Center(
         child: Text(
           'No tengo ni pertenezco a ningún Grupo de Apuestas',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -217,23 +217,23 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
       children: _myGroups.map((e) {
         return Card(
           //color: Colors.white,
-          color: Color.fromARGB(255, 198, 230, 164),
+          color: const Color.fromARGB(255, 198, 230, 164),
           shadowColor: Colors.white,
           elevation: 10,
-          margin: EdgeInsets.fromLTRB(10, 0, 10, 10),
+          margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
           child: InkWell(
             onTap: () {
               groupSelected = e;
               _goInfoMyGroup(e);
             },
             child: Container(
-              margin: EdgeInsets.all(0),
-              padding: EdgeInsets.all(5),
+              margin: const EdgeInsets.all(0),
+              padding: const EdgeInsets.all(5),
               child: Row(
                 children: [
                   Expanded(
                     child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 10),
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -242,18 +242,18 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
                                 child: CachedNetworkImage(
                                   imageUrl: e.logoFullPath,
                                   errorWidget: (context, url, error) =>
-                                      Icon(Icons.error),
+                                      const Icon(Icons.error),
                                   fit: BoxFit.cover,
                                   height: 70,
                                   width: 70,
-                                  placeholder: (context, url) => Image(
+                                  placeholder: (context, url) => const Image(
                                     image: AssetImage('assets/loading.gif'),
                                     fit: BoxFit.cover,
                                     height: 70,
                                     width: 70,
                                   ),
                                 )),
-                            SizedBox(
+                            const SizedBox(
                               width: 10,
                             ),
                             Expanded(
@@ -261,25 +261,22 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(e.name,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: Colors.black,
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold)),
                                   Text(
-                                      "Creado el " +
-                                          '${DateFormat('dd/MM/yyyy').format(DateTime.parse(e.creationDate))}',
-                                      style: TextStyle(
+                                      'Creado el ${DateFormat('dd/MM/yyyy').format(DateTime.parse(e.creationDate))}',
+                                      style: const TextStyle(
                                           color: Colors.black, fontSize: 12)),
-                                  Text("por " + e.adminName,
-                                      style: TextStyle(
+                                  Text('por ${e.adminName}',
+                                      style: const TextStyle(
                                           color: Colors.black, fontSize: 12)),
-                                  Text(
-                                      "Cant. Jugadores: " +
-                                          e.cantPlayers.toString(),
-                                      style: TextStyle(
+                                  Text('Cant. Jugadores: ${e.cantPlayers}',
+                                      style: const TextStyle(
                                           color: Colors.black, fontSize: 12)),
                                   Text(e.tournamentName,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: Colors.black, fontSize: 12))
                                 ],
                               ),
@@ -291,11 +288,12 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
                                     child: CachedNetworkImage(
                                       imageUrl: e.adminPicture,
                                       errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
+                                          const Icon(Icons.error),
                                       fit: BoxFit.cover,
                                       height: 80,
                                       width: 80,
-                                      placeholder: (context, url) => Image(
+                                      placeholder: (context, url) =>
+                                          const Image(
                                         image: AssetImage('assets/loading.gif'),
                                         fit: BoxFit.cover,
                                         height: 80,
@@ -310,11 +308,12 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
                                       child: CachedNetworkImage(
                                         imageUrl: e.adminTeam,
                                         errorWidget: (context, url, error) =>
-                                            Icon(Icons.error),
+                                            const Icon(Icons.error),
                                         fit: BoxFit.cover,
                                         height: 30,
                                         width: 30,
-                                        placeholder: (context, url) => Image(
+                                        placeholder: (context, url) =>
+                                            const Image(
                                           image:
                                               AssetImage('assets/loading.gif'),
                                           fit: BoxFit.cover,
@@ -328,7 +327,7 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
                           ]),
                     ),
                   ),
-                  Icon(Icons.arrow_forward_ios),
+                  const Icon(Icons.arrow_forward_ios),
                 ],
               ),
             ),
@@ -360,7 +359,7 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
 //***********************************************************************
 //******************** Método getMyGroups *********************************
 //***********************************************************************
-  Future<Null> _getMyGroups() async {
+  Future<void> _getMyGroups() async {
     setState(() {
       _showLoader = true;
     });
@@ -376,7 +375,7 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
           title: 'Error',
           message: 'Verifica que estés conectado a Internet',
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
@@ -393,7 +392,7 @@ class _MyGroupsScreenState extends State<MyGroupsScreen> {
           title: 'Error',
           message: response.message,
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }

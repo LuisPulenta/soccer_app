@@ -1,4 +1,4 @@
-import 'package:soccer_app/models/models.dart';
+import 'models.dart';
 
 class League {
   int id = 0;
@@ -22,19 +22,19 @@ class League {
     if (json['teams'] != null) {
       teams = [];
       json['teams'].forEach((v) {
-        teams.add(new Team.fromJson(v));
+        teams.add(Team.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['logoPath'] = this.logoPath;
-    data['logoFullPath'] = this.logoFullPath;
-    if (this.teams != null) {
-      data['teams'] = this.teams.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['logoPath'] = logoPath;
+    data['logoFullPath'] = logoFullPath;
+    if (teams != null) {
+      data['teams'] = teams.map((v) => v.toJson()).toList();
     }
     return data;
   }

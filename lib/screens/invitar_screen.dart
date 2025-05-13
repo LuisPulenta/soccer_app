@@ -3,9 +3,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:soccer_app/components/loader_component.dart';
-import 'package:soccer_app/helpers/api_helper.dart';
-import 'package:soccer_app/models/models.dart';
+
+import '../components/loader_component.dart';
+import '../helpers/api_helper.dart';
+import '../models/models.dart';
 
 class InvitarScreen extends StatefulWidget {
   final GroupBet group;
@@ -14,7 +15,8 @@ class InvitarScreen extends StatefulWidget {
   final Token token;
 
   const InvitarScreen(
-      {required this.group,
+      {super.key,
+      required this.group,
       required this.user,
       required this.tournamentId,
       required this.token});
@@ -33,7 +35,7 @@ class _InvitarScreenState extends State<InvitarScreen> {
   String _email = '';
   String _emailError = '';
   bool _emailShowError = false;
-  TextEditingController _emailController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
 //***********************************************************************
 //******************** Init State ***************************************
@@ -50,28 +52,29 @@ class _InvitarScreenState extends State<InvitarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Invitar al Grupo ' + widget.group.name),
+        title: Text('Invitar al Grupo ${widget.group.name}'),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(255, 8, 69, 48),
+        backgroundColor: const Color.fromARGB(255, 8, 69, 48),
       ),
       body: Container(
-        color: Color(0xFF00D99D),
+        color: const Color(0xFF00D99D),
         child: Stack(
           children: [
             Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(200),
                   child: CachedNetworkImage(
                     imageUrl: widget.group.logoFullPath,
-                    errorWidget: (context, url, error) => Icon(Icons.error),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                     fit: BoxFit.cover,
                     height: 180,
                     width: 180,
-                    placeholder: (context, url) => Image(
+                    placeholder: (context, url) => const Image(
                       image: AssetImage('assets/loading.gif'),
                       fit: BoxFit.cover,
                       height: 180,
@@ -79,18 +82,18 @@ class _InvitarScreenState extends State<InvitarScreen> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 _showEmail(),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 _showButton(),
               ],
             ),
             _showLoader
-                ? LoaderComponent(
+                ? const LoaderComponent(
                     text: 'Por favor espere...',
                   )
                 : Container(),
@@ -105,7 +108,7 @@ class _InvitarScreenState extends State<InvitarScreen> {
 //-----------------------------------------------------------------------
   Widget _showEmail() {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: TextField(
         controller: _emailController,
         keyboardType: TextInputType.emailAddress,
@@ -113,7 +116,7 @@ class _InvitarScreenState extends State<InvitarScreen> {
             hintText: 'Ingresa Email...',
             labelText: 'Email',
             errorText: _emailShowError ? _emailError : null,
-            suffixIcon: Icon(Icons.email),
+            suffixIcon: const Icon(Icons.email),
             fillColor: Colors.white,
             filled: true,
             border:
@@ -130,12 +133,20 @@ class _InvitarScreenState extends State<InvitarScreen> {
 //-----------------------------------------------------------------------
   Widget _showButton() {
     return Container(
-      margin: EdgeInsets.only(left: 10, right: 10),
+      margin: const EdgeInsets.only(left: 10, right: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           Expanded(
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color.fromARGB(255, 8, 69, 48),
+                minimumSize: const Size(100, 50),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+              onPressed: () => _invitar(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -146,14 +157,6 @@ class _InvitarScreenState extends State<InvitarScreen> {
                   Text('Invitar'),
                 ],
               ),
-              style: ElevatedButton.styleFrom(
-                primary: Color.fromARGB(255, 8, 69, 48),
-                minimumSize: Size(100, 50),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-              ),
-              onPressed: () => _invitar(),
             ),
           ),
         ],
@@ -211,7 +214,7 @@ class _InvitarScreenState extends State<InvitarScreen> {
           title: 'Error',
           message: 'Verifica que estés conectado a Internet',
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
@@ -235,7 +238,7 @@ class _InvitarScreenState extends State<InvitarScreen> {
           title: 'Error',
           message: response.message,
           actions: <AlertDialogAction>[
-            AlertDialogAction(key: null, label: 'Aceptar'),
+            const AlertDialogAction(key: null, label: 'Aceptar'),
           ]);
       return;
     }
@@ -246,7 +249,7 @@ class _InvitarScreenState extends State<InvitarScreen> {
         message:
             'Se ha enviado un correo electrónico al usuario con su solicitud, esperamos a que responda pronto!',
         actions: <AlertDialogAction>[
-          AlertDialogAction(key: null, label: 'Aceptar'),
+          const AlertDialogAction(key: null, label: 'Aceptar'),
         ]);
 
     Navigator.pop(context, 'yes');
