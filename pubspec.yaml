@@ -1,5 +1,5 @@
 name: soccer_app
-description: A new Flutter project.
+description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -16,10 +16,10 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.2+15
+version: 1.0.2+16
 
 environment:
-  sdk: '>=2.19.6 <3.0.0'
+  sdk: ^3.9.0
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -31,24 +31,29 @@ dependencies:
   flutter:
     sdk: flutter
 
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
-  email_validator: ^2.0.1     # Para validar Email
-  http: ^0.13.3               # Para consumir APIs 
-  intl: ^0.17.0                   # Para ver formato moneda
-  adaptive_dialog: ^1.1.0         # Para cuadros de diálogo
+  cupertino_icons: ^1.0.8
+  email_validator: ^3.0.0         # Para validar Email
+  http: ^1.5.0                    # Para consumir APIs   
+  intl: ^0.20.0                   # Para ver formato moneda
+  adaptive_dialog: ^2.4.2         # Para cuadros de diálogo
   path_provider: ^2.0.5           # Para acceder a la cámara
   path: ^1.8.0                    # Para acceder a la cámara
-  connectivity: ^3.0.6            # Para chequear conexión a Internet
-  image_picker: ^0.8.4+2          # Para acceder a la galería de imágenes
+  connectivity_plus: ^6.0.3
+  image_picker: ^1.2.0            # Para acceder a la galería de imágenes
   shared_preferences: ^2.0.8      # Para el rememberme
-  cached_network_image: ^3.1.0    # Para mejorar el rendimiento de imágenes
-  flutter_launcher_icons: ^0.9.2
-  flutter_native_splash: ^1.2.4
-  camera: ^0.9.4                  # Para acceder a la cámara
+  cached_network_image: ^3.4.1    # Para mejorar el rendimiento de imágenes
+  flutter_launcher_icons: ^0.14.4  # Para poner el ícono a la app
+  flutter_native_splash: ^2.4.6   # Para poner el splash
+  camera: ^0.11.0+2                  # Para acceder a la cámara
 
+dependency_overrides:
+  dynamic_color: ^1.8.1
+  characters: ^1.4.1
+  material_color_utilities: ^0.13.0
+  meta: ^1.17.0
+  test_api: ^0.7.7
 
 flutter_icons:
   android: "launcher_icon"
@@ -68,7 +73,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^6.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -86,10 +91,10 @@ flutter:
     - assets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware
+  # https://flutter.dev/to/resolution-aware-images
 
   # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/assets-and-images/#from-packages
+  # https://flutter.dev/to/asset-from-package
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
@@ -109,4 +114,4 @@ flutter:
   #         weight: 700
   #
   # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
+  # see https://flutter.dev/to/font-from-package

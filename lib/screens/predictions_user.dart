@@ -1,6 +1,6 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -14,21 +14,22 @@ class PredictionsUser extends StatefulWidget {
   final int tournamentId;
   final Token token;
 
-  const PredictionsUser(
-      {super.key,
-      required this.groupPosition,
-      required this.user,
-      required this.tournamentId,
-      required this.token});
+  const PredictionsUser({
+    super.key,
+    required this.groupPosition,
+    required this.user,
+    required this.tournamentId,
+    required this.token,
+  });
 
   @override
   State<PredictionsUser> createState() => _PredictionsUserState();
 }
 
 class _PredictionsUserState extends State<PredictionsUser> {
-//***********************************************************************
-//******************** Declaración de Variables *************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Declaración de Variables *************************
+  //***********************************************************************
   bool _showLoader = false;
   final List<GroupPosition> _groupBetPlayers = [];
   List<Prediction> _predictionsAux = [];
@@ -40,24 +41,25 @@ class _PredictionsUserState extends State<PredictionsUser> {
   final bool _filterShowError = false;
   final TextEditingController _filterController = TextEditingController();
 
-//***********************************************************************
-//******************** Init State ***************************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Init State ***************************************
+  //***********************************************************************
   @override
   void initState() {
     super.initState();
     _getPredictionsUser();
   }
 
-//***********************************************************************
-//******************** Pantalla *****************************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Pantalla *****************************************
+  //***********************************************************************
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            'Predicciones de ${widget.groupPosition.playerResponse!.nickName}'),
+          'Predicciones de ${widget.groupPosition.playerResponse!.nickName}',
+        ),
         centerTitle: true,
         backgroundColor: const Color.fromARGB(255, 8, 69, 48),
       ),
@@ -66,10 +68,7 @@ class _PredictionsUserState extends State<PredictionsUser> {
         child: Column(
           children: [
             _showInfoUser(),
-            const Divider(
-              color: Colors.black,
-              height: 2,
-            ),
+            const Divider(color: Colors.black, height: 2),
             Row(
               children: [
                 Expanded(flex: 3, child: _showFilter()),
@@ -81,23 +80,23 @@ class _PredictionsUserState extends State<PredictionsUser> {
             _showLoader
                 ? Expanded(
                     child: Container(
-                        child:
-                            const LoaderComponent(text: 'Por favor espere...')),
+                      child: const LoaderComponent(text: 'Por favor espere...'),
+                    ),
                   )
                 : Expanded(
                     child: _predictionsFiltered.isEmpty
                         ? _noContentPredictions()
                         : _getListViewPredictions(),
-                  )
+                  ),
           ],
         ),
       ),
     );
   }
 
-//-----------------------------------------------------------------------------
-//------------------------------ _showInfoUser --------------------------------
-//-----------------------------------------------------------------------------
+  //-----------------------------------------------------------------------------
+  //------------------------------ _showInfoUser --------------------------------
+  //-----------------------------------------------------------------------------
   Widget _showInfoUser() {
     return Container(
       width: double.infinity,
@@ -109,79 +108,90 @@ class _PredictionsUserState extends State<PredictionsUser> {
             top: 10,
             left: 10,
             child: ClipRRect(
-                borderRadius: BorderRadius.circular(80),
-                child: CachedNetworkImage(
-                  imageUrl:
-                      widget.groupPosition.playerResponse!.pictureFullPath,
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
+              borderRadius: BorderRadius.circular(80),
+              child: CachedNetworkImage(
+                imageUrl: widget.groupPosition.playerResponse!.pictureFullPath,
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+                fit: BoxFit.cover,
+                height: 80,
+                width: 80,
+                placeholder: (context, url) => const Image(
+                  image: AssetImage('assets/loading.gif'),
                   fit: BoxFit.cover,
                   height: 80,
                   width: 80,
-                  placeholder: (context, url) => const Image(
-                    image: AssetImage('assets/loading.gif'),
-                    fit: BoxFit.cover,
-                    height: 80,
-                    width: 80,
-                  ),
-                )),
+                ),
+              ),
+            ),
           ),
           Positioned(
             top: 50,
             left: 70,
             child: ClipRRect(
-                borderRadius: BorderRadius.circular(80),
-                child: CachedNetworkImage(
-                  imageUrl:
-                      widget.groupPosition.playerResponse!.team!.logoFullPath,
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
+              borderRadius: BorderRadius.circular(80),
+              child: CachedNetworkImage(
+                imageUrl:
+                    widget.groupPosition.playerResponse!.team!.logoFullPath,
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+                fit: BoxFit.contain,
+                height: 50,
+                width: 50,
+                placeholder: (context, url) => const Image(
+                  image: AssetImage('assets/loading.gif'),
                   fit: BoxFit.contain,
                   height: 50,
                   width: 50,
-                  placeholder: (context, url) => const Image(
-                    image: AssetImage('assets/loading.gif'),
-                    fit: BoxFit.contain,
-                    height: 50,
-                    width: 50,
-                  ),
-                )),
+                ),
+              ),
+            ),
           ),
           Positioned(
-              top: 10,
-              left: 10,
-              right: 10,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text('Predicciones de',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.bold)),
+            top: 10,
+            left: 10,
+            right: 10,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Predicciones de',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  Text(
-                      '${widget.groupPosition.playerResponse!.firstName} ${widget.groupPosition.playerResponse!.lastName}',
-                      textAlign: TextAlign.left,
-                      style: const TextStyle(
-                          color: Color.fromARGB(255, 33, 33, 243),
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold)),
-                  Text(' (a) ${widget.groupPosition.playerResponse!.nickName}',
-                      textAlign: TextAlign.left,
-                      style: const TextStyle(
-                          color: Colors.red,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold)),
-                ],
-              )),
+                ),
+                Text(
+                  '${widget.groupPosition.playerResponse!.firstName} ${widget.groupPosition.playerResponse!.lastName}',
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 33, 33, 243),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  ' (a) ${widget.groupPosition.playerResponse!.nickName}',
+                  textAlign: TextAlign.left,
+                  style: const TextStyle(
+                    color: Colors.red,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
 
-//***********************************************************************
-//******************** Método getPredictionsUser ************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método getPredictionsUser ************************
+  //***********************************************************************
   Future<void> _getPredictionsUser() async {
     setState(() {
       _showLoader = true;
@@ -194,17 +204,21 @@ class _PredictionsUserState extends State<PredictionsUser> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
-    Response response = await ApiHelper.getPredictions(widget.tournamentId,
-        widget.groupPosition.playerResponse!.id, widget.token);
+    Response response = await ApiHelper.getPredictions(
+      widget.tournamentId,
+      widget.groupPosition.playerResponse!.id,
+      widget.token,
+    );
 
     setState(() {
       _showLoader = false;
@@ -212,12 +226,13 @@ class _PredictionsUserState extends State<PredictionsUser> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -235,8 +250,9 @@ class _PredictionsUserState extends State<PredictionsUser> {
     _predictionsFiltered.sort((b, a) {
       int dateNameComp = a.match!.dateName!.compareTo(b.match!.dateName!);
       if (dateNameComp != 0) return dateNameComp;
-      int initialsName =
-          b.match!.local.initials.compareTo(a.match!.local.initials);
+      int initialsName = b.match!.local.initials.compareTo(
+        a.match!.local.initials,
+      );
       return initialsName;
     });
 
@@ -244,8 +260,8 @@ class _PredictionsUserState extends State<PredictionsUser> {
   }
 
   //-----------------------------------------------------------------
-//--------------------- METODO SHOWFILTER -------------------------
-//-----------------------------------------------------------------
+  //--------------------- METODO SHOWFILTER -------------------------
+  //-----------------------------------------------------------------
 
   Widget _showFilter() {
     return Container(
@@ -276,8 +292,8 @@ class _PredictionsUserState extends State<PredictionsUser> {
   }
 
   //-----------------------------------------------------------------
-//--------------------- METODO SHOWERASEBUTTON --------------------
-//-----------------------------------------------------------------
+  //--------------------- METODO SHOWERASEBUTTON --------------------
+  //-----------------------------------------------------------------
 
   Widget _showEraseButton() {
     return Container(
@@ -301,12 +317,7 @@ class _PredictionsUserState extends State<PredictionsUser> {
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(Icons.delete),
-                  SizedBox(
-                    width: 5,
-                  ),
-                ],
+                children: const [Icon(Icons.delete), SizedBox(width: 5)],
               ),
             ),
           ),
@@ -315,9 +326,9 @@ class _PredictionsUserState extends State<PredictionsUser> {
     );
   }
 
-//-----------------------------------------------------------------
-//--------------------- METODO SHOWSEARCHBUTTON -------------------
-//-----------------------------------------------------------------
+  //-----------------------------------------------------------------
+  //--------------------- METODO SHOWSEARCHBUTTON -------------------
+  //-----------------------------------------------------------------
 
   Widget _showSearchButton() {
     return Container(
@@ -337,12 +348,7 @@ class _PredictionsUserState extends State<PredictionsUser> {
               onPressed: () => _search(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(Icons.search),
-                  SizedBox(
-                    width: 5,
-                  ),
-                ],
+                children: const [Icon(Icons.search), SizedBox(width: 5)],
               ),
             ),
           ),
@@ -351,49 +357,51 @@ class _PredictionsUserState extends State<PredictionsUser> {
     );
   }
 
-//-----------------------------------------------------------------
-//--------------------- METODO SEARCH -----------------------------
-//-----------------------------------------------------------------
+  //-----------------------------------------------------------------
+  //--------------------- METODO SEARCH -----------------------------
+  //-----------------------------------------------------------------
 
   _search() async {
     FocusScope.of(context).unfocus();
     if (_filter.isEmpty) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Ingrese un texto a buscar',
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Ingrese un texto a buscar',
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     _predictionsFiltered = [];
     for (var prediction in _predictions) {
-      if (prediction.match!.local.initials
-              .toLowerCase()
-              .contains(_filter.toLowerCase()) ||
-          prediction.match!.visitor.initials
-              .toLowerCase()
-              .contains(_filter.toLowerCase()) ||
-          prediction.match!.dateName!
-              .toLowerCase()
-              .contains(_filter.toLowerCase())) {
+      if (prediction.match!.local.initials.toLowerCase().contains(
+            _filter.toLowerCase(),
+          ) ||
+          prediction.match!.visitor.initials.toLowerCase().contains(
+            _filter.toLowerCase(),
+          ) ||
+          prediction.match!.dateName!.toLowerCase().contains(
+            _filter.toLowerCase(),
+          )) {
         _predictionsFiltered.add(prediction);
       }
     }
     _predictionsFiltered.sort((b, a) {
       int dateNameComp = a.match!.dateName!.compareTo(b.match!.dateName!);
       if (dateNameComp != 0) return dateNameComp;
-      int initialsName =
-          b.match!.local.initials.compareTo(a.match!.local.initials);
+      int initialsName = b.match!.local.initials.compareTo(
+        a.match!.local.initials,
+      );
       return initialsName;
     });
     setState(() {});
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- _showResumen -------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- _showResumen -------------------------------
+  //-----------------------------------------------------------------------
   Widget _showResumen() {
     int puntos = 0;
 
@@ -406,17 +414,17 @@ class _PredictionsUserState extends State<PredictionsUser> {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10),
       child: Card(
-          color: const Color.fromARGB(255, 240, 229, 105),
-          margin: const EdgeInsets.all(1),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Container(
-              margin: const EdgeInsets.all(1),
-              padding: const EdgeInsets.all(0),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                      child: Column(
+        color: const Color.fromARGB(255, 240, 229, 105),
+        margin: const EdgeInsets.all(1),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Container(
+            margin: const EdgeInsets.all(1),
+            padding: const EdgeInsets.all(0),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Column(
                     children: <Widget>[
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -484,17 +492,19 @@ class _PredictionsUserState extends State<PredictionsUser> {
                         ],
                       ),
                     ],
-                  )),
-                ],
-              ),
+                  ),
+                ),
+              ],
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- noContentPredictions ---------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- noContentPredictions ---------------
+  //-----------------------------------------------------------------------
   Widget _noContentPredictions() {
     return Container(
       margin: const EdgeInsets.all(20),
@@ -507,9 +517,9 @@ class _PredictionsUserState extends State<PredictionsUser> {
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- _getListViewPredictions ------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- _getListViewPredictions ------------
+  //-----------------------------------------------------------------------
   _getListViewPredictions() {
     return ListView(
       padding: const EdgeInsets.all(0),
@@ -517,121 +527,27 @@ class _PredictionsUserState extends State<PredictionsUser> {
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Card(
-              color: const Color(0xFFFFFFCC),
-              margin: const EdgeInsets.all(2),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Container(
-                  margin: const EdgeInsets.all(1),
-                  padding: const EdgeInsets.all(0),
-                  //----------- Fila Principal -----------
-                  child: Row(
-                    children: <Widget>[
-                      //----------- Columna Local -----------
-                      Expanded(
-                        child: Column(
-                          children: <Widget>[
-                            InkWell(
-                              onTap: () {
-                                _filter = e.match!.local.initials;
-                                _search();
-                              },
-                              child: CachedNetworkImage(
-                                imageUrl: e.match!.local.logoFullPath,
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                                fit: BoxFit.contain,
-                                height: 80,
-                                width: 80,
-                                placeholder: (context, url) => const Image(
-                                  image: AssetImage('assets/loading.gif'),
-                                  fit: BoxFit.contain,
-                                  height: 80,
-                                  width: 80,
-                                ),
-                              ),
-                            ),
-                            Text(e.match!.local.initials,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                            const Divider(
-                              color: Colors.black,
-                            ),
-                            const Text('Real',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold)),
-                            Text(
-                                '${e.match!.goalsLocal} - ${e.match!.goalsVisitor}',
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold))
-                          ],
-                        ),
-                      ),
-
-                      //----------- Columna Resultado -----------
-
-                      Column(
-                        children: [
-                          Text(
-                            e.match!.dateName.toString(),
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            DateFormat('dd/MM/yyyy')
-                                .format(DateTime.parse(e.match!.dateLocal)),
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                                color: Colors.indigo,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.black)),
-                            child: Column(
-                              children: [
-                                Container(
-                                  color: Colors.indigo,
-                                  child: const Text(
-                                    'Puntos',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                Container(
-                                  color: Colors.indigo,
-                                  child: Text(
-                                    e.points.toString(),
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 34,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      //----------- Columna Visitante -----------
-                      Expanded(
-                        child: Column(
-                          children: <Widget>[
-                            CachedNetworkImage(
-                              imageUrl: e.match!.visitor.logoFullPath,
+            color: const Color(0xFFFFFFCC),
+            margin: const EdgeInsets.all(2),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Container(
+                margin: const EdgeInsets.all(1),
+                padding: const EdgeInsets.all(0),
+                //----------- Fila Principal -----------
+                child: Row(
+                  children: <Widget>[
+                    //----------- Columna Local -----------
+                    Expanded(
+                      child: Column(
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () {
+                              _filter = e.match!.local.initials;
+                              _search();
+                            },
+                            child: CachedNetworkImage(
+                              imageUrl: e.match!.local.logoFullPath,
                               errorWidget: (context, url, error) =>
                                   const Icon(Icons.error),
                               fit: BoxFit.contain,
@@ -644,31 +560,139 @@ class _PredictionsUserState extends State<PredictionsUser> {
                                 width: 80,
                               ),
                             ),
-                            Text(e.match!.visitor.initials,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                            const Divider(
-                              color: Colors.black,
+                          ),
+                          Text(
+                            e.match!.local.initials,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
                             ),
-                            const Text('Predicción',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold)),
-                            Text('${e.goalsLocal} - ${e.goalsVisitor}',
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold))
-                          ],
-                        ),
+                          ),
+                          const Divider(color: Colors.black),
+                          const Text(
+                            'Real',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            '${e.match!.goalsLocal} - ${e.match!.goalsVisitor}',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+
+                    //----------- Columna Resultado -----------
+                    Column(
+                      children: [
+                        Text(
+                          e.match!.dateName.toString(),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          DateFormat(
+                            'dd/MM/yyyy',
+                          ).format(DateTime.parse(e.match!.dateLocal)),
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                        const SizedBox(height: 15),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.indigo,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.black),
+                          ),
+                          child: Column(
+                            children: [
+                              Container(
+                                color: Colors.indigo,
+                                child: const Text(
+                                  'Puntos',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                color: Colors.indigo,
+                                child: Text(
+                                  e.points.toString(),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 34,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    //----------- Columna Visitante -----------
+                    Expanded(
+                      child: Column(
+                        children: <Widget>[
+                          CachedNetworkImage(
+                            imageUrl: e.match!.visitor.logoFullPath,
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                            fit: BoxFit.contain,
+                            height: 80,
+                            width: 80,
+                            placeholder: (context, url) => const Image(
+                              image: AssetImage('assets/loading.gif'),
+                              fit: BoxFit.contain,
+                              height: 80,
+                              width: 80,
+                            ),
+                          ),
+                          Text(
+                            e.match!.visitor.initials,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Divider(color: Colors.black),
+                          const Text(
+                            'Predicción',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            '${e.goalsLocal} - ${e.goalsVisitor}',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              )),
+              ),
+            ),
+          ),
         );
       }).toList(),
     );

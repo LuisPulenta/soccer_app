@@ -1,6 +1,6 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
@@ -14,21 +14,22 @@ class InvitarScreen extends StatefulWidget {
   final int tournamentId;
   final Token token;
 
-  const InvitarScreen(
-      {super.key,
-      required this.group,
-      required this.user,
-      required this.tournamentId,
-      required this.token});
+  const InvitarScreen({
+    super.key,
+    required this.group,
+    required this.user,
+    required this.tournamentId,
+    required this.token,
+  });
 
   @override
   State<InvitarScreen> createState() => _InvitarScreenState();
 }
 
 class _InvitarScreenState extends State<InvitarScreen> {
-//***********************************************************************
-//******************** Declaración de Variables *************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Declaración de Variables *************************
+  //***********************************************************************
 
   bool _showLoader = false;
 
@@ -37,17 +38,17 @@ class _InvitarScreenState extends State<InvitarScreen> {
   bool _emailShowError = false;
   final TextEditingController _emailController = TextEditingController();
 
-//***********************************************************************
-//******************** Init State ***************************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Init State ***************************************
+  //***********************************************************************
   @override
   void initState() {
     super.initState();
   }
 
-//***********************************************************************
-//******************** Pantalla *****************************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Pantalla *****************************************
+  //***********************************************************************
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,9 +63,7 @@ class _InvitarScreenState extends State<InvitarScreen> {
           children: [
             Column(
               children: [
-                const SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(200),
                   child: CachedNetworkImage(
@@ -82,20 +81,14 @@ class _InvitarScreenState extends State<InvitarScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
                 _showEmail(),
-                const SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
                 _showButton(),
               ],
             ),
             _showLoader
-                ? const LoaderComponent(
-                    text: 'Por favor espere...',
-                  )
+                ? const LoaderComponent(text: 'Por favor espere...')
                 : Container(),
           ],
         ),
@@ -103,9 +96,9 @@ class _InvitarScreenState extends State<InvitarScreen> {
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- showEMail ----------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- showEMail ----------------------------------
+  //-----------------------------------------------------------------------
   Widget _showEmail() {
     return Container(
       padding: const EdgeInsets.all(10),
@@ -113,14 +106,14 @@ class _InvitarScreenState extends State<InvitarScreen> {
         controller: _emailController,
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
-            hintText: 'Ingresa Email...',
-            labelText: 'Email',
-            errorText: _emailShowError ? _emailError : null,
-            suffixIcon: const Icon(Icons.email),
-            fillColor: Colors.white,
-            filled: true,
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          hintText: 'Ingresa Email...',
+          labelText: 'Email',
+          errorText: _emailShowError ? _emailError : null,
+          suffixIcon: const Icon(Icons.email),
+          fillColor: Colors.white,
+          filled: true,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _email = value;
         },
@@ -128,9 +121,9 @@ class _InvitarScreenState extends State<InvitarScreen> {
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- showButton ---------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- showButton ---------------------------------
+  //-----------------------------------------------------------------------
   Widget _showButton() {
     return Container(
       margin: const EdgeInsets.only(left: 10, right: 10),
@@ -151,9 +144,7 @@ class _InvitarScreenState extends State<InvitarScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.mail),
-                  SizedBox(
-                    width: 15,
-                  ),
+                  SizedBox(width: 15),
                   Text('Invitar'),
                 ],
               ),
@@ -164,9 +155,9 @@ class _InvitarScreenState extends State<InvitarScreen> {
     );
   }
 
-//***********************************************************************
-//******************** Método _invitar **********************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método _invitar **********************************
+  //***********************************************************************
   void _invitar() async {
     if (!validateFields()) {
       return;
@@ -174,9 +165,9 @@ class _InvitarScreenState extends State<InvitarScreen> {
     _sendEmail();
   }
 
-//***********************************************************************
-//******************** Método validateFields ****************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método validateFields ****************************
+  //***********************************************************************
   bool validateFields() {
     bool isValid = true;
 
@@ -195,9 +186,9 @@ class _InvitarScreenState extends State<InvitarScreen> {
     return isValid;
   }
 
-//***********************************************************************
-//******************** Método _sendEmail ********************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método _sendEmail ********************************
+  //***********************************************************************
   void _sendEmail() async {
     setState(() {
       _showLoader = true;
@@ -210,12 +201,13 @@ class _InvitarScreenState extends State<InvitarScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -225,8 +217,11 @@ class _InvitarScreenState extends State<InvitarScreen> {
       'email': _email,
     };
 
-    Response response =
-        await ApiHelper.post('/api/GroupBets/Invitar', request, widget.token);
+    Response response = await ApiHelper.post(
+      '/api/GroupBets/Invitar',
+      request,
+      widget.token,
+    );
 
     setState(() {
       _showLoader = false;
@@ -234,23 +229,25 @@ class _InvitarScreenState extends State<InvitarScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
     await showAlertDialog(
-        context: context,
-        title: 'Confirmación',
-        message:
-            'Se ha enviado un correo electrónico al usuario con su solicitud, esperamos a que responda pronto!',
-        actions: <AlertDialogAction>[
-          const AlertDialogAction(key: null, label: 'Aceptar'),
-        ]);
+      context: context,
+      title: 'Confirmación',
+      message:
+          'Se ha enviado un correo electrónico al usuario con su solicitud, esperamos a que responda pronto!',
+      actions: <AlertDialogAction>[
+        const AlertDialogAction(key: null, label: 'Aceptar'),
+      ],
+    );
 
     Navigator.pop(context, 'yes');
   }

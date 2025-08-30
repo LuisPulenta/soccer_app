@@ -1,5 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
@@ -33,16 +33,9 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
       ),
       body: Stack(
         children: <Widget>[
-          Column(
-            children: <Widget>[
-              _showEmail(),
-              _showButtons(),
-            ],
-          ),
+          Column(children: <Widget>[_showEmail(), _showButtons()]),
           _showLoader
-              ? const LoaderComponent(
-                  text: 'Por favor espere...',
-                )
+              ? const LoaderComponent(text: 'Por favor espere...')
               : Container(),
         ],
       ),
@@ -76,9 +69,7 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
       margin: const EdgeInsets.only(left: 10, right: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          _showRecoverButton(),
-        ],
+        children: <Widget>[_showRecoverButton()],
       ),
     );
   }
@@ -89,9 +80,7 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
         style: ElevatedButton.styleFrom(
           backgroundColor: Color.fromARGB(255, 8, 69, 48),
           minimumSize: const Size(double.infinity, 50),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         ),
         onPressed: () => _recoverPassword(),
         child: Text('Recuperar Contraseña'),
@@ -136,18 +125,17 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estes conectado a internet.',
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estes conectado a internet.',
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
-    Map<String, dynamic> request = {
-      'email': _email,
-    };
+    Map<String, dynamic> request = {'email': _email};
 
     Response response = await ApiHelper.postNoToken(
       '/api/Account/RecoverPassword',
@@ -160,23 +148,25 @@ class _RecoverPasswordScreenState extends State<RecoverPasswordScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Este mail no pertenece a ningún usuario.',
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Este mail no pertenece a ningún usuario.',
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
     await showAlertDialog(
-        context: context,
-        title: 'Confirmación',
-        message:
-            'Se le ha enviado un correo con las instrucciones para recuperar su contraseña',
-        actions: <AlertDialogAction>[
-          const AlertDialogAction(key: null, label: 'Aceptar'),
-        ]);
+      context: context,
+      title: 'Confirmación',
+      message:
+          'Se le ha enviado un correo con las instrucciones para recuperar su contraseña',
+      actions: <AlertDialogAction>[
+        const AlertDialogAction(key: null, label: 'Aceptar'),
+      ],
+    );
 
     Navigator.pop(context);
   }

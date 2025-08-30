@@ -1,6 +1,6 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -14,38 +14,39 @@ class TournamentsScreen extends StatefulWidget {
   final int opcion;
   final User user;
 
-  const TournamentsScreen(
-      {super.key,
-      required this.token,
-      required this.opcion,
-      required this.user});
+  const TournamentsScreen({
+    super.key,
+    required this.token,
+    required this.opcion,
+    required this.user,
+  });
 
   @override
   _TournamentsScreenState createState() => _TournamentsScreenState();
 }
 
 class _TournamentsScreenState extends State<TournamentsScreen> {
-//***********************************************************************
-//******************** Declaración de Variables *************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Declaración de Variables *************************
+  //***********************************************************************
   List<Tournament> _tournaments = [];
   List<Tournament> _tournamentsAux = [];
   bool _showLoader = false;
   bool _isFiltered = false;
   String _search = '';
 
-//***********************************************************************
-//******************** Init State ***************************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Init State ***************************************
+  //***********************************************************************
   @override
   void initState() {
     super.initState();
     _getTournaments();
   }
 
-//***********************************************************************
-//******************** Pantalla *****************************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Pantalla *****************************************
+  //***********************************************************************
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,9 +58,13 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
         actions: <Widget>[
           _isFiltered
               ? IconButton(
-                  onPressed: _removeFilter, icon: const Icon(Icons.filter_none))
+                  onPressed: _removeFilter,
+                  icon: const Icon(Icons.filter_none),
+                )
               : IconButton(
-                  onPressed: _showFilter, icon: const Icon(Icons.filter_alt))
+                  onPressed: _showFilter,
+                  icon: const Icon(Icons.filter_alt),
+                ),
         ],
       ),
       body: Center(
@@ -70,16 +75,16 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- getContent ---------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- getContent ---------------------------------
+  //-----------------------------------------------------------------------
   Widget _getContent() {
     return _tournaments.isEmpty ? _noContent() : _getListView();
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- noContent ----------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- noContent ----------------------------------
+  //-----------------------------------------------------------------------
   Widget _noContent() {
     return Container(
       margin: const EdgeInsets.all(20),
@@ -94,9 +99,9 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- getListView --------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- getListView --------------------------------
+  //-----------------------------------------------------------------------
   Widget _getListView() {
     return RefreshIndicator(
       onRefresh: _getTournaments,
@@ -143,34 +148,34 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
                                   Row(
                                     children: [
                                       Expanded(
-                                        child: Text(e.name,
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            )),
+                                        child: Text(
+                                          e.name,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
+                                  const SizedBox(height: 5),
                                   Row(
                                     children: [
                                       Text(
                                         DateFormat('dd/MM/yyyy').format(
-                                            DateTime.parse(e.startDateLocal)),
+                                          DateTime.parse(e.startDateLocal),
+                                        ),
                                         style: const TextStyle(fontSize: 12),
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
+                                  const SizedBox(height: 5),
                                   Row(
                                     children: [
                                       Text(
                                         DateFormat('dd/MM/yyyy').format(
-                                            DateTime.parse(e.endDateLocal)),
+                                          DateTime.parse(e.endDateLocal),
+                                        ),
                                         style: const TextStyle(fontSize: 12),
                                       ),
                                     ],
@@ -193,9 +198,9 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
     );
   }
 
-//***********************************************************************
-//******************** Método getTournaments ****************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método getTournaments ****************************
+  //***********************************************************************
   Future<void> _getTournaments() async {
     setState(() {
       _showLoader = true;
@@ -208,12 +213,13 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -225,12 +231,13 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     _tournamentsAux = response.result;
@@ -253,61 +260,66 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
     // }
 
     _tournaments.sort((b, a) {
-      return a.startDate
-          .toString()
-          .toString()
-          .toLowerCase()
-          .compareTo(b.startDate.toString().toLowerCase());
+      return a.startDate.toString().toString().toLowerCase().compareTo(
+        b.startDate.toString().toLowerCase(),
+      );
     });
 
     setState(() {});
   }
 
-//***********************************************************************
-//******************** Método showFilter ********************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método showFilter ********************************
+  //***********************************************************************
 
   void _showFilter() {
     showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            title: const Text('Filtrar Usuarios'),
-            content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          title: const Text('Filtrar Usuarios'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
               const Text('Escriba las primeras letras del Torneo'),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               TextField(
                 autofocus: true,
                 decoration: InputDecoration(
-                    hintText: 'Criterio de búsqueda...',
-                    labelText: 'Buscar',
-                    suffixIcon: const Icon(Icons.search),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10))),
+                  hintText: 'Criterio de búsqueda...',
+                  labelText: 'Buscar',
+                  suffixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
                 onChanged: (value) {
                   _search = value;
                 },
               ),
-            ]),
-            actions: <Widget>[
-              TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Cancelar')),
-              TextButton(
-                  onPressed: () => _filter(), child: const Text('Filtrar')),
             ],
-          );
-        });
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () => _filter(),
+              child: const Text('Filtrar'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
-//***********************************************************************
-//******************** Método removeFilter ******************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método removeFilter ******************************
+  //***********************************************************************
   void _removeFilter() {
     setState(() {
       _isFiltered = false;
@@ -315,9 +327,9 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
     _getTournaments();
   }
 
-//***********************************************************************
-//******************** Método filter ************************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método filter ************************************
+  //***********************************************************************
   _filter() {
     if (_search.isEmpty) {
       return;
@@ -337,16 +349,18 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
     Navigator.of(context).pop();
   }
 
-//***********************************************************************
-//******************** Método goInfoTournament **************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método goInfoTournament **************************
+  //***********************************************************************
   void _goInfoTournament(Tournament tournament) async {
     if (widget.opcion == 1) {
       String? result = await Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => TournamentInfoScreen(
-                  token: widget.token, tournament: tournament)));
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              TournamentInfoScreen(token: widget.token, tournament: tournament),
+        ),
+      );
       if (result == 'yes') {
         _getTournaments();
       }
@@ -354,12 +368,15 @@ class _TournamentsScreenState extends State<TournamentsScreen> {
 
     if (widget.opcion == 2) {
       String? result = await Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => PredictionsScreen(
-                  token: widget.token,
-                  user: widget.user,
-                  tournament: tournament)));
+        context,
+        MaterialPageRoute(
+          builder: (context) => PredictionsScreen(
+            token: widget.token,
+            user: widget.user,
+            tournament: tournament,
+          ),
+        ),
+      );
       if (result == 'yes') {
         _getTournaments();
       }

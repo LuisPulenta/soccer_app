@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:camera/camera.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -23,9 +23,9 @@ class AddBetGroupScreen extends StatefulWidget {
 }
 
 class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
-//***********************************************************************
-//******************** Declaración de Variables *************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Declaración de Variables *************************
+  //***********************************************************************
   bool _showLoader = false;
   bool _photoChanged = false;
   late XFile _image;
@@ -42,18 +42,18 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
 
   String errorPhoto = '';
 
-//***********************************************************************
-//******************** Init State ***************************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Init State ***************************************
+  //***********************************************************************
   @override
   void initState() {
     super.initState();
     _getTournaments();
   }
 
-//***********************************************************************
-//******************** Pantalla *****************************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Pantalla *****************************************
+  //***********************************************************************
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,62 +69,60 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
             child: Column(
               children: <Widget>[
                 _showPhoto(),
-                Text(errorPhoto,
-                    style: const TextStyle(color: Colors.red, fontSize: 18)),
+                Text(
+                  errorPhoto,
+                  style: const TextStyle(color: Colors.red, fontSize: 18),
+                ),
                 _showName(),
                 _showTournaments(),
-                const SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
                 _showButtons(),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
               ],
             ),
           ),
           _showLoader
-              ? const LoaderComponent(
-                  text: 'Por favor espere...',
-                )
+              ? const LoaderComponent(text: 'Por favor espere...')
               : Container(),
         ],
       ),
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- showPhoto ----------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- showPhoto ----------------------------------
+  //-----------------------------------------------------------------------
   Widget _showPhoto() {
     return InkWell(
-      child: Stack(children: <Widget>[
-        Container(
-          margin: const EdgeInsets.only(top: 10),
-          child: widget.user.userId.isEmpty && !_photoChanged
-              ? const Image(
-                  image: AssetImage('assets/noimage.png'),
-                  width: 160,
-                  height: 160,
-                  fit: BoxFit.cover)
-              : ClipRRect(
-                  borderRadius: BorderRadius.circular(80),
-                  child: _photoChanged
-                      ? Image.file(
-                          File(_image.path),
-                          width: 160,
-                          height: 160,
-                          fit: BoxFit.cover,
-                        )
-                      : const Image(
-                          image: AssetImage('assets/noimage.png'),
-                          fit: BoxFit.cover,
-                          height: 160,
-                          width: 160,
-                        ),
-                ),
-        ),
-        Positioned(
+      child: Stack(
+        children: <Widget>[
+          Container(
+            margin: const EdgeInsets.only(top: 10),
+            child: widget.user.userId.isEmpty && !_photoChanged
+                ? const Image(
+                    image: AssetImage('assets/noimage.png'),
+                    width: 160,
+                    height: 160,
+                    fit: BoxFit.cover,
+                  )
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(80),
+                    child: _photoChanged
+                        ? Image.file(
+                            File(_image.path),
+                            width: 160,
+                            height: 160,
+                            fit: BoxFit.cover,
+                          )
+                        : const Image(
+                            image: AssetImage('assets/noimage.png'),
+                            fit: BoxFit.cover,
+                            height: 160,
+                            width: 160,
+                          ),
+                  ),
+          ),
+          Positioned(
             bottom: 0,
             left: 100,
             child: InkWell(
@@ -142,8 +140,9 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
                   ),
                 ),
               ),
-            )),
-        Positioned(
+            ),
+          ),
+          Positioned(
             bottom: 0,
             left: 0,
             child: InkWell(
@@ -161,28 +160,30 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
                   ),
                 ),
               ),
-            )),
-      ]),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- showName ----------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- showName ----------------------------------
+  //-----------------------------------------------------------------------
   Widget _showName() {
     return Container(
       padding: const EdgeInsets.all(10),
       child: TextField(
         controller: _nameController,
         decoration: InputDecoration(
-            hintText: 'Ingresa nombre...',
-            labelText: 'Nombre',
-            errorText: _nameShowError ? _nameError : null,
-            suffixIcon: const Icon(Icons.closed_caption),
-            fillColor: Colors.white,
-            filled: true,
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          hintText: 'Ingresa nombre...',
+          labelText: 'Nombre',
+          errorText: _nameShowError ? _nameError : null,
+          suffixIcon: const Icon(Icons.closed_caption),
+          fillColor: Colors.white,
+          filled: true,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _name = value;
         },
@@ -190,9 +191,9 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- showTournaments --------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- showTournaments --------------------------------
+  //-----------------------------------------------------------------------
   Widget _showTournaments() {
     return Container(
       padding: const EdgeInsets.all(10),
@@ -213,48 +214,49 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
                 errorText: _tournamentSelectedShowError
                     ? _tournamentSelectedError
                     : null,
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-              )),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
     );
   }
 
-//***********************************************************************
-//******************** Método getComboTournaments ***************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método getComboTournaments ***************************
+  //***********************************************************************
   List<DropdownMenuItem<int>> _getComboTournaments() {
     List<DropdownMenuItem<int>> list = [];
-    list.add(const DropdownMenuItem(
-      value: 0,
-      child: Text('Seleccione un Torneo...'),
-    ));
+    list.add(
+      const DropdownMenuItem(value: 0, child: Text('Seleccione un Torneo...')),
+    );
 
     for (var tournament in _tournaments) {
-      list.add(DropdownMenuItem(
-        value: tournament.id,
-        child: Text(tournament.name),
-      ));
+      list.add(
+        DropdownMenuItem(value: tournament.id, child: Text(tournament.name)),
+      );
     }
 
     return list;
   }
 
-//***********************************************************************
-//******************** Método TakePicture *******************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método TakePicture *******************************
+  //***********************************************************************
   void _takePicture() async {
     WidgetsFlutterBinding.ensureInitialized();
     final cameras = await availableCameras();
     var firstCamera = cameras.first;
     var response1 = await showAlertDialog(
-        context: context,
-        title: 'Seleccionar cámara',
-        message: '¿Qué cámara desea utilizar?',
-        actions: <AlertDialogAction>[
-          const AlertDialogAction(key: 'no', label: 'Trasera'),
-          const AlertDialogAction(key: 'yes', label: 'Delantera'),
-          const AlertDialogAction(key: 'cancel', label: 'Cancelar'),
-        ]);
+      context: context,
+      title: 'Seleccionar cámara',
+      message: '¿Qué cámara desea utilizar?',
+      actions: <AlertDialogAction>[
+        const AlertDialogAction(key: 'no', label: 'Trasera'),
+        const AlertDialogAction(key: 'yes', label: 'Delantera'),
+        const AlertDialogAction(key: 'cancel', label: 'Cancelar'),
+      ],
+    );
     if (response1 == 'yes') {
       firstCamera = cameras.first;
     }
@@ -264,11 +266,11 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
 
     if (response1 != 'cancel') {
       Response? response = await Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => TakePictureScreen(
-                    camera: firstCamera,
-                  )));
+        context,
+        MaterialPageRoute(
+          builder: (context) => TakePictureScreen(camera: firstCamera),
+        ),
+      );
       if (response != null) {
         setState(() {
           _photoChanged = true;
@@ -278,9 +280,9 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
     }
   }
 
-//***********************************************************************
-//******************** Método SelectPicture *****************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método SelectPicture *****************************
+  //***********************************************************************
   void _selectPicture() async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -292,9 +294,9 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
     }
   }
 
-//***********************************************************************
-//******************** Método getTournaments ****************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método getTournaments ****************************
+  //***********************************************************************
   Future<void> _getTournaments() async {
     setState(() {
       _showLoader = true;
@@ -307,12 +309,13 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -324,29 +327,29 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
     setState(() {
       _tournaments = response.result;
       _tournaments.sort((a, b) {
-        return a.name
-            .toString()
-            .toLowerCase()
-            .compareTo(b.name.toString().toLowerCase());
+        return a.name.toString().toLowerCase().compareTo(
+          b.name.toString().toLowerCase(),
+        );
       });
     });
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- showButtons -------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- showButtons -------------------------------
+  //-----------------------------------------------------------------------
   Widget _showButtons() {
     return Center(
       child: Container(
@@ -354,45 +357,35 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
         margin: const EdgeInsets.only(left: 10, right: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            _showSaveButton(),
-          ],
+          children: <Widget>[_showSaveButton()],
         ),
       ),
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- showSaveButton -----------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- showSaveButton -----------------------------
+  //-----------------------------------------------------------------------
   Widget _showSaveButton() {
     return Expanded(
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: Color.fromARGB(255, 8, 69, 48),
           minimumSize: const Size(double.infinity, 50),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         ),
         onPressed: () => _save(),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.save),
-            SizedBox(
-              width: 15,
-            ),
-            Text('Guardar'),
-          ],
+          children: [Icon(Icons.save), SizedBox(width: 15), Text('Guardar')],
         ),
       ),
     );
   }
 
-//***********************************************************************
-//******************** save *********************************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** save *********************************************
+  //***********************************************************************
   void _save() {
     if (!validateFields()) {
       return;
@@ -400,9 +393,9 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
     _saveRecord();
   }
 
-//***********************************************************************
-//******************** Método validateFields ****************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método validateFields ****************************
+  //***********************************************************************
   bool validateFields() {
     bool isValid = true;
     errorPhoto = '';
@@ -431,9 +424,9 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
     return isValid;
   }
 
-//***********************************************************************
-//******************** saveRecord ***************************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** saveRecord ***************************************
+  //***********************************************************************
   _saveRecord() async {
     setState(() {
       _showLoader = true;
@@ -460,17 +453,21 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
-    Response response =
-        await ApiHelper.post('/api/GroupBets/', request, widget.token);
+    Response response = await ApiHelper.post(
+      '/api/GroupBets/',
+      request,
+      widget.token,
+    );
 
     setState(() {
       _showLoader = false;
@@ -478,12 +475,13 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     Navigator.pop(context, 'yes');

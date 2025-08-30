@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -43,25 +43,20 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Stack(
         children: <Widget>[
           Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 0),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xff00d99d),
-                    Color(0xff00d9c0),
-                  ],
-                ),
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 0),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xff00d99d), Color(0xff00d9c0)],
               ),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 50),
-                child: Image.asset(
-                  'assets/logo.png',
-                  height: 200,
-                ),
-              )),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 50),
+              child: Image.asset('assets/logo.png', height: 200),
+            ),
+          ),
           Transform.translate(
             offset: const Offset(0, 250),
             child: Row(
@@ -84,22 +79,27 @@ class _LoginScreenState extends State<LoginScreen> {
               child: SingleChildScrollView(
                 child: Card(
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                   elevation: 15,
                   margin: const EdgeInsets.only(
-                      left: 10, right: 10, top: 260, bottom: 20),
+                    left: 10,
+                    right: 10,
+                    top: 260,
+                    bottom: 20,
+                  ),
                   child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 5, vertical: 20),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 5,
+                      vertical: 20,
+                    ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         _showEmail(),
                         _showPassword(),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        const SizedBox(height: 10),
                         _showRememberme(),
                         _showForgotPassword(),
                         _showButtons(),
@@ -113,17 +113,11 @@ class _LoginScreenState extends State<LoginScreen> {
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const <Widget>[
-                SizedBox(
-                  height: 40,
-                ),
-              ],
+              children: const <Widget>[SizedBox(height: 40)],
             ),
           ),
           _showLoader
-              ? const LoaderComponent(
-                  text: 'Por favor espere...',
-                )
+              ? const LoaderComponent(text: 'Por favor espere...')
               : Container(),
         ],
       ),
@@ -131,10 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _showLogo() {
-    return const Image(
-      image: AssetImage('assets/logo.png'),
-      width: 300,
-    );
+    return const Image(image: AssetImage('assets/logo.png'), width: 300);
   }
 
   Widget _showEmail() {
@@ -143,14 +134,14 @@ class _LoginScreenState extends State<LoginScreen> {
       child: TextField(
         keyboardType: TextInputType.emailAddress,
         decoration: InputDecoration(
-            fillColor: Colors.white,
-            filled: true,
-            hintText: 'Usuario...',
-            labelText: 'Usuario',
-            errorText: _emailShowError ? _emailError : null,
-            prefixIcon: const Icon(Icons.person),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          fillColor: Colors.white,
+          filled: true,
+          hintText: 'Usuario...',
+          labelText: 'Usuario',
+          errorText: _emailShowError ? _emailError : null,
+          prefixIcon: const Icon(Icons.person),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _email = value;
         },
@@ -164,24 +155,24 @@ class _LoginScreenState extends State<LoginScreen> {
       child: TextField(
         obscureText: !_passwordShow,
         decoration: InputDecoration(
-            fillColor: Colors.white,
-            filled: true,
-            hintText: 'Contraseña...',
-            labelText: 'Contraseña',
-            errorText: _passwordShowError ? _passwordError : null,
-            prefixIcon: const Icon(Icons.lock),
-            suffixIcon: IconButton(
-              icon: _passwordShow
-                  ? const Icon(Icons.visibility)
-                  : const Icon(Icons.visibility_off),
-              onPressed: () {
-                setState(() {
-                  _passwordShow = !_passwordShow;
-                });
-              },
-            ),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          fillColor: Colors.white,
+          filled: true,
+          hintText: 'Contraseña...',
+          labelText: 'Contraseña',
+          errorText: _passwordShowError ? _passwordError : null,
+          prefixIcon: const Icon(Icons.lock),
+          suffixIcon: IconButton(
+            icon: _passwordShow
+                ? const Icon(Icons.visibility)
+                : const Icon(Icons.visibility_off),
+            onPressed: () {
+              setState(() {
+                _passwordShow = !_passwordShow;
+              });
+            },
+          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _password = value;
         },
@@ -215,8 +206,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _goForgotPassword() {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => const RecoverPasswordScreen()));
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const RecoverPasswordScreen()),
+    );
   }
 
   Widget _showButtons() {
@@ -239,17 +232,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.login),
-                  SizedBox(
-                    width: 20,
-                  ),
+                  SizedBox(width: 20),
                   Text('Iniciar Sesión'),
                 ],
               ),
             ),
           ),
-          const SizedBox(
-            width: 10,
-          ),
+          const SizedBox(width: 10),
           Expanded(
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -264,9 +253,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.person_add),
-                  SizedBox(
-                    width: 20,
-                  ),
+                  SizedBox(width: 20),
                   Text('Registrarse'),
                 ],
               ),
@@ -285,12 +272,13 @@ class _LoginScreenState extends State<LoginScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -306,14 +294,9 @@ class _LoginScreenState extends State<LoginScreen> {
       _showLoader = true;
     });
 
-    Map<String, dynamic> request = {
-      'userName': _email,
-      'password': _password,
-    };
+    Map<String, dynamic> request = {'userName': _email, 'password': _password};
 
-    Map<String, dynamic> request2 = {
-      'Email': _email,
-    };
+    Map<String, dynamic> request2 = {'Email': _email};
 
     var url = Uri.parse('${Constants.apiUrl}/Account/CreateToken');
     var response = await http.post(
@@ -365,10 +348,12 @@ class _LoginScreenState extends State<LoginScreen> {
     var user = User.fromJson(decodedJson2);
 
     Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                HomeScreen(token: token, user: user, rememberme: _rememberme)));
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            HomeScreen(token: token, user: user, rememberme: _rememberme),
+      ),
+    );
   }
 
   bool validateFields() {
@@ -417,31 +402,35 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _register() {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => RegisterUserScreen(
-                  token: Token(expiration: '', token: ''),
-                  user: User(
-                      id: 0,
-                      userId: '',
-                      firstName: '',
-                      lastName: '',
-                      picturePath: '',
-                      nickName: '',
-                      team: Team(
-                          id: 0,
-                          name: '',
-                          initials: '',
-                          logoPath: '',
-                          leagueId: 0,
-                          leagueName: '',
-                          logoFullPath: ''),
-                      userType: 1,
-                      points: 0,
-                      fullName: '',
-                      email: '',
-                      pictureFullPath: ''),
-                  myProfile: false,
-                )));
+      context,
+      MaterialPageRoute(
+        builder: (context) => RegisterUserScreen(
+          token: Token(expiration: '', token: ''),
+          user: User(
+            id: 0,
+            userId: '',
+            firstName: '',
+            lastName: '',
+            picturePath: '',
+            nickName: '',
+            team: Team(
+              id: 0,
+              name: '',
+              initials: '',
+              logoPath: '',
+              leagueId: 0,
+              leagueName: '',
+              logoFullPath: '',
+            ),
+            userType: 1,
+            points: 0,
+            fullName: '',
+            email: '',
+            pictureFullPath: '',
+          ),
+          myProfile: false,
+        ),
+      ),
+    );
   }
 }

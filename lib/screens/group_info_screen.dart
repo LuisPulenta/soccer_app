@@ -1,6 +1,6 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -21,9 +21,9 @@ class GroupInfoScreen extends StatefulWidget {
 
 class _GroupInfoScreenState extends State<GroupInfoScreen>
     with SingleTickerProviderStateMixin {
-//***********************************************************************
-//******************** Declaración de Variables *************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Declaración de Variables *************************
+  //***********************************************************************
   bool _showLoader = false;
   TabController? _tabController;
   List<Matches> _matches = [];
@@ -43,9 +43,9 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
   final bool _filter2ShowError = false;
   final TextEditingController _filter2Controller = TextEditingController();
 
-//***********************************************************************
-//******************** Init State ***************************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Init State ***************************************
+  //***********************************************************************
   @override
   void initState() {
     super.initState();
@@ -53,26 +53,24 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
     _getGroupDetails();
 
     _completeMatches.sort((b, a) {
-      return a.dateLocal
-          .toString()
-          .toLowerCase()
-          .compareTo(b.dateLocal.toString().toLowerCase());
+      return a.dateLocal.toString().toLowerCase().compareTo(
+        b.dateLocal.toString().toLowerCase(),
+      );
     });
 
     _pendingMatches.sort((b, a) {
-      return a.dateLocal
-          .toString()
-          .toLowerCase()
-          .compareTo(b.dateLocal.toString().toLowerCase());
+      return a.dateLocal.toString().toLowerCase().compareTo(
+        b.dateLocal.toString().toLowerCase(),
+      );
     });
 
     _completeMatchesFiltered = _completeMatches;
     _pendingMatchesFiltered = _pendingMatches;
   }
 
-//***********************************************************************
-//******************** Pantalla *****************************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Pantalla *****************************************
+  //***********************************************************************
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,14 +82,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  Color(
-                    (0xffdadada),
-                  ),
-                  Color(
-                    (0xffb3b3b4),
-                  ),
-                ],
+                colors: [Color((0xffdadada)), Color((0xffb3b3b4))],
               ),
             ),
             child: TabBarView(
@@ -99,9 +90,9 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
               physics: const AlwaysScrollableScrollPhysics(),
               dragStartBehavior: DragStartBehavior.start,
               children: <Widget>[
-//-------------------------------------------------------------------------
-//-------------------------- 1° TABBAR ------------------------------------
-//-------------------------------------------------------------------------
+                //-------------------------------------------------------------------------
+                //-------------------------- 1° TABBAR ------------------------------------
+                //-------------------------------------------------------------------------
                 Container(
                   color: const Color(0xFF00D99D),
                   child: Center(
@@ -110,9 +101,9 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                         : _getContent(),
                   ),
                 ),
-//-------------------------------------------------------------------------
-//-------------------------- 2° TABBAR ------------------------------------
-//-------------------------------------------------------------------------
+                //-------------------------------------------------------------------------
+                //-------------------------- 2° TABBAR ------------------------------------
+                //-------------------------------------------------------------------------
                 Container(
                   color: const Color(0xFF00D99D),
                   child: Center(
@@ -121,9 +112,9 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                         : _getPendingMatches(),
                   ),
                 ),
-//-------------------------------------------------------------------------
-//-------------------------- 3° TABBAR ------------------------------------
-//-------------------------------------------------------------------------
+                //-------------------------------------------------------------------------
+                //-------------------------- 3° TABBAR ------------------------------------
+                //-------------------------------------------------------------------------
                 Container(
                   color: const Color(0xFF00D99D),
                   child: Center(
@@ -140,67 +131,53 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
       bottomNavigationBar: BottomAppBar(
         color: const Color.fromARGB(166, 5, 68, 7),
         child: TabBar(
-            controller: _tabController,
-            indicatorColor: Colors.greenAccent,
-            indicatorSize: TabBarIndicatorSize.tab,
-            indicatorWeight: 2,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.grey,
-            labelPadding: const EdgeInsets.fromLTRB(10, 1, 10, 1),
-            tabs: <Widget>[
-              Tab(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.star),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'Posiciones',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ],
-                ),
+          controller: _tabController,
+          indicatorColor: Colors.greenAccent,
+          indicatorSize: TabBarIndicatorSize.tab,
+          indicatorWeight: 2,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.grey,
+          labelPadding: const EdgeInsets.fromLTRB(10, 1, 10, 1),
+          tabs: <Widget>[
+            Tab(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.star),
+                  SizedBox(width: 10),
+                  Text('Posiciones', style: TextStyle(fontSize: 14)),
+                ],
               ),
-              Tab(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.pending_actions),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'Pendientes',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ],
-                ),
+            ),
+            Tab(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.pending_actions),
+                  SizedBox(width: 10),
+                  Text('Pendientes', style: TextStyle(fontSize: 14)),
+                ],
               ),
-              Tab(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.done_all),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      'Finalizados.',
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ],
-                ),
+            ),
+            Tab(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.done_all),
+                  SizedBox(width: 10),
+                  Text('Finalizados.', style: TextStyle(fontSize: 14)),
+                ],
               ),
-            ]),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- getContent ---------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- getContent ---------------------------------
+  //-----------------------------------------------------------------------
   Widget _getContent() {
     return Column(
       children: <Widget>[
@@ -210,16 +187,14 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
           backgroundColor: const Color.fromARGB(166, 5, 68, 7),
         ),
         _showFilaTitulo(),
-        Expanded(
-          child: _groupDetails.isEmpty ? _noContent() : _getListView(),
-        )
+        Expanded(child: _groupDetails.isEmpty ? _noContent() : _getListView()),
       ],
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- getCompleteMatches -------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- getCompleteMatches -------------------------
+  //-----------------------------------------------------------------------
   Widget _getCompleteMatches() {
     return Column(
       children: <Widget>[
@@ -239,14 +214,14 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
           child: _completeMatchesFiltered.isEmpty
               ? _noContentCompleteMatches()
               : _getListViewCompleteMatches(),
-        )
+        ),
       ],
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- getPendingMatches --------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- getPendingMatches --------------------------
+  //-----------------------------------------------------------------------
   Widget _getPendingMatches() {
     return Column(
       children: <Widget>[
@@ -266,14 +241,14 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
           child: _pendingMatchesFiltered.isEmpty
               ? _noContentPendingMatches()
               : _getListViewPendingMatches(),
-        )
+        ),
       ],
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- noContent ----------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- noContent ----------------------------------
+  //-----------------------------------------------------------------------
   Widget _noContent() {
     return Container(
       color: const Color(0xFF00D99D),
@@ -287,9 +262,9 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- noContentCompleteMatches -------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- noContentCompleteMatches -------------------
+  //-----------------------------------------------------------------------
   Widget _noContentCompleteMatches() {
     return Container(
       color: const Color(0xFF00D99D),
@@ -303,9 +278,9 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- noContentPendingMatches -------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- noContentPendingMatches -------------------
+  //-----------------------------------------------------------------------
   Widget _noContentPendingMatches() {
     return Container(
       color: const Color(0xFF00D99D),
@@ -319,9 +294,9 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- getListView --------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- getListView --------------------------------
+  //-----------------------------------------------------------------------
   _getListView() {
     return ListView(
       padding: const EdgeInsets.all(0),
@@ -330,17 +305,17 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
           color: const Color(0xFF00D99D),
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Card(
-              color: const Color(0xFFFFFFCC),
-              margin: const EdgeInsets.all(1),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Container(
-                  margin: const EdgeInsets.all(1),
-                  padding: const EdgeInsets.all(0),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                          child: Column(
+            color: const Color(0xFFFFFFCC),
+            margin: const EdgeInsets.all(1),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Container(
+                margin: const EdgeInsets.all(1),
+                padding: const EdgeInsets.all(0),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Column(
                         children: <Widget>[
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -380,9 +355,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                                 child: Text(
                                   e.points.toString(),
                                   textAlign: TextAlign.right,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
+                                  style: const TextStyle(fontSize: 14),
                                 ),
                               ),
                               //----- PJ -----
@@ -391,9 +364,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                                 child: Text(
                                   e.matchesPlayed.toString(),
                                   textAlign: TextAlign.right,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
+                                  style: const TextStyle(fontSize: 14),
                                 ),
                               ),
                               //----- PG -----
@@ -402,9 +373,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                                 child: Text(
                                   e.matchesWon.toString(),
                                   textAlign: TextAlign.right,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
+                                  style: const TextStyle(fontSize: 14),
                                 ),
                               ),
                               //----- PE -----
@@ -413,9 +382,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                                 child: Text(
                                   e.matchesTied.toString(),
                                   textAlign: TextAlign.right,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
+                                  style: const TextStyle(fontSize: 14),
                                 ),
                               ),
                               //----- PP -----
@@ -424,9 +391,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                                 child: Text(
                                   e.matchesLost.toString(),
                                   textAlign: TextAlign.right,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
+                                  style: const TextStyle(fontSize: 14),
                                 ),
                               ),
                               //----- GF -----
@@ -435,9 +400,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                                 child: Text(
                                   e.goalsFor.toString(),
                                   textAlign: TextAlign.right,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
+                                  style: const TextStyle(fontSize: 14),
                                 ),
                               ),
                               //----- GC -----
@@ -446,9 +409,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                                 child: Text(
                                   e.goalsAgainst.toString(),
                                   textAlign: TextAlign.right,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
+                                  style: const TextStyle(fontSize: 14),
                                 ),
                               ),
                               //----- DG -----
@@ -457,27 +418,27 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                                 child: Text(
                                   e.goalDifference.toString(),
                                   textAlign: TextAlign.right,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
+                                  style: const TextStyle(fontSize: 14),
                                 ),
                               ),
                             ],
                           ),
                         ],
-                      )),
-                    ],
-                  ),
+                      ),
+                    ),
+                  ],
                 ),
-              )),
+              ),
+            ),
+          ),
         );
       }).toList(),
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- _getListViewCompleteMatches ----------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- _getListViewCompleteMatches ----------------
+  //-----------------------------------------------------------------------
   _getListViewCompleteMatches() {
     return ListView(
       padding: const EdgeInsets.all(0),
@@ -486,103 +447,114 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
           color: const Color(0xFF00D99D),
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Card(
-              color: const Color(0xFFFFFFCC),
-              margin: const EdgeInsets.all(1),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Container(
-                  margin: const EdgeInsets.all(1),
-                  padding: const EdgeInsets.all(0),
-                  //----------- Fila Principal -----------
-                  child: Row(
-                    children: <Widget>[
-                      //----------- Columna Local -----------
-                      Expanded(
-                        child: Column(
-                          children: <Widget>[
-                            CachedNetworkImage(
-                              imageUrl: e.local.logoFullPath,
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
+            color: const Color(0xFFFFFFCC),
+            margin: const EdgeInsets.all(1),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Container(
+                margin: const EdgeInsets.all(1),
+                padding: const EdgeInsets.all(0),
+                //----------- Fila Principal -----------
+                child: Row(
+                  children: <Widget>[
+                    //----------- Columna Local -----------
+                    Expanded(
+                      child: Column(
+                        children: <Widget>[
+                          CachedNetworkImage(
+                            imageUrl: e.local.logoFullPath,
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                            fit: BoxFit.contain,
+                            height: 80,
+                            width: 80,
+                            placeholder: (context, url) => const Image(
+                              image: AssetImage('assets/loading.gif'),
                               fit: BoxFit.contain,
                               height: 80,
                               width: 80,
-                              placeholder: (context, url) => const Image(
-                                image: AssetImage('assets/loading.gif'),
-                                fit: BoxFit.contain,
-                                height: 80,
-                                width: 80,
-                              ),
                             ),
-                            Text(e.local.initials,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                          ],
-                        ),
-                      ),
-
-                      //----------- Columna Resultado -----------
-
-                      Column(
-                        children: [
-                          Text(
-                            e.dateName.toString(),
-                            style: const TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.bold),
                           ),
-                          Text("${e.goalsLocal}-${e.goalsVisitor}",
-                              style: const TextStyle(
-                                fontSize: 34,
-                                fontWeight: FontWeight.bold,
-                              )),
                           Text(
-                            DateFormat('dd/MM/yyyy')
-                                .format(DateTime.parse(e.dateLocal)),
+                            e.local.initials,
                             style: const TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.bold),
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
-                      //----------- Columna Visitante -----------
-                      Expanded(
-                        child: Column(
-                          children: <Widget>[
-                            CachedNetworkImage(
-                              imageUrl: e.visitor.logoFullPath,
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
+                    ),
+
+                    //----------- Columna Resultado -----------
+                    Column(
+                      children: [
+                        Text(
+                          e.dateName.toString(),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          "${e.goalsLocal}-${e.goalsVisitor}",
+                          style: const TextStyle(
+                            fontSize: 34,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          DateFormat(
+                            'dd/MM/yyyy',
+                          ).format(DateTime.parse(e.dateLocal)),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    //----------- Columna Visitante -----------
+                    Expanded(
+                      child: Column(
+                        children: <Widget>[
+                          CachedNetworkImage(
+                            imageUrl: e.visitor.logoFullPath,
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                            fit: BoxFit.contain,
+                            height: 80,
+                            width: 80,
+                            placeholder: (context, url) => const Image(
+                              image: AssetImage('assets/loading.gif'),
                               fit: BoxFit.contain,
                               height: 80,
                               width: 80,
-                              placeholder: (context, url) => const Image(
-                                image: AssetImage('assets/loading.gif'),
-                                fit: BoxFit.contain,
-                                height: 80,
-                                width: 80,
-                              ),
                             ),
-                            Text(e.visitor.initials,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                          ],
-                        ),
+                          ),
+                          Text(
+                            e.visitor.initials,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              )),
+              ),
+            ),
+          ),
         );
       }).toList(),
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- _getListViewPendingMatches ----------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- _getListViewPendingMatches ----------------
+  //-----------------------------------------------------------------------
   _getListViewPendingMatches() {
     return ListView(
       padding: const EdgeInsets.all(0),
@@ -591,113 +563,122 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
           color: const Color(0xFF00D99D),
           margin: const EdgeInsets.symmetric(horizontal: 10),
           child: Card(
-              color: const Color(0xFFFFFFCC),
-              margin: const EdgeInsets.all(1),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Container(
-                  margin: const EdgeInsets.all(1),
-                  padding: const EdgeInsets.all(0),
-                  //----------- Fila Principal -----------
-                  child: Row(
-                    children: <Widget>[
-                      //----------- Columna Local -----------
-                      Expanded(
-                        child: Column(
-                          children: <Widget>[
-                            CachedNetworkImage(
-                              imageUrl: e.local.logoFullPath,
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
+            color: const Color(0xFFFFFFCC),
+            margin: const EdgeInsets.all(1),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Container(
+                margin: const EdgeInsets.all(1),
+                padding: const EdgeInsets.all(0),
+                //----------- Fila Principal -----------
+                child: Row(
+                  children: <Widget>[
+                    //----------- Columna Local -----------
+                    Expanded(
+                      child: Column(
+                        children: <Widget>[
+                          CachedNetworkImage(
+                            imageUrl: e.local.logoFullPath,
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                            fit: BoxFit.contain,
+                            height: 80,
+                            width: 80,
+                            placeholder: (context, url) => const Image(
+                              image: AssetImage('assets/loading.gif'),
                               fit: BoxFit.contain,
                               height: 80,
                               width: 80,
-                              placeholder: (context, url) => const Image(
-                                image: AssetImage('assets/loading.gif'),
-                                fit: BoxFit.contain,
-                                height: 80,
-                                width: 80,
-                              ),
                             ),
-                            Text(e.local.initials,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                          ],
-                        ),
-                      ),
-
-                      //----------- Columna Resultado -----------
-
-                      Column(
-                        children: [
-                          Text(
-                            e.dateName.toString(),
-                            style: const TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            DateFormat('dd/MM/yyyy')
-                                .format(DateTime.parse(e.dateLocal)),
+                            e.local.initials,
                             style: const TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.bold),
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
-                      //----------- Columna Visitante -----------
-                      Expanded(
-                        child: Column(
-                          children: <Widget>[
-                            CachedNetworkImage(
-                              imageUrl: e.visitor.logoFullPath,
-                              errorWidget: (context, url, error) =>
-                                  const Icon(Icons.error),
+                    ),
+
+                    //----------- Columna Resultado -----------
+                    Column(
+                      children: [
+                        Text(
+                          e.dateName.toString(),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          DateFormat(
+                            'dd/MM/yyyy',
+                          ).format(DateTime.parse(e.dateLocal)),
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    //----------- Columna Visitante -----------
+                    Expanded(
+                      child: Column(
+                        children: <Widget>[
+                          CachedNetworkImage(
+                            imageUrl: e.visitor.logoFullPath,
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                            fit: BoxFit.contain,
+                            height: 80,
+                            width: 80,
+                            placeholder: (context, url) => const Image(
+                              image: AssetImage('assets/loading.gif'),
                               fit: BoxFit.contain,
                               height: 80,
                               width: 80,
-                              placeholder: (context, url) => const Image(
-                                image: AssetImage('assets/loading.gif'),
-                                fit: BoxFit.contain,
-                                height: 80,
-                                width: 80,
-                              ),
                             ),
-                            Text(e.visitor.initials,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                          ],
-                        ),
+                          ),
+                          Text(
+                            e.visitor.initials,
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              )),
+              ),
+            ),
+          ),
         );
       }).toList(),
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- _showFilaTitulo ----------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- _showFilaTitulo ----------------------------
+  //-----------------------------------------------------------------------
   Widget _showFilaTitulo() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10),
       child: Card(
-          color: const Color.fromARGB(255, 240, 229, 105),
-          margin: const EdgeInsets.all(1),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Container(
-              margin: const EdgeInsets.all(1),
-              padding: const EdgeInsets.all(0),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                      child: Column(
+        color: const Color.fromARGB(255, 240, 229, 105),
+        margin: const EdgeInsets.all(1),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Container(
+            margin: const EdgeInsets.all(1),
+            padding: const EdgeInsets.all(0),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Column(
                     children: <Widget>[
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -723,9 +704,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                             child: const Text(
                               'Pts',
                               textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
+                              style: TextStyle(fontSize: 14),
                             ),
                           ),
                           //----- PJ -----
@@ -734,9 +713,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                             child: const Text(
                               'PJ',
                               textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
+                              style: TextStyle(fontSize: 14),
                             ),
                           ),
                           //----- PG -----
@@ -745,9 +722,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                             child: const Text(
                               'PG',
                               textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
+                              style: TextStyle(fontSize: 14),
                             ),
                           ),
                           //----- PE -----
@@ -756,9 +731,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                             child: const Text(
                               'PE',
                               textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
+                              style: TextStyle(fontSize: 14),
                             ),
                           ),
                           //----- PP -----
@@ -767,9 +740,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                             child: const Text(
                               'PP',
                               textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
+                              style: TextStyle(fontSize: 14),
                             ),
                           ),
                           //----- GF -----
@@ -778,9 +749,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                             child: const Text(
                               'GF',
                               textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
+                              style: TextStyle(fontSize: 14),
                             ),
                           ),
                           //----- GC -----
@@ -789,9 +758,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                             child: const Text(
                               'GC',
                               textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
+                              style: TextStyle(fontSize: 14),
                             ),
                           ),
                           //----- DG -----
@@ -800,25 +767,25 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
                             child: const Text(
                               'DG',
                               textAlign: TextAlign.right,
-                              style: TextStyle(
-                                fontSize: 14,
-                              ),
+                              style: TextStyle(fontSize: 14),
                             ),
                           ),
                         ],
                       ),
                     ],
-                  )),
-                ],
-              ),
+                  ),
+                ),
+              ],
             ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 
-//***********************************************************************
-//******************** Método getGroupDetails ***************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método getGroupDetails ***************************
+  //***********************************************************************
   Future<void> _getGroupDetails() async {
     setState(() {
       _showLoader = true;
@@ -831,12 +798,13 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -848,12 +816,13 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -874,9 +843,9 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
     _getMatches();
   }
 
-//***********************************************************************
-//******************** Método getMatches ********************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método getMatches ********************************
+  //***********************************************************************
   Future<void> _getMatches() async {
     setState(() {
       _showLoader = true;
@@ -889,12 +858,13 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -906,12 +876,13 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -931,9 +902,9 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
     setState(() {});
   }
 
-//-----------------------------------------------------------------
-//--------------------- METODO SHOWFILTER -------------------------
-//-----------------------------------------------------------------
+  //-----------------------------------------------------------------
+  //--------------------- METODO SHOWFILTER -------------------------
+  //-----------------------------------------------------------------
 
   Widget _showFilter() {
     return Container(
@@ -963,9 +934,9 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
     );
   }
 
-//-----------------------------------------------------------------
-//--------------------- METODO SHOWFILTER2 -------------------------
-//-----------------------------------------------------------------
+  //-----------------------------------------------------------------
+  //--------------------- METODO SHOWFILTER2 -------------------------
+  //-----------------------------------------------------------------
 
   Widget _showFilter2() {
     return Container(
@@ -995,9 +966,9 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
     );
   }
 
-//-----------------------------------------------------------------
-//--------------------- METODO SHOWERASEBUTTON -------------------------
-//-----------------------------------------------------------------
+  //-----------------------------------------------------------------
+  //--------------------- METODO SHOWERASEBUTTON -------------------------
+  //-----------------------------------------------------------------
 
   Widget _showEraseButton() {
     return Container(
@@ -1021,12 +992,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.delete),
-                  SizedBox(
-                    width: 5,
-                  ),
-                ],
+                children: [Icon(Icons.delete), SizedBox(width: 5)],
               ),
             ),
           ),
@@ -1035,9 +1001,9 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
     );
   }
 
-//-----------------------------------------------------------------
-//--------------------- METODO SHOWERASEBUTTON -------------------------
-//-----------------------------------------------------------------
+  //-----------------------------------------------------------------
+  //--------------------- METODO SHOWERASEBUTTON -------------------------
+  //-----------------------------------------------------------------
 
   Widget _showEraseButton2() {
     return Container(
@@ -1061,12 +1027,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.delete),
-                  SizedBox(
-                    width: 5,
-                  ),
-                ],
+                children: [Icon(Icons.delete), SizedBox(width: 5)],
               ),
             ),
           ),
@@ -1075,9 +1036,9 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
     );
   }
 
-//-----------------------------------------------------------------
-//--------------------- METODO SHOWSEARCHBUTTON -------------------
-//-----------------------------------------------------------------
+  //-----------------------------------------------------------------
+  //--------------------- METODO SHOWSEARCHBUTTON -------------------
+  //-----------------------------------------------------------------
 
   Widget _showSearchButton() {
     return Container(
@@ -1097,12 +1058,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
               onPressed: () => _search(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.search),
-                  SizedBox(
-                    width: 5,
-                  ),
-                ],
+                children: [Icon(Icons.search), SizedBox(width: 5)],
               ),
             ),
           ),
@@ -1111,9 +1067,9 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
     );
   }
 
-//-----------------------------------------------------------------
-//--------------------- METODO SHOWSEARCHBUTTON2 -------------------
-//-----------------------------------------------------------------
+  //-----------------------------------------------------------------
+  //--------------------- METODO SHOWSEARCHBUTTON2 -------------------
+  //-----------------------------------------------------------------
 
   Widget _showSearchButton2() {
     return Container(
@@ -1133,12 +1089,7 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
               onPressed: () => _search2(),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.search),
-                  SizedBox(
-                    width: 5,
-                  ),
-                ],
+                children: [Icon(Icons.search), SizedBox(width: 5)],
               ),
             ),
           ),
@@ -1147,80 +1098,80 @@ class _GroupInfoScreenState extends State<GroupInfoScreen>
     );
   }
 
-//-----------------------------------------------------------------
-//--------------------- METODO SEARCH -----------------------------
-//-----------------------------------------------------------------
+  //-----------------------------------------------------------------
+  //--------------------- METODO SEARCH -----------------------------
+  //-----------------------------------------------------------------
 
   _search() async {
     FocusScope.of(context).unfocus();
     if (_filter.isEmpty) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Ingrese un texto a buscar',
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Ingrese un texto a buscar',
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     _completeMatchesFiltered = [];
     for (var _completeMatch in _completeMatches) {
-      if (_completeMatch.local.initials
-              .toLowerCase()
-              .contains(_filter.toLowerCase()) ||
-          _completeMatch.visitor.initials
-              .toLowerCase()
-              .contains(_filter.toLowerCase()) ||
-          _completeMatch.dateName!
-              .toLowerCase()
-              .contains(_filter.toLowerCase())) {
+      if (_completeMatch.local.initials.toLowerCase().contains(
+            _filter.toLowerCase(),
+          ) ||
+          _completeMatch.visitor.initials.toLowerCase().contains(
+            _filter.toLowerCase(),
+          ) ||
+          _completeMatch.dateName!.toLowerCase().contains(
+            _filter.toLowerCase(),
+          )) {
         _completeMatchesFiltered.add(_completeMatch);
       }
     }
     _completeMatchesFiltered.sort((b, a) {
-      return a.dateLocal
-          .toString()
-          .toLowerCase()
-          .compareTo(b.dateLocal.toString().toLowerCase());
+      return a.dateLocal.toString().toLowerCase().compareTo(
+        b.dateLocal.toString().toLowerCase(),
+      );
     });
     setState(() {});
   }
 
-//-----------------------------------------------------------------
-//--------------------- METODO SEARCH2 ----------------------------
-//-----------------------------------------------------------------
+  //-----------------------------------------------------------------
+  //--------------------- METODO SEARCH2 ----------------------------
+  //-----------------------------------------------------------------
 
   _search2() async {
     FocusScope.of(context).unfocus();
     if (_filter2.isEmpty) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Ingrese un texto a buscar',
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Ingrese un texto a buscar',
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     _pendingMatchesFiltered = [];
     for (var _pendingMatch in _pendingMatches) {
-      if (_pendingMatch.local.initials
-              .toLowerCase()
-              .contains(_filter2.toLowerCase()) ||
-          _pendingMatch.visitor.initials
-              .toLowerCase()
-              .contains(_filter2.toLowerCase()) ||
-          _pendingMatch.dateName!
-              .toLowerCase()
-              .contains(_filter2.toLowerCase())) {
+      if (_pendingMatch.local.initials.toLowerCase().contains(
+            _filter2.toLowerCase(),
+          ) ||
+          _pendingMatch.visitor.initials.toLowerCase().contains(
+            _filter2.toLowerCase(),
+          ) ||
+          _pendingMatch.dateName!.toLowerCase().contains(
+            _filter2.toLowerCase(),
+          )) {
         _pendingMatchesFiltered.add(_pendingMatch);
       }
     }
     _pendingMatchesFiltered.sort((b, a) {
-      return a.dateLocal
-          .toString()
-          .toLowerCase()
-          .compareTo(b.dateLocal.toString().toLowerCase());
+      return a.dateLocal.toString().toLowerCase().compareTo(
+        b.dateLocal.toString().toLowerCase(),
+      );
     });
     setState(() {});
   }

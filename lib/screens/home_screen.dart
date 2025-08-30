@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,11 +16,12 @@ class HomeScreen extends StatefulWidget {
   final User user;
   final bool rememberme;
 
-  const HomeScreen(
-      {super.key,
-      required this.token,
-      required this.user,
-      required this.rememberme});
+  const HomeScreen({
+    super.key,
+    required this.token,
+    required this.user,
+    required this.rememberme,
+  });
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -59,61 +60,58 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Image(
-              image: AssetImage('assets/logo.png'),
-              width: 200,
-            ),
-            const SizedBox(
-              height: 40,
-            ),
+            const Image(image: AssetImage('assets/logo.png'), width: 200),
+            const SizedBox(height: 40),
             Stack(
               children: [
                 ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: CachedNetworkImage(
-                      imageUrl: _user.pictureFullPath,
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
+                  borderRadius: BorderRadius.circular(100),
+                  child: CachedNetworkImage(
+                    imageUrl: _user.pictureFullPath,
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
+                    fit: BoxFit.cover,
+                    height: 200,
+                    width: 200,
+                    placeholder: (context, url) => const Image(
+                      image: AssetImage('assets/loading.gif'),
                       fit: BoxFit.cover,
                       height: 200,
                       width: 200,
-                      placeholder: (context, url) => const Image(
-                        image: AssetImage('assets/loading.gif'),
-                        fit: BoxFit.cover,
-                        height: 200,
-                        width: 200,
-                      ),
-                    )),
+                    ),
+                  ),
+                ),
                 Positioned(
                   bottom: 00,
                   left: 120,
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: CachedNetworkImage(
-                        imageUrl: _user.team.logoFullPath,
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
+                    borderRadius: BorderRadius.circular(100),
+                    child: CachedNetworkImage(
+                      imageUrl: _user.team.logoFullPath,
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                      fit: BoxFit.contain,
+                      height: 70,
+                      width: 70,
+                      placeholder: (context, url) => const Image(
+                        image: AssetImage('assets/loading.gif'),
                         fit: BoxFit.contain,
-                        height: 70,
-                        width: 70,
-                        placeholder: (context, url) => const Image(
-                          image: AssetImage('assets/loading.gif'),
-                          fit: BoxFit.contain,
-                          height: 200,
-                          width: 200,
-                        ),
-                      )),
+                        height: 200,
+                        width: 200,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
-            const SizedBox(
-              height: 30,
-            ),
+            const SizedBox(height: 30),
             Center(
               child: Text(
                 'Bienvenido/a ${_user.fullName}',
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -129,157 +127,151 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-              padding: const EdgeInsets.all(5),
-              child: Stack(
-                children: [
-                  const Image(
-                    image: AssetImage('assets/logo.png'),
-                    height: 120,
-                    width: 120,
+            padding: const EdgeInsets.all(5),
+            child: Stack(
+              children: [
+                const Image(
+                  image: AssetImage('assets/logo.png'),
+                  height: 120,
+                  width: 120,
+                ),
+                Positioned(
+                  top: 10,
+                  left: 160,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: CachedNetworkImage(
+                      imageUrl: _user.pictureFullPath,
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                      fit: BoxFit.cover,
+                      height: 100,
+                      width: 100,
+                      placeholder: (context, url) => const Image(
+                        image: AssetImage('assets/loading.gif'),
+                        fit: BoxFit.cover,
+                        height: 100,
+                        width: 100,
+                      ),
+                    ),
                   ),
-                  Positioned(
-                    top: 10,
-                    left: 160,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: CachedNetworkImage(
-                          imageUrl: _user.pictureFullPath,
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                          fit: BoxFit.cover,
-                          height: 100,
-                          width: 100,
-                          placeholder: (context, url) => const Image(
-                            image: AssetImage('assets/loading.gif'),
-                            fit: BoxFit.cover,
-                            height: 100,
-                            width: 100,
-                          ),
-                        )),
+                ),
+                Positioned(
+                  top: 60,
+                  left: 230,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: CachedNetworkImage(
+                      imageUrl: _user.team.logoFullPath,
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
+                      fit: BoxFit.contain,
+                      height: 60,
+                      width: 60,
+                      placeholder: (context, url) => const Image(
+                        image: AssetImage('assets/loading.gif'),
+                        fit: BoxFit.contain,
+                        height: 60,
+                        width: 60,
+                      ),
+                    ),
                   ),
-                  Positioned(
-                    top: 60,
-                    left: 230,
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        child: CachedNetworkImage(
-                          imageUrl: _user.team.logoFullPath,
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                          fit: BoxFit.contain,
-                          height: 60,
-                          width: 60,
-                          placeholder: (context, url) => const Image(
-                            image: AssetImage('assets/loading.gif'),
-                            fit: BoxFit.contain,
-                            height: 60,
-                            width: 60,
-                          ),
-                        )),
+                ),
+                Positioned(
+                  bottom: 20,
+                  left: 10,
+                  child: Text(
+                    "${_user.firstName} ${_user.lastName}",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  Positioned(
-                    bottom: 20,
-                    left: 10,
-                    child: Text("${_user.firstName} ${_user.lastName}",
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold)),
+                ),
+                Positioned(
+                  bottom: 0,
+                  left: 45,
+                  child: Text(
+                    '(a) ' + _user.nickName,
+                    style: const TextStyle(
+                      color: Colors.green,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  Positioned(
-                    bottom: 0,
-                    left: 45,
-                    child: Text('(a) ' + _user.nickName,
-                        style: const TextStyle(
-                            color: Colors.green,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              )),
-          ListTile(
-            leading: const Icon(
-              Icons.emoji_events,
-              color: Colors.black,
+                ),
+              ],
             ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.emoji_events, color: Colors.black),
             title: const Text('Torneos'),
             tileColor: Colors.white,
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => TournamentsScreen(
-                            token: widget.token,
-                            opcion: 1,
-                            user: widget.user,
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TournamentsScreen(
+                    token: widget.token,
+                    opcion: 1,
+                    user: widget.user,
+                  ),
+                ),
+              );
             },
           ),
           ListTile(
-            leading: const Icon(
-              Icons.groups,
-              color: Colors.black,
-            ),
+            leading: const Icon(Icons.groups, color: Colors.black),
             title: const Text('Grupos'),
             tileColor: Colors.white,
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MyGroupsScreen(
-                            token: widget.token,
-                            user: widget.user,
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      MyGroupsScreen(token: widget.token, user: widget.user),
+                ),
+              );
             },
           ),
           ListTile(
-            leading: const Icon(
-              Icons.sports_soccer,
-              color: Colors.black,
-            ),
+            leading: const Icon(Icons.sports_soccer, color: Colors.black),
             title: const Text('Predicciones'),
             tileColor: Colors.white,
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => TournamentsScreen(
-                            token: widget.token,
-                            opcion: 2,
-                            user: widget.user,
-                          )));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TournamentsScreen(
+                    token: widget.token,
+                    opcion: 2,
+                    user: widget.user,
+                  ),
+                ),
+              );
             },
           ),
           ListTile(
-            leading: const Icon(
-              Icons.gavel,
-              color: Colors.black,
-            ),
+            leading: const Icon(Icons.gavel, color: Colors.black),
             title: const Text('Reglamento'),
             tileColor: Colors.white,
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => RulesScreen()));
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RulesScreen()),
+              );
             },
           ),
-          const Divider(
-            color: Colors.black,
-            height: 2,
-          ),
+          const Divider(color: Colors.black, height: 2),
           ListTile(
-            leading: const Icon(
-              Icons.face,
-              color: Colors.black,
-            ),
+            leading: const Icon(Icons.face, color: Colors.black),
             tileColor: Colors.lightGreenAccent,
             title: const Text('Editar perfil'),
             onTap: () => _editUser(),
           ),
           ListTile(
-            leading: const Icon(
-              Icons.logout,
-              color: Colors.black,
-            ),
+            leading: const Icon(Icons.logout, color: Colors.black),
             tileColor: Colors.lightGreenAccent,
             title: const Text('Cerrar Sesión'),
             onTap: () {
@@ -296,7 +288,9 @@ class _HomeScreenState extends State<HomeScreen> {
     await prefs.setBool('isRemembered', false);
     await prefs.setString('userBody', '');
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+    );
   }
 
   Future<void> _getUser() async {
@@ -311,20 +305,19 @@ class _HomeScreenState extends State<HomeScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
     var url = Uri.parse('${Constants.apiUrl}/Api/Account/GetUserByEmail');
 
-    Map<String, dynamic> request2 = {
-      'Email': widget.user.email,
-    };
+    Map<String, dynamic> request2 = {'Email': widget.user.email};
 
     var response2 = await http.post(
       url,
@@ -351,13 +344,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _editUser() async {
     String? result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => RegisterUserScreen(
-                  token: widget.token,
-                  user: _user,
-                  myProfile: true,
-                )));
+      context,
+      MaterialPageRoute(
+        builder: (context) => RegisterUserScreen(
+          token: widget.token,
+          user: _user,
+          myProfile: true,
+        ),
+      ),
+    );
     if (result == 'yes') {
       _getUser();
       setState(() {});

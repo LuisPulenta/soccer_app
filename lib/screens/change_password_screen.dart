@@ -1,5 +1,5 @@
 import 'package:adaptive_dialog/adaptive_dialog.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
 import '../components/loader_component.dart';
@@ -9,8 +9,11 @@ import '../models/models.dart';
 class ChangePasswordScreen extends StatefulWidget {
   final User user;
   final Token token;
-  const ChangePasswordScreen(
-      {super.key, required this.user, required this.token});
+  const ChangePasswordScreen({
+    super.key,
+    required this.user,
+    required this.token,
+  });
 
   @override
   _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
@@ -41,29 +44,28 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color(0xFF00D99D),
-        appBar: AppBar(
-          title: const Text('Cambio de Contraseña'),
-          centerTitle: true,
-          backgroundColor: const Color.fromARGB(255, 8, 69, 48),
-        ),
-        body: Stack(
-          children: [
-            Column(
-              children: <Widget>[
-                _showCurrentPassword(),
-                _showNewPassword(),
-                _showConfirmPassword(),
-                _showButtons(),
-              ],
-            ),
-            _showLoader
-                ? const LoaderComponent(
-                    text: 'Por favor espere...',
-                  )
-                : Container(),
-          ],
-        ));
+      backgroundColor: const Color(0xFF00D99D),
+      appBar: AppBar(
+        title: const Text('Cambio de Contraseña'),
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 8, 69, 48),
+      ),
+      body: Stack(
+        children: [
+          Column(
+            children: <Widget>[
+              _showCurrentPassword(),
+              _showNewPassword(),
+              _showConfirmPassword(),
+              _showButtons(),
+            ],
+          ),
+          _showLoader
+              ? const LoaderComponent(text: 'Por favor espere...')
+              : Container(),
+        ],
+      ),
+    );
   }
 
   Widget _showCurrentPassword() {
@@ -164,9 +166,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       margin: const EdgeInsets.only(left: 10, right: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          _showChangePassword(),
-        ],
+        children: <Widget>[_showChangePassword()],
       ),
     );
   }
@@ -177,18 +177,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         style: ElevatedButton.styleFrom(
           backgroundColor: Color.fromARGB(255, 8, 69, 48),
           minimumSize: const Size(double.infinity, 50),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         ),
         onPressed: () => _save(),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.lock),
-            SizedBox(
-              width: 15,
-            ),
+            SizedBox(width: 15),
             Text('Cambiar contraseña'),
           ],
         ),
@@ -263,12 +259,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estes conectado a internet.',
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estes conectado a internet.',
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -279,7 +276,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     };
 
     Response response = await ApiHelper.post(
-        '/api/Account/ChangePassword', request, widget.token);
+      '/api/Account/ChangePassword',
+      request,
+      widget.token,
+    );
 
     setState(() {
       _showLoader = false;
@@ -287,22 +287,24 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
     await showAlertDialog(
-        context: context,
-        title: 'Confirmación',
-        message: 'Su contraseña ha sido cambiada con éxito.',
-        actions: <AlertDialogAction>[
-          const AlertDialogAction(key: null, label: 'Aceptar'),
-        ]);
+      context: context,
+      title: 'Confirmación',
+      message: 'Su contraseña ha sido cambiada con éxito.',
+      actions: <AlertDialogAction>[
+        const AlertDialogAction(key: null, label: 'Aceptar'),
+      ],
+    );
 
     Navigator.pop(context, 'yes');
   }

@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:camera/camera.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -19,20 +19,21 @@ class RegisterUserScreen extends StatefulWidget {
   final User user;
   final bool myProfile;
 
-  const RegisterUserScreen(
-      {super.key,
-      required this.token,
-      required this.user,
-      required this.myProfile});
+  const RegisterUserScreen({
+    super.key,
+    required this.token,
+    required this.user,
+    required this.myProfile,
+  });
 
   @override
   _RegisterUserScreenState createState() => _RegisterUserScreenState();
 }
 
 class _RegisterUserScreenState extends State<RegisterUserScreen> {
-//***********************************************************************
-//******************** Declaración de Variables *************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Declaración de Variables *************************
+  //***********************************************************************
   bool _showLoader = false;
   bool _photoChanged = false;
   late XFile _image;
@@ -79,121 +80,111 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
   bool _teamSelectedShowError = false;
   List<Team> _teams = [];
 
-//***********************************************************************
-//******************** Init State ***************************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Init State ***************************************
+  //***********************************************************************
   @override
   void initState() {
     super.initState();
     _getLeagues();
   }
 
-//***********************************************************************
-//******************** Pantalla *****************************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Pantalla *****************************************
+  //***********************************************************************
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color(0xFF00D99D),
-        appBar: AppBar(
-          title: widget.myProfile == false
-              ? const Text('Nuevo Usuario')
-              : Text('${widget.user.firstName} ${widget.user.lastName}'),
-          centerTitle: true,
-          backgroundColor: const Color.fromARGB(255, 8, 69, 48),
-        ),
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  _showPhoto(),
-                  const Divider(
+      backgroundColor: const Color(0xFF00D99D),
+      appBar: AppBar(
+        title: widget.myProfile == false
+            ? const Text('Nuevo Usuario')
+            : Text('${widget.user.firstName} ${widget.user.lastName}'),
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 8, 69, 48),
+      ),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                _showPhoto(),
+                const Divider(color: Colors.black, thickness: 2),
+                _showFirstName(),
+                _showLastName(),
+                _showNickName(),
+                const Divider(color: Colors.black, thickness: 2),
+                const Text(
+                  '¿De qué club sos hincha?',
+                  style: TextStyle(
                     color: Colors.black,
-                    thickness: 2,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
-                  _showFirstName(),
-                  _showLastName(),
-                  _showNickName(),
-                  const Divider(
-                    color: Colors.black,
-                    thickness: 2,
-                  ),
-                  const Text('¿De qué club sos hincha?',
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold)),
-                  const Text('(Selecciona una Liga y luego un Equipo)'),
-                  _showLeagues(),
-                  _showTeams(),
-                  const Divider(
-                    color: Colors.black,
-                    thickness: 2,
-                  ),
-                  _showEmail(),
-                  _showPassword(),
-                  _showConfirm(),
-                  const Divider(
-                    color: Colors.black,
-                    thickness: 2,
-                  ),
-                  _showButtons(),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                ],
-              ),
+                ),
+                const Text('(Selecciona una Liga y luego un Equipo)'),
+                _showLeagues(),
+                _showTeams(),
+                const Divider(color: Colors.black, thickness: 2),
+                _showEmail(),
+                _showPassword(),
+                _showConfirm(),
+                const Divider(color: Colors.black, thickness: 2),
+                _showButtons(),
+                const SizedBox(height: 10),
+              ],
             ),
-            _showLoader
-                ? const LoaderComponent(
-                    text: 'Por favor espere...',
-                  )
-                : Container(),
-          ],
-        ));
+          ),
+          _showLoader
+              ? const LoaderComponent(text: 'Por favor espere...')
+              : Container(),
+        ],
+      ),
+    );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- showPhoto ----------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- showPhoto ----------------------------------
+  //-----------------------------------------------------------------------
   Widget _showPhoto() {
     return InkWell(
-      child: Stack(children: <Widget>[
-        Container(
-          margin: const EdgeInsets.only(top: 10),
-          child: widget.user.userId.isEmpty && !_photoChanged
-              ? const Image(
-                  image: AssetImage('assets/noimage.png'),
-                  width: 160,
-                  height: 160,
-                  fit: BoxFit.cover)
-              : ClipRRect(
-                  borderRadius: BorderRadius.circular(80),
-                  child: _photoChanged
-                      ? Image.file(
-                          File(_image.path),
-                          width: 160,
-                          height: 160,
-                          fit: BoxFit.cover,
-                        )
-                      : CachedNetworkImage(
-                          imageUrl: widget.user.pictureFullPath,
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                          fit: BoxFit.cover,
-                          height: 160,
-                          width: 160,
-                          placeholder: (context, url) => const Image(
-                            image: AssetImage('assets/nouser.png'),
+      child: Stack(
+        children: <Widget>[
+          Container(
+            margin: const EdgeInsets.only(top: 10),
+            child: widget.user.userId.isEmpty && !_photoChanged
+                ? const Image(
+                    image: AssetImage('assets/noimage.png'),
+                    width: 160,
+                    height: 160,
+                    fit: BoxFit.cover,
+                  )
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(80),
+                    child: _photoChanged
+                        ? Image.file(
+                            File(_image.path),
+                            width: 160,
+                            height: 160,
+                            fit: BoxFit.cover,
+                          )
+                        : CachedNetworkImage(
+                            imageUrl: widget.user.pictureFullPath,
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
                             fit: BoxFit.cover,
                             height: 160,
                             width: 160,
+                            placeholder: (context, url) => const Image(
+                              image: AssetImage('assets/nouser.png'),
+                              fit: BoxFit.cover,
+                              height: 160,
+                              width: 160,
+                            ),
                           ),
-                        ),
-                ),
-        ),
-        Positioned(
+                  ),
+          ),
+          Positioned(
             bottom: 0,
             left: 100,
             child: InkWell(
@@ -211,8 +202,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                   ),
                 ),
               ),
-            )),
-        Positioned(
+            ),
+          ),
+          Positioned(
             bottom: 0,
             left: 0,
             child: InkWell(
@@ -230,30 +222,32 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                   ),
                 ),
               ),
-            )),
-      ]),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- showFirstName ----------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- showFirstName ----------------------------------
+  //-----------------------------------------------------------------------
   Widget _showFirstName() {
     return Container(
       padding: const EdgeInsets.all(10),
       child: TextField(
         controller: _firstNameController,
         decoration: InputDecoration(
-            isDense: true,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-            hintText: 'Ingresa nombres...',
-            labelText: 'Nombres',
-            errorText: _firstNameShowError ? _firstNameError : null,
-            suffixIcon: const Icon(Icons.person),
-            fillColor: Colors.white,
-            filled: true,
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+          hintText: 'Ingresa nombres...',
+          labelText: 'Nombres',
+          errorText: _firstNameShowError ? _firstNameError : null,
+          suffixIcon: const Icon(Icons.person),
+          fillColor: Colors.white,
+          filled: true,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _firstName = value;
         },
@@ -261,25 +255,25 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- showLastName -------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- showLastName -------------------------------
+  //-----------------------------------------------------------------------
   Widget _showLastName() {
     return Container(
       padding: const EdgeInsets.all(10),
       child: TextField(
         controller: _lastNameController,
         decoration: InputDecoration(
-            isDense: true,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-            hintText: 'Ingresa nombres...',
-            labelText: 'Apellido',
-            errorText: _lastNameShowError ? _lastNameError : null,
-            suffixIcon: const Icon(Icons.person),
-            fillColor: Colors.white,
-            filled: true,
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+          hintText: 'Ingresa nombres...',
+          labelText: 'Apellido',
+          errorText: _lastNameShowError ? _lastNameError : null,
+          suffixIcon: const Icon(Icons.person),
+          fillColor: Colors.white,
+          filled: true,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _lastName = value;
         },
@@ -287,25 +281,25 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- showNickName -------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- showNickName -------------------------------
+  //-----------------------------------------------------------------------
   Widget _showNickName() {
     return Container(
       padding: const EdgeInsets.all(10),
       child: TextField(
         controller: _nickNameController,
         decoration: InputDecoration(
-            isDense: true,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-            hintText: 'Ingresa apodo...',
-            labelText: 'Apodo',
-            errorText: _nickNameShowError ? _nickNameError : null,
-            suffixIcon: const Icon(Icons.sentiment_satisfied),
-            fillColor: Colors.white,
-            filled: true,
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+          hintText: 'Ingresa apodo...',
+          labelText: 'Apodo',
+          errorText: _nickNameShowError ? _nickNameError : null,
+          suffixIcon: const Icon(Icons.sentiment_satisfied),
+          fillColor: Colors.white,
+          filled: true,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         onChanged: (value) {
           _nickName = value;
         },
@@ -313,9 +307,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- showLeagues --------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- showLeagues --------------------------------
+  //-----------------------------------------------------------------------
   Widget _showLeagues() {
     return Container(
       padding: const EdgeInsets.all(10),
@@ -337,10 +331,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                 }
 
                 _teams.sort((a, b) {
-                  return a.name
-                      .toString()
-                      .toLowerCase()
-                      .compareTo(b.name.toString().toLowerCase());
+                  return a.name.toString().toLowerCase().compareTo(
+                    b.name.toString().toLowerCase(),
+                  );
                 });
 
                 _getComboTeams();
@@ -349,53 +342,62 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                 setState(() {});
               },
               decoration: InputDecoration(
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 0,
+                ),
                 hintText: 'Seleccione una Liga...',
                 labelText: 'Liga',
                 fillColor: Colors.white,
                 filled: true,
-                errorText:
-                    _leagueSelectedShowError ? _leagueSelectedError : null,
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-              )),
+                errorText: _leagueSelectedShowError
+                    ? _leagueSelectedError
+                    : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- showTeams --------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- showTeams --------------------------------
+  //-----------------------------------------------------------------------
   Widget _showTeams() {
     return _teams.isEmpty
         ? Container()
         : Container(
             padding: const EdgeInsets.all(10),
             child: DropdownButtonFormField(
-                isDense: true,
-                items: _getComboTeams(),
-                value: _teamSelected,
-                onChanged: (option) {
-                  _teamSelected = option as int;
-                  setState(() {});
-                },
-                decoration: InputDecoration(
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                  hintText: 'Seleccione un Equipo...',
-                  labelText: 'Equipo',
-                  fillColor: Colors.white,
-                  filled: true,
-                  errorText: _teamSelectedShowError ? _teamSelectedError : null,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                )),
+              isDense: true,
+              items: _getComboTeams(),
+              value: _teamSelected,
+              onChanged: (option) {
+                _teamSelected = option as int;
+                setState(() {});
+              },
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 0,
+                ),
+                hintText: 'Seleccione un Equipo...',
+                labelText: 'Equipo',
+                fillColor: Colors.white,
+                filled: true,
+                errorText: _teamSelectedShowError ? _teamSelectedError : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
           );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- showEMail ----------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- showEMail ----------------------------------
+  //-----------------------------------------------------------------------
   Widget _showEmail() {
     return widget.myProfile == false
         ? Container(
@@ -404,15 +406,17 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                  hintText: 'Ingresa Email...',
-                  labelText: 'Email',
-                  errorText: _emailShowError ? _emailError : null,
-                  suffixIcon: const Icon(Icons.email),
-                  fillColor: Colors.white,
-                  filled: true,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10))),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+                hintText: 'Ingresa Email...',
+                labelText: 'Email',
+                errorText: _emailShowError ? _emailError : null,
+                suffixIcon: const Icon(Icons.email),
+                fillColor: Colors.white,
+                filled: true,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
               onChanged: (value) {
                 _email = value;
               },
@@ -421,9 +425,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         : Container();
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- showPassword -------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- showPassword -------------------------------
+  //-----------------------------------------------------------------------
   Widget _showPassword() {
     return widget.myProfile == false
         ? Container(
@@ -448,8 +452,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                     });
                   },
                 ),
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
               onChanged: (value) {
                 _password = value;
@@ -459,9 +464,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         : Container();
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- showConfirm --------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- showConfirm --------------------------------
+  //-----------------------------------------------------------------------
   Widget _showConfirm() {
     return widget.myProfile == false
         ? Container(
@@ -486,8 +491,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
                     });
                   },
                 ),
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
               onChanged: (value) {
                 _confirm = value;
@@ -497,9 +503,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         : Container();
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- showButtons -------------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- showButtons -------------------------------
+  //-----------------------------------------------------------------------
   Widget _showButtons() {
     return Container(
       margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
@@ -507,63 +513,53 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           _showRegisterButton(),
-          widget.user.userId.isEmpty
-              ? Container()
-              : const SizedBox(
-                  width: 20,
-                ),
+          widget.user.userId.isEmpty ? Container() : const SizedBox(width: 20),
           widget.user.userId.isEmpty
               ? Container()
               : widget.myProfile
-                  ? Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFB4161B),
-                          minimumSize: const Size(100, 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                        onPressed: () => _changePassword(),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(Icons.lock),
-                            SizedBox(
-                              width: 15,
-                            ),
-                            Text('Contraseña'),
-                          ],
-                        ),
+              ? Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFB4161B),
+                      minimumSize: const Size(100, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
                       ),
-                    )
-                  : Container()
+                    ),
+                    onPressed: () => _changePassword(),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.lock),
+                        SizedBox(width: 15),
+                        Text('Contraseña'),
+                      ],
+                    ),
+                  ),
+                )
+              : Container(),
         ],
       ),
     );
   }
 
-//-----------------------------------------------------------------------
-//-------------------------- showRegisterButton -------------------------
-//-----------------------------------------------------------------------
+  //-----------------------------------------------------------------------
+  //-------------------------- showRegisterButton -------------------------
+  //-----------------------------------------------------------------------
   Widget _showRegisterButton() {
     return Expanded(
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color.fromARGB(255, 8, 69, 48),
           minimumSize: const Size(double.infinity, 50),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         ),
         onPressed: () => _save(),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(Icons.person_add),
-            const SizedBox(
-              width: 15,
-            ),
+            const SizedBox(width: 15),
             widget.myProfile == false
                 ? const Text('Registrar usuario')
                 : const Text('Guardar usuario'),
@@ -573,22 +569,23 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     );
   }
 
-//***********************************************************************
-//******************** Método TakePicture *******************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método TakePicture *******************************
+  //***********************************************************************
   void _takePicture() async {
     WidgetsFlutterBinding.ensureInitialized();
     final cameras = await availableCameras();
     var firstCamera = cameras.first;
     var response1 = await showAlertDialog(
-        context: context,
-        title: 'Seleccionar cámara',
-        message: '¿Qué cámara desea utilizar?',
-        actions: <AlertDialogAction>[
-          const AlertDialogAction(key: 'no', label: 'Trasera'),
-          const AlertDialogAction(key: 'yes', label: 'Delantera'),
-          const AlertDialogAction(key: 'cancel', label: 'Cancelar'),
-        ]);
+      context: context,
+      title: 'Seleccionar cámara',
+      message: '¿Qué cámara desea utilizar?',
+      actions: <AlertDialogAction>[
+        const AlertDialogAction(key: 'no', label: 'Trasera'),
+        const AlertDialogAction(key: 'yes', label: 'Delantera'),
+        const AlertDialogAction(key: 'cancel', label: 'Cancelar'),
+      ],
+    );
     if (response1 == 'yes') {
       firstCamera = cameras.first;
     }
@@ -598,11 +595,11 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 
     if (response1 != 'cancel') {
       Response? response = await Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => TakePictureScreen(
-                    camera: firstCamera,
-                  )));
+        context,
+        MaterialPageRoute(
+          builder: (context) => TakePictureScreen(camera: firstCamera),
+        ),
+      );
       if (response != null) {
         setState(() {
           _photoChanged = true;
@@ -612,9 +609,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     }
   }
 
-//***********************************************************************
-//******************** Método SelectPicture *****************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método SelectPicture *****************************
+  //***********************************************************************
   void _selectPicture() async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
@@ -626,9 +623,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     }
   }
 
-//***********************************************************************
-//******************** Método register **********************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método register **********************************
+  //***********************************************************************
   void _register() async {
     if (!validateFields()) {
       return;
@@ -636,9 +633,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     _addRecord();
   }
 
-//***********************************************************************
-//******************** Método validateFields ****************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método validateFields ****************************
+  //***********************************************************************
   bool validateFields() {
     bool isValid = true;
 
@@ -739,9 +736,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     return isValid;
   }
 
-//***********************************************************************
-//******************** Método addRecord *********************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método addRecord *********************************
+  //***********************************************************************
   void _addRecord() async {
     setState(() {
       _showLoader = true;
@@ -754,12 +751,13 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -790,30 +788,32 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
     await showAlertDialog(
-        context: context,
-        title: 'Confirmación',
-        message:
-            'Se ha enviado un correo con las instrucciones para activar el usuario. Por favor actívelo para poder ingresar a la Aplicación.',
-        actions: <AlertDialogAction>[
-          const AlertDialogAction(key: null, label: 'Aceptar'),
-        ]);
+      context: context,
+      title: 'Confirmación',
+      message:
+          'Se ha enviado un correo con las instrucciones para activar el usuario. Por favor actívelo para poder ingresar a la Aplicación.',
+      actions: <AlertDialogAction>[
+        const AlertDialogAction(key: null, label: 'Aceptar'),
+      ],
+    );
 
     Navigator.pop(context, 'yes');
   }
 
-//***********************************************************************
-//******************** Método PLMayusc **********************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método PLMayusc **********************************
+  //***********************************************************************
   String PLMayusc(String string) {
     String name = '';
     bool isSpace = false;
@@ -838,29 +838,25 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     return name;
   }
 
-//***********************************************************************
-//******************** Método getComboLeagues ***************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método getComboLeagues ***************************
+  //***********************************************************************
   List<DropdownMenuItem<int>> _getComboLeagues() {
     List<DropdownMenuItem<int>> list = [];
-    list.add(const DropdownMenuItem(
-      value: 0,
-      child: Text('Seleccione una Liga...'),
-    ));
+    list.add(
+      const DropdownMenuItem(value: 0, child: Text('Seleccione una Liga...')),
+    );
 
     for (var league in _leagues) {
-      list.add(DropdownMenuItem(
-        value: league.id,
-        child: Text(league.name),
-      ));
+      list.add(DropdownMenuItem(value: league.id, child: Text(league.name)));
     }
 
     return list;
   }
 
-//***********************************************************************
-//******************** Método getLeagues ********************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método getLeagues ********************************
+  //***********************************************************************
   Future<void> _getLeagues() async {
     setState(() {
       _showLoader = true;
@@ -873,12 +869,13 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
@@ -890,58 +887,53 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
     setState(() {
       _leagues = response.result;
       _leagues.sort((a, b) {
-        return a.name
-            .toString()
-            .toLowerCase()
-            .compareTo(b.name.toString().toLowerCase());
+        return a.name.toString().toLowerCase().compareTo(
+          b.name.toString().toLowerCase(),
+        );
       });
     });
 
     widget.myProfile ? _loadFieldValues() : () {};
   }
 
-//***********************************************************************
-//******************** Método getComboTeams *****************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método getComboTeams *****************************
+  //***********************************************************************
   List<DropdownMenuItem<int>> _getComboTeams() {
     List<DropdownMenuItem<int>> list = [];
-    list.add(const DropdownMenuItem(
-      value: 0,
-      child: Text('Seleccione un Equipo...'),
-    ));
+    list.add(
+      const DropdownMenuItem(value: 0, child: Text('Seleccione un Equipo...')),
+    );
 
     for (var team in _teams) {
-      list.add(DropdownMenuItem(
-        value: team.id,
-        child: Text(team.name),
-      ));
+      list.add(DropdownMenuItem(value: team.id, child: Text(team.name)));
     }
 
     _teams.sort((a, b) {
-      return a.name
-          .toString()
-          .toLowerCase()
-          .compareTo(b.name.toString().toLowerCase());
+      return a.name.toString().toLowerCase().compareTo(
+        b.name.toString().toLowerCase(),
+      );
     });
 
     return list;
   }
 
-//***********************************************************************
-//******************** Método loadFieldValues ***************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método loadFieldValues ***************************
+  //***********************************************************************
   void _loadFieldValues() {
     _firstName = widget.user.firstName;
     _firstNameController.text = _firstName;
@@ -968,16 +960,15 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
       }
     }
     _teams.sort((a, b) {
-      return a.name
-          .toString()
-          .toLowerCase()
-          .compareTo(b.name.toString().toLowerCase());
+      return a.name.toString().toLowerCase().compareTo(
+        b.name.toString().toLowerCase(),
+      );
     });
   }
 
-//***********************************************************************
-//******************** save *********************************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** save *********************************************
+  //***********************************************************************
   void _save() {
     if (!validateFields()) {
       return;
@@ -985,9 +976,9 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
     widget.user.userId.isEmpty ? _register() : _saveRecord();
   }
 
-//***********************************************************************
-//******************** saveRecord ***************************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** saveRecord ***************************************
+  //***********************************************************************
   _saveRecord() async {
     setState(() {
       _showLoader = true;
@@ -1020,17 +1011,21 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
         _showLoader = false;
       });
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: 'Verifica que estés conectado a Internet',
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: 'Verifica que estés conectado a Internet',
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
 
-    Response response =
-        await ApiHelper.put('/api/Account/', request, widget.token);
+    Response response = await ApiHelper.put(
+      '/api/Account/',
+      request,
+      widget.token,
+    );
 
     setState(() {
       _showLoader = false;
@@ -1038,27 +1033,28 @@ class _RegisterUserScreenState extends State<RegisterUserScreen> {
 
     if (!response.isSuccess) {
       await showAlertDialog(
-          context: context,
-          title: 'Error',
-          message: response.message,
-          actions: <AlertDialogAction>[
-            const AlertDialogAction(key: null, label: 'Aceptar'),
-          ]);
+        context: context,
+        title: 'Error',
+        message: response.message,
+        actions: <AlertDialogAction>[
+          const AlertDialogAction(key: null, label: 'Aceptar'),
+        ],
+      );
       return;
     }
     Navigator.pop(context, 'yes');
   }
 
-//***********************************************************************
-//******************** Método changePassword ****************************
-//***********************************************************************
+  //***********************************************************************
+  //******************** Método changePassword ****************************
+  //***********************************************************************
   void _changePassword() {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => ChangePasswordScreen(
-                  user: widget.user,
-                  token: widget.token,
-                )));
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            ChangePasswordScreen(user: widget.user, token: widget.token),
+      ),
+    );
   }
 }
