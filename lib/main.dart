@@ -44,15 +44,24 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Soccer App',
+      theme: ThemeData.light().copyWith(
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+          ),
+        ),
+        appBarTheme: AppBarTheme(
+          centerTitle: true,
+          titleTextStyle: TextStyle(color: Colors.white, fontSize: 20),
+          iconTheme: IconThemeData(color: Colors.white),
+          actionsIconTheme: IconThemeData(color: Colors.white),
+        ),
+      ),
       home: _isLoading
           ? const WaitScreen()
           : _showLoginPage
-              ? const LoginScreen()
-              : HomeScreen(
-                  token: _token,
-                  user: _user,
-                  rememberme: isRemembered,
-                ),
+          ? const LoginScreen()
+          : HomeScreen(token: _token, user: _user, rememberme: isRemembered),
     );
   }
 

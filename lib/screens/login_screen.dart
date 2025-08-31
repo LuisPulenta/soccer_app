@@ -232,7 +232,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.login),
-                  SizedBox(width: 20),
+                  SizedBox(width: 10),
                   Text('Iniciar Sesión'),
                 ],
               ),
@@ -253,7 +253,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.person_add),
-                  SizedBox(width: 20),
+                  SizedBox(width: 10),
                   Text('Registrarse'),
                 ],
               ),
