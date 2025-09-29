@@ -26,6 +26,7 @@ class _AddBetGroupScreenState extends State<AddBetGroupScreen> {
   //***********************************************************************
   //******************** Declaración de Variables *************************
   //***********************************************************************
+
   bool _showLoader = false;
   bool _photoChanged = false;
   late XFile _image;
