@@ -6,6 +6,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../helpers/constants.dart';
 import '../models/models.dart';
@@ -270,6 +271,44 @@ class _HomeScreenState extends State<HomeScreen> {
             title: const Text('Editar perfil'),
             onTap: () => _editUser(),
           ),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  color: Colors.lightGreenAccent,
+                  child: ExpansionTile(
+                    backgroundColor: Colors.lightGreenAccent,
+                    //collapsedIconColor: Colors.black,
+                    //iconColor: Colors.black,
+                    leading: const Icon(Icons.info, color: Colors.black),
+                    title: const Text(
+                      'Acerca de',
+                      style: TextStyle(fontSize: 15, color: Colors.black),
+                    ),
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15.0),
+                        child: ListTile(
+                          leading: const Icon(
+                            Icons.privacy_tip,
+                            color: Colors.black,
+                          ),
+                          tileColor: Colors.lightGreenAccent,
+                          title: const Text(
+                            'Política de Privacidad',
+                            style: TextStyle(fontSize: 15, color: Colors.black),
+                          ),
+                          onTap: () {
+                            _launchURL();
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.black),
             tileColor: Colors.lightGreenAccent,
@@ -283,6 +322,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  //----------------------- _launchURL -------------------------------
+  void _launchURL() async {
+    if (!await launch('https://www.keypress.com.ar/privacidad.html')) {
+      throw 'No se puede conectar a la Web Política de Privacidad';
+    }
+  }
+
+  //----------------------- _logOut -------------------------------
   void _logOut() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isRemembered', false);
